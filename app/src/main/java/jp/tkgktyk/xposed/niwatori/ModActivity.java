@@ -35,8 +35,13 @@ import de.robv.android.xposed.XposedHelpers;
  * Created by tkgktyk on 2015/02/12.
  */
 public class ModActivity extends XposedModule {
-    private static final String CLASS_DECOR_VIEW = "com.android.internal.policy.impl.PhoneWindow$DecorView";
     private static final String CLASS_DECOR_VIEW_M = "com.android.internal.policy.PhoneWindow$DecorView";
+    private static final String CLASS_DECOR_VIEW_N = "com.android.internal.policy.DecorView";
+    private static final String CLASS_DECOR_VIEW =
+            (Build.VERSION.SDK_INT >= 24)? CLASS_DECOR_VIEW_N :
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)? CLASS_DECOR_VIEW_M :
+                            "com.android.internal.policy.impl.PhoneWindow$DecorView";
+
     private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
     private static final String CLASS_CONTEXT_IMPL = "android.app.ContextImpl";
 
@@ -138,8 +143,9 @@ public class ModActivity extends XposedModule {
     private static void installToDecorView() {
         try {
             final Class<?> classDecorView = XposedHelpers.findClass(
-                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M?
-                            CLASS_DECOR_VIEW_M: CLASS_DECOR_VIEW, null);
+//                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M?
+//                            CLASS_DECOR_VIEW_M: CLASS_DECOR_VIEW, null);
+                    ModActivity.CLASS_DECOR_VIEW, null);
             XposedBridge.hookAllConstructors(classDecorView, new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -155,10 +161,16 @@ public class ModActivity extends XposedModule {
                     }
                 }
             });
-            XposedHelpers.findAndHookMethod(classDecorView, "setBackgroundDrawable", Drawable.class,
+            XposedHelpers.findAndHookMethod(View.class, "setBackground", Drawable.class,
                     new XC_MethodHook() {
                         @Override
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                            if (!param.thisObject
+                                    .getClass()
+                                    .getName()
+                                    .equals(CLASS_DECOR_VIEW)) {
+                                return;
+                            }
                             final FrameLayout decorView = (FrameLayout) param.thisObject;
                             final Drawable drawable = (Drawable) param.args[0];
                             param.args[0] = censorDrawable(decorView, drawable);
