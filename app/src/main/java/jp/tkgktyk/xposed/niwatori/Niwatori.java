@@ -1,5 +1,7 @@
 package jp.tkgktyk.xposed.niwatori;
 
+import android.os.Build;
+
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XSharedPreferences;
@@ -10,19 +12,28 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 public class Niwatori implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     private XSharedPreferences mPrefs;
+    private ModPhoneStatusBar mStatusBar;
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         mPrefs = new XSharedPreferences(NFW.PACKAGE_NAME);
         mPrefs.makeWorldReadable();
 
-        ModPhoneStatusBar.initZygote(mPrefs);
+        XposedModule.logD("SDK: " + Build.VERSION.SDK_INT);
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+            mStatusBar = new ModPhoneStatusBar_N();
+        }
+        else {
+            mStatusBar = new ModPhoneStatusBar_M();
+        }
+
+        mStatusBar.initZygote(mPrefs);
         ModActivity.initZygote(mPrefs);
         ModInputMethod.initZygote(mPrefs);
     }
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        ModPhoneStatusBar.handleLoadPackage(loadPackageParam);
+        mStatusBar.handleLoadPackage(loadPackageParam);
     }
 }

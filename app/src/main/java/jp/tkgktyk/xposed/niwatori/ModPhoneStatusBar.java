@@ -22,20 +22,32 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 /**
  * Created by tkgktyk on 2015/02/13.
  */
-public class ModPhoneStatusBar extends XposedModule {
+public abstract class ModPhoneStatusBar extends XposedModule {
     private static final String CLASS_PHONE_STATUS_BAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
     private static final String CLASS_PHONE_STATUS_BAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
-    private static final String CLASS_PANEL_HOLDER = "com.android.systemui.statusbar.phone.PanelHolder";
 
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private static XSharedPreferences mPrefs;
     // for status bar
-    private static FlyingHelper mHelper;
+    protected static FlyingHelper mHelper;
 
-    private static Object mPhoneStatusBar;
+    protected static Object mPhoneStatusBar;
     private static View mPhoneStatusBarView;
-    private static final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
+
+    abstract protected String getPanelHolderName();
+    abstract protected String getPanelCollapsedName();
+
+    abstract protected void hookPanelHolderOnTouch(ClassLoader classLoader);
+
+    protected void expandNotificationBar(){
+        XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandNotificationsPanel");
+    }
+    protected void expandQuickSettings(){
+        XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandSettingsPanel");
+    }
+
+    private final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
@@ -63,10 +75,10 @@ public class ModPhoneStatusBar extends XposedModule {
         @SuppressWarnings("ResourceType")
         private void consumeMyAction(String action) {
             if (action.equals(NFW.ACTION_SB_EXPAND_NOTIFICATIONS)) {
-                XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandNotificationsPanel");
+                expandNotificationBar();
                 mHelper.performExtraAction();
             } else if (action.equals(NFW.ACTION_SB_EXPAND_QUICK_SETTINGS)) {
-                XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandSettingsPanel");
+                expandQuickSettings();
                 mHelper.performExtraAction();
             }
             if (mHelper.getSettings().logActions) {
@@ -79,7 +91,7 @@ public class ModPhoneStatusBar extends XposedModule {
         mPrefs = prefs;
     }
 
-    public static void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (!loadPackageParam.packageName.equals("com.android.systemui")) {
             return;
         }
@@ -99,8 +111,8 @@ public class ModPhoneStatusBar extends XposedModule {
         }
     }
 
-    private static void installToStatusBar(ClassLoader classLoader) {
-        final Class<?> classPanelHolder = XposedHelpers.findClass(CLASS_PANEL_HOLDER, classLoader);
+    private void installToStatusBar(ClassLoader classLoader) {
+        final Class<?> classPanelHolder = XposedHelpers.findClass(getPanelHolderName(), classLoader);
         XposedBridge.hookAllConstructors(classPanelHolder, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -127,21 +139,8 @@ public class ModPhoneStatusBar extends XposedModule {
                 }
             }
         });
-        XposedHelpers.findAndHookMethod(classPanelHolder, "onTouchEvent", MotionEvent.class,
-                new XC_MethodReplacement() {
-                    @Override
-                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        try {
-                            final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-                            if (mHelper.onTouchEvent(event)) {
-                                return true;
-                            }
-                        } catch (Throwable t) {
-                            logE(t);
-                        }
-                        return invokeOriginalMethod(methodHookParam);
-                    }
-                });
+        hookPanelHolderOnTouch(classLoader);
+
         final Class<?> classFrameLayout = classPanelHolder.getSuperclass();
         final Class<?> classViewGroup = classFrameLayout.getSuperclass();
         final Class<?> classView = classViewGroup.getSuperclass();
@@ -219,7 +218,7 @@ public class ModPhoneStatusBar extends XposedModule {
         // Reset state when status bar collapsed
         //
         try {
-            XposedHelpers.findAndHookMethod(classPhoneStatusBarView, "onAllPanelsCollapsed",
+            XposedHelpers.findAndHookMethod(classPhoneStatusBarView, getPanelCollapsedName(),
                     new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
