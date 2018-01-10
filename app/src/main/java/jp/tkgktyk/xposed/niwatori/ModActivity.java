@@ -152,7 +152,7 @@ public class ModActivity extends XposedModule {
                     try {
                         final FrameLayout decorView = (FrameLayout) param.thisObject;
                         // need to reload on each package?
-                        final FlyingHelper helper = new FlyingHelper(decorView, 1, true, newSettings(mPrefs));
+                        final FlyingHelper helper = new FlyingHelper(decorView, 1, false, newSettings(mPrefs));
                         XposedHelpers.setAdditionalInstanceField(decorView,
                                 FIELD_FLYING_HELPER, helper);
 //                        setBackground(decorView);
