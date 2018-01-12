@@ -114,7 +114,5 @@
     <orderEntry type="library" name="com.android.support:appcompat-v7-23.1.1" level="project" />
     <orderEntry type="module" module-name="flyinglayout" />
     <orderEntry type="library" name="android-android-23" level="project" />
-    <orderEntry type="module" module-name="flyinglayout" />
-    <orderEntry type="module" module-name="flyinglayout" />
   </component>
 </module>

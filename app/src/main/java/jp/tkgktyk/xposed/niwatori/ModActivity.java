@@ -11,16 +11,20 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
+import android.widget.PopupWindow;
 import android.widget.TabHost;
 
 import com.google.common.base.Strings;
@@ -30,6 +34,9 @@ import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import jp.tkgktyk.flyinglayout.FlyingLayout;
+import jp.tkgktyk.xposed.niwatori.app.DialogHandler;
+import jp.tkgktyk.xposed.niwatori.app.PopupWindowHandler;
 
 /**
  * Created by tkgktyk on 2015/02/12.
@@ -89,12 +96,27 @@ public class ModActivity extends XposedModule {
 
     private static XSharedPreferences mPrefs;
 
+    public static FlyingHelper createFlyingHelper (FrameLayout decorView, int frameLayoutHierarchy){
+        try {
+            FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(decorView, FIELD_FLYING_HELPER);
+            if(helper == null){
+                helper = new FlyingHelper(decorView, frameLayoutHierarchy, false, newSettings(mPrefs));
+                XposedHelpers.setAdditionalInstanceField(decorView, FIELD_FLYING_HELPER, helper);
+            }
+            return helper;
+        }
+        catch (Throwable t){
+            logE(t);
+            return null;
+        }
+    }
     public static void initZygote(XSharedPreferences prefs) {
         mPrefs = prefs;
         try {
             installToDecorView();
             installToActivity();
-            installToDialog();
+            (new DialogHandler()).install();
+            (new PopupWindowHandler()).install();
             logD("prepared to attach to Activity and Dialog");
 
             final XC_MethodReplacement startActivity = new XC_MethodReplacement() {
@@ -161,6 +183,7 @@ public class ModActivity extends XposedModule {
                     }
                 }
             });
+
             XposedHelpers.findAndHookMethod(View.class, "setBackground", Drawable.class,
                     new XC_MethodHook() {
                         @Override
@@ -234,6 +257,7 @@ public class ModActivity extends XposedModule {
                             try {
                                 final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
                                 final FlyingHelper helper = getHelper(decorView);
+
                                 if (helper != null) {
                                     final boolean changed = (Boolean) methodHookParam.args[0];
                                     final int left = (Integer) methodHookParam.args[1];
@@ -312,6 +336,8 @@ public class ModActivity extends XposedModule {
                     }
                 }
             });
+
+
         } catch (Throwable t) {
             logE(t);
         }
@@ -336,7 +362,7 @@ public class ModActivity extends XposedModule {
                     }
                 } else {
                     final Drawable d = decorView.getResources().getDrawable(a.resourceId);
-                    logD("background drawable opacity: " + d.getOpacity());
+                    logD("background drawable opacity: " + Integer.toString(d.getOpacity()));
                     if (d.getOpacity() == PixelFormat.OPAQUE) {
                         // opaque
                         logD("set opaque background drawable");
@@ -357,22 +383,8 @@ public class ModActivity extends XposedModule {
     }
 
     @Nullable
-    private static FrameLayout getDecorView(@NonNull Dialog dialog) {
-        return (FrameLayout) dialog.getWindow().peekDecorView();
-    }
-
-    @Nullable
     private static FlyingHelper getHelper(@NonNull Activity activity) {
         final FrameLayout decorView = getDecorView(activity);
-        if (decorView == null) {
-            return null;
-        }
-        return getHelper(decorView);
-    }
-
-    @Nullable
-    private static FlyingHelper getHelper(@NonNull Dialog dialog) {
-        final FrameLayout decorView = getDecorView(dialog);
         if (decorView == null) {
             return null;
         }
@@ -560,131 +572,6 @@ public class ModActivity extends XposedModule {
 
     private static void resetAutomatically(Activity activity) {
         final FlyingHelper helper = getHelper(activity);
-        if (helper == null) {
-            logD("DecorView is null");
-            return;
-        }
-        if (helper.getSettings().autoReset) {
-            // When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
-            // because through an Activity. So shouldn't reset automatically.
-            helper.resetState(true);
-        }
-    }
-
-    private static void installToDialog() {
-        //
-        // register receiver
-        //
-        XposedHelpers.findAndHookMethod(Dialog.class, "onAttachedToWindow", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                logD("onAttachedToWindow");
-                try {
-                    final Dialog dialog = (Dialog) param.thisObject;
-                    if (isInputMethod(dialog)) {
-                        return;
-                    }
-                    registerReceiver(dialog);
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(Dialog.class, "onWindowFocusChanged", boolean.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    final Dialog dialog = (Dialog) param.thisObject;
-                    if (isInputMethod(dialog)) {
-                        return;
-                    }
-                    final boolean hasFocus = (Boolean) param.args[0];
-                    logD(dialog + "#onWindowFocusChanged: hasFocus=" + hasFocus);
-                    if (hasFocus) {
-                        registerReceiver(dialog);
-                    } else {
-                        unregisterReceiver(dialog);
-                        resetAutomatically(dialog);
-                    }
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(Dialog.class, "onDetachedFromWindow", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                logD("onDetachedFromWindow");
-                try {
-                    final Dialog dialog = (Dialog) param.thisObject;
-                    if (isInputMethod(dialog)) {
-                        return;
-                    }
-                    unregisterReceiver(dialog);
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
-    }
-
-    private static boolean isInputMethod(Dialog dialog) {
-        return dialog.getClass().getName().equals(CLASS_SOFT_INPUT_WINDOW);
-    }
-
-    private static void registerReceiver(final Dialog dialog) {
-        final BroadcastReceiver receiver = (BroadcastReceiver) XposedHelpers
-                .getAdditionalInstanceField(dialog, FIELD_DIALOG_ACTION_RECEIVER);
-        if (receiver != null) {
-            // already registered
-            return;
-        }
-        final BroadcastReceiver actionReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                try {
-                    final String action = intent.getAction();
-                    logD("activity broadcast receiver: " + action);
-                    FlyingHelper helper = getHelper(dialog);
-                    if (helper == null) {
-                        logD("DecorView is null.");
-                        return;
-                    }
-                    final String packageName = dialog.getContext().getPackageName();
-                    if (helper.getSettings().blackList.contains(packageName)) {
-                        if (helper.getSettings().logActions) {
-                            log(dialog.toString() + "is ignored");
-                        }
-                        return;
-                    }
-                    helper.performAction(action);
-                    abortBroadcast();
-                    if (helper.getSettings().logActions) {
-                        log(packageName + " consumed: " + action);
-                    }
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        };
-        XposedHelpers.setAdditionalInstanceField(dialog,
-                FIELD_DIALOG_ACTION_RECEIVER, actionReceiver);
-        dialog.getContext().registerReceiver(actionReceiver, NFW.FOCUSED_DIALOG_FILTER);
-
-    }
-
-    private static void unregisterReceiver(Dialog dialog) {
-        final BroadcastReceiver actionReceiver = (BroadcastReceiver) XposedHelpers
-                .getAdditionalInstanceField(dialog, FIELD_DIALOG_ACTION_RECEIVER);
-        if (actionReceiver != null) {
-            dialog.getContext().unregisterReceiver(actionReceiver);
-            XposedHelpers.setAdditionalInstanceField(
-                    dialog, FIELD_DIALOG_ACTION_RECEIVER, null);
-        }
-    }
-
-    private static void resetAutomatically(Dialog dialog) {
-        final FlyingHelper helper = getHelper(dialog);
         if (helper == null) {
             logD("DecorView is null");
             return;
