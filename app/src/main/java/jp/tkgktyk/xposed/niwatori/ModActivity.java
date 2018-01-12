@@ -96,17 +96,18 @@ public class ModActivity extends XposedModule {
 
     private static XSharedPreferences mPrefs;
 
-    public static FlyingHelper createFlyingHelper (FrameLayout decorView, int frameLayoutHierarchy){
+    public static FlyingHelper createFlyingHelper (FrameLayout decorView){
         try {
             FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(decorView, FIELD_FLYING_HELPER);
             if(helper == null){
-                helper = new FlyingHelper(decorView, frameLayoutHierarchy, false, newSettings(mPrefs));
+                helper = new FlyingHelper(decorView, 1, false, newSettings(mPrefs));
                 XposedHelpers.setAdditionalInstanceField(decorView, FIELD_FLYING_HELPER, helper);
             }
             return helper;
         }
         catch (Throwable t){
             logE(t);
+            Log.e("Ben", Log.getStackTraceString(t));
             return null;
         }
     }
@@ -174,9 +175,10 @@ public class ModActivity extends XposedModule {
                     try {
                         final FrameLayout decorView = (FrameLayout) param.thisObject;
                         // need to reload on each package?
-                        final FlyingHelper helper = new FlyingHelper(decorView, 1, false, newSettings(mPrefs));
-                        XposedHelpers.setAdditionalInstanceField(decorView,
-                                FIELD_FLYING_HELPER, helper);
+//                        final FlyingHelper helper = new FlyingHelper(decorView, 1, false, newSettings(mPrefs));
+//                        XposedHelpers.setAdditionalInstanceField(decorView,
+//                                FIELD_FLYING_HELPER, helper);
+                        createFlyingHelper(decorView);
 //                        setBackground(decorView);
                     } catch (Throwable t) {
                         logE(t);
@@ -257,7 +259,6 @@ public class ModActivity extends XposedModule {
                             try {
                                 final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
                                 final FlyingHelper helper = getHelper(decorView);
-
                                 if (helper != null) {
                                     final boolean changed = (Boolean) methodHookParam.args[0];
                                     final int left = (Integer) methodHookParam.args[1];
@@ -336,8 +337,6 @@ public class ModActivity extends XposedModule {
                     }
                 }
             });
-
-
         } catch (Throwable t) {
             logE(t);
         }

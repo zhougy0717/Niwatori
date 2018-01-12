@@ -10,12 +10,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
-
-import java.text.DecimalFormat;
-import java.util.List;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -31,69 +27,29 @@ import jp.tkgktyk.xposed.niwatori.XposedModule;
  */
 
 public class PopupWindowHandler extends XposedModule{
-    private static final String FIELD_DECOR_VIEW = NFW.NAME + "_decorView";
-    private static final String FIELD_DIALOG_ACTION_RECEIVER = NFW.NAME + "_dialogActionReceiver";
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private class Handler{
-        private PopupWindow mPopupWindow;
         private FrameLayout mDecorView;
-        private BroadcastReceiver mReceiver;
-        private FlyingHelper mHelper;
+        private IReceiver mActionReceiver;
+//        private FlyingHelper mHelper;
+        private IReceiver mSettingsLoadedReceiver;
         public Handler(PopupWindow pw){
-            mPopupWindow = pw;
-
-//            mDecorView = (FrameLayout) XposedHelpers.getObjectField(pw, "mBackgroundView");
             mDecorView = (FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView");
 
-            mHelper = ModActivity.createFlyingHelper(mDecorView, 1);
-            mReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    try {
-                        final String action = intent.getAction();
-                        logD("activity broadcast receiver: " + action);
-
-                        final String packageName = mDecorView.getContext().getPackageName();
-                        if (mHelper.getSettings().blackList.contains(packageName)) {
-                            if (mHelper.getSettings().logActions) {
-                                log(mDecorView.toString() + "is ignored");
-                            }
-                            return;
-                        }
-                        mHelper.performAction(action);
-                        abortBroadcast();
-                        if (mHelper.getSettings().logActions) {
-                            log(packageName + " consumed: " + action);
-                        }
-                    } catch (Throwable t) {
-                        logE(t);
-                    }
-                }
-            };
+//            mHelper = ModActivity.createFlyingHelper(mDecorView);
+            mSettingsLoadedReceiver = new SettingsLoadReceiver(mDecorView);
+            mActionReceiver = new ActionReceiver(mDecorView);
         }
 
         public void registerReceiver(){
-            final BroadcastReceiver existingReceiver = (BroadcastReceiver) XposedHelpers
-                    .getAdditionalInstanceField(mDecorView, FIELD_DIALOG_ACTION_RECEIVER);
-            if (existingReceiver != null) {
-                // already registered
-                return;
-            }
-
-            XposedHelpers.setAdditionalInstanceField(mDecorView, FIELD_DIALOG_ACTION_RECEIVER, mReceiver);
-            mDecorView.getContext().registerReceiver(mReceiver, NFW.FOCUSED_DIALOG_FILTER);
+            mActionReceiver.register();
+            mSettingsLoadedReceiver.register();
         }
 
         public void unregisterReceiver(){
-            final BroadcastReceiver actionReceiver = (BroadcastReceiver) XposedHelpers
-                .getAdditionalInstanceField(mDecorView, FIELD_DIALOG_ACTION_RECEIVER);
-            if (actionReceiver != null) {
-                mDecorView.getContext().unregisterReceiver(mReceiver);
-                mHelper.resetState(true);
-                XposedHelpers.setAdditionalInstanceField(
-                        mDecorView, FIELD_DIALOG_ACTION_RECEIVER, null);
-            }
+            mActionReceiver.unregister();
+            mSettingsLoadedReceiver.unregister();
         }
     }
 
@@ -164,10 +120,4 @@ public class PopupWindowHandler extends XposedModule{
         return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
     }
-
-//    @Nullable
-//    private static FrameLayout getDecorView(PopupWindow pw) {
-//        return (FrameLayout) XposedHelpers.getAdditionalInstanceField(
-//                pw, FIELD_DECOR_VIEW);
-//    }
 }
