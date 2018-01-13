@@ -16,6 +16,7 @@ import android.widget.PopupWindow;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Handler;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
@@ -34,6 +35,7 @@ public class PopupWindowHandler extends XposedModule{
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private static Handler mHandler = null;
+    private List<Handler> mActiveHandlers = new ArrayList<Handler>();
 
     private List<IReceiver> mActiveReceivers = new ArrayList<IReceiver>();
 //    public PopupWindowHandler(){
@@ -50,8 +52,10 @@ public class PopupWindowHandler extends XposedModule{
             mDecorView = (FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView");
 
             mHelper = ModActivity.createFlyingHelper(mDecorView);
-            mSettingsLoadedReceiver = new SettingsLoadReceiver(mDecorView);
-            mActionReceiver = new ActionReceiver(mDecorView);
+//            mSettingsLoadedReceiver = new SettingsLoadReceiver(mDecorView);
+//            mActionReceiver = new ActionReceiver(mDecorView);
+            mActionReceiver = ActionReceiver.getInstance(mDecorView, NFW.FOCUSED_DIALOG_FILTER);
+            mSettingsLoadedReceiver = SettingsLoadReceiver.getInstance(mDecorView, NFW.SETTINGS_CHANGED_FILTER);
         }
 
         public void registerReceiver(){
@@ -71,6 +75,24 @@ public class PopupWindowHandler extends XposedModule{
         //
         // register receiver
         //
+        XposedBridge.hookAllConstructors(PopupWindow.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Log.e("Ben", "Pop up window is contructed." + (PopupWindow)param.thisObject);
+            }
+        });
+        XposedBridge.hookAllMethods(PopupWindow.class, "showAsDropDown", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Log.e("Ben", "Pop up window show as drop down." + (PopupWindow)param.thisObject);
+            }
+        });
+        XposedBridge.hookAllMethods(PopupWindow.class, "showAtLocation", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                Log.e("Ben", "Pop up window show at location." + (PopupWindow)param.thisObject);
+            }
+        });
         XposedBridge.hookAllMethods(PopupWindow.class, "invokePopup", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -89,7 +111,8 @@ public class PopupWindowHandler extends XposedModule{
                 }
 
                 try {
-                    mHandler = new Handler(pw);
+                    Log.e("Ben", "New pop up window created");
+                    mHandler = new PopupWindowHandler.Handler(pw);
                     mHandler.registerReceiver();
                     final PopupWindow.OnDismissListener dismissListener =
                             (PopupWindow.OnDismissListener) XposedHelpers.getObjectField(pw, "mOnDismissListener");
@@ -132,16 +155,17 @@ public class PopupWindowHandler extends XposedModule{
     }
 
     public static void onPause(){
-        if (mHandler != null) {
-            mHandler.unregisterReceiver();
-        }
+//        if (mHandler != null) {
+//            mHandler.unregisterReceiver();
+//            mHandler = null;
+//        }
         Log.e("Ben", "popup window onPause: mHandler " + mHandler);
     }
 
     public static void onResume(){
-        if (mHandler != null) {
-            mHandler.registerReceiver();
-        }
+//        if (mHandler != null) {
+//            mHandler.registerReceiver();
+//        }
         Log.e("Ben", "popup window onResume: mHandler " + mHandler);
     }
 }

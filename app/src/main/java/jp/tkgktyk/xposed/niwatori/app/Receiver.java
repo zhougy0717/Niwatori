@@ -3,6 +3,7 @@ package jp.tkgktyk.xposed.niwatori.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.FrameLayout;
@@ -19,9 +20,6 @@ import jp.tkgktyk.xposed.niwatori.XposedModule;
  */
 
 public class Receiver extends XposedModule{
-    public final static String ACTION_RECEIVER = "ACTION_RECEIVER";
-    public final static String SETTINGS_LOAD_RECEIVER = "SETTINGS_LOAD_RECEIVER";
-
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     protected static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
@@ -30,8 +28,13 @@ public class Receiver extends XposedModule{
     }
 
     protected final FrameLayout mDecorView;
+    protected final IntentFilter mFilter;
     public Receiver (FrameLayout decorView) {
+        this(decorView, null);
+    }
+    public Receiver (FrameLayout decorView, IntentFilter filter) {
         mDecorView = decorView;
+        mFilter = filter;
     }
 //    protected void register() {
 //        List<IReceiver> activeReceivers = (List<IReceiver>)XposedHelpers.getAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE RECEIVERS");

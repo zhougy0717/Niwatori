@@ -2,6 +2,7 @@ package jp.tkgktyk.xposed.niwatori;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
@@ -31,9 +32,10 @@ public class ActivityHandler extends XposedModule{
         private FrameLayout mDecorView;
         private IReceiver mActionReceiver;
         private FlyingHelper mHelper;
-        private Handler(FrameLayout decorView) {
+        public Handler(FrameLayout decorView) {
             mDecorView = decorView;
-            mActionReceiver = new ActionReceiver(mDecorView);
+//            mActionReceiver = new ActionReceiver(mDecorView);
+            mActionReceiver = ActionReceiver.getInstance(mDecorView, NFW.FOCUSED_ACTIVITY_FILTER);
 //            mHelper = getHelper(mDecorView);
         }
 
@@ -107,8 +109,10 @@ public class ActivityHandler extends XposedModule{
 //                    final boolean hasFocus = activity.hasWindowFocus();
 //                    logD(activity + "#onResume: hasFocus=" + hasFocus);
 //                    registerReceiver(activity, hasFocus);
+                    Log.e("Ben", "activity onResume" + activity);
                     FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
-                    Handler handler = Handler.getInstance(decorView);
+//                    Handler handler = Handler.getInstance(decorView);
+                    Handler handler = new Handler(decorView);
                     handler.registerReceiver();
                     PopupWindowHandler.onResume();
 
@@ -121,14 +125,52 @@ public class ActivityHandler extends XposedModule{
                 }
             }
         });
+        XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+                    Log.e("Ben", "activity onCreate:" + activity);
+//                }
+            }
+        });
+        XposedHelpers.findAndHookMethod(Activity.class, "onStart", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+                    Log.e("Ben", "activity onStart:" + activity);
+                }
+//            }
+        });
+        XposedHelpers.findAndHookMethod(Activity.class, "onStop", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+                    Log.e("Ben", "activity onStop:" + activity);
+//                }
+            }
+        });
+        XposedHelpers.findAndHookMethod(Activity.class, "onDestroy", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                Activity activity = (Activity) param.thisObject;
+//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+                    Log.e("Ben", "activity onDestroy:" + activity);
+//                }
+            }
+        });
         XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
                     Activity activity = (Activity) param.thisObject;
                     logD(activity + "#onPause");
+                    Log.e("Ben", "activity onPause" + activity);
                     FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
-                    Handler handler = Handler.getInstance(decorView);
+//                    Handler handler = Handler.getInstance(decorView);
+                    Handler handler = new Handler(decorView);
                     handler.unregisterReceiver();
 //                    unregisterReceiver(activity);
 //                    resetAutomatically(activity);
