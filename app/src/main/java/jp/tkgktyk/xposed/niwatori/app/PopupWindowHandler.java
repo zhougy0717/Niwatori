@@ -36,9 +36,9 @@ public class PopupWindowHandler extends XposedModule{
     private static Handler mHandler = null;
 
     private List<IReceiver> mActiveReceivers = new ArrayList<IReceiver>();
-    public PopupWindowHandler(){
-        XposedHelpers.setAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE RECEIVERS", mActiveReceivers);
-    }
+//    public PopupWindowHandler(){
+//        XposedHelpers.setAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE RECEIVERS", mActiveReceivers);
+//    }
     private class Handler{
         private PopupWindow mPopupWindow;
         private FrameLayout mDecorView;
@@ -135,11 +135,13 @@ public class PopupWindowHandler extends XposedModule{
         if (mHandler != null) {
             mHandler.unregisterReceiver();
         }
+        Log.e("Ben", "popup window onPause: mHandler " + mHandler);
     }
 
     public static void onResume(){
         if (mHandler != null) {
             mHandler.registerReceiver();
         }
+        Log.e("Ben", "popup window onResume: mHandler " + mHandler);
     }
 }

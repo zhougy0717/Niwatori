@@ -115,7 +115,8 @@ public class ModActivity extends XposedModule {
         mPrefs = prefs;
         try {
             installToDecorView();
-            installToActivity();
+//            installToActivity();
+            ActivityHandler.install();
             (new DialogHandler()).install();
             (new PopupWindowHandler()).install();
             logD("prepared to attach to Activity and Dialog");
@@ -509,9 +510,9 @@ public class ModActivity extends XposedModule {
                 // got focus
                 if (registered) {
                     logD("register again");
-                    activity.unregisterReceiver(mActivityActionReceiver);
+//                    activity.unregisterReceiver(mActivityActionReceiver);
                 }
-                register = true;
+//                register = true;
             } else {
                 // keep focus
                 if (!registered) {
@@ -522,8 +523,8 @@ public class ModActivity extends XposedModule {
             // lost focus
             if (registered) {
                 logD("register again");
-                activity.unregisterReceiver(mActivityActionReceiver);
-                register = true;
+//                activity.unregisterReceiver(mActivityActionReceiver);
+//                register = true;
 //                resetAutomatically(activity);
             }
         } else {

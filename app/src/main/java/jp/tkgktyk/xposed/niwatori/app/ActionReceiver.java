@@ -60,9 +60,10 @@ public class ActionReceiver extends Receiver implements IReceiver{
         if (existingReceiver == null) {
             XposedHelpers.setAdditionalInstanceField(mDecorView, FIELD_DIALOG_ACTION_RECEIVER, mReceiver);
             mDecorView.getContext().registerReceiver(mReceiver, NFW.FOCUSED_DIALOG_FILTER);
-            XposedHelpers.setAdditionalInstanceField("CURRENT DECOR VIEW", "VIEW", mDecorView);
+            Log.e("Ben", "register action receiver");
+//            XposedHelpers.setAdditionalInstanceField("CURRENT DECOR VIEW", "VIEW", mDecorView);
         }
-        super.register();
+//        super.register();
     }
 
     public void unregister(){
@@ -74,6 +75,6 @@ public class ActionReceiver extends Receiver implements IReceiver{
             XposedHelpers.setAdditionalInstanceField(
                     mDecorView, FIELD_DIALOG_ACTION_RECEIVER, null);
         }
-        Log.e("Ben", "action receiver is removed");
+        Log.e("Ben", "action receiver is removed " + mDecorView);
     }
 }
