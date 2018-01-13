@@ -49,7 +49,7 @@ public class ModActivity extends XposedModule {
                     (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)? CLASS_DECOR_VIEW_M :
                             "com.android.internal.policy.impl.PhoneWindow$DecorView";
 
-    private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
+//    private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
     private static final String CLASS_CONTEXT_IMPL = "android.app.ContextImpl";
 
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
@@ -57,7 +57,7 @@ public class ModActivity extends XposedModule {
     private static final String FIELD_RECEIVER_REGISTERED = NFW.NAME + "_receiverRegistered";
     private static final String FIELD_HAS_FOCUS = NFW.NAME + "_hasFocus";
 
-    private static final String FIELD_DIALOG_ACTION_RECEIVER = NFW.NAME + "_dialogActionReceiver";
+//    private static final String FIELD_DIALOG_ACTION_RECEIVER = NFW.NAME + "_dialogActionReceiver";
     private static final BroadcastReceiver mActivityActionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -175,9 +175,6 @@ public class ModActivity extends XposedModule {
                     try {
                         final FrameLayout decorView = (FrameLayout) param.thisObject;
                         // need to reload on each package?
-//                        final FlyingHelper helper = new FlyingHelper(decorView, 1, false, newSettings(mPrefs));
-//                        XposedHelpers.setAdditionalInstanceField(decorView,
-//                                FIELD_FLYING_HELPER, helper);
                         createFlyingHelper(decorView);
 //                        setBackground(decorView);
                     } catch (Throwable t) {
@@ -436,6 +433,7 @@ public class ModActivity extends XposedModule {
                     final boolean hasFocus = activity.hasWindowFocus();
                     logD(activity + "#onResume: hasFocus=" + hasFocus);
                     registerReceiver(activity, hasFocus);
+                    PopupWindowHandler.onResume();
 
                     final FlyingHelper helper = getHelper(activity);
                     if (helper != null && helper.getSettings().smallScreenPersistent) {
@@ -453,23 +451,14 @@ public class ModActivity extends XposedModule {
                     Activity activity = (Activity) param.thisObject;
                     logD(activity + "#onPause");
                     unregisterReceiver(activity);
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(Activity.class, "onStop", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    Activity activity = (Activity) param.thisObject;
-                    logD(activity + "#onStop");
                     resetAutomatically(activity);
+                    PopupWindowHandler.onPause();
                 } catch (Throwable t) {
                     logE(t);
                 }
             }
         });
+
         //
         // screen rotation
         //

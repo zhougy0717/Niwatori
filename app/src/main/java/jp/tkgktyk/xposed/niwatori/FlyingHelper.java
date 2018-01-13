@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -336,5 +339,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void draw(Canvas canvas) {
         mBoundaryDrawable.setBounds(getBoundaryRect());
         mBoundaryDrawable.draw(canvas);
+    }
+
+    public void setForeground(View decorview) {
+        decorview.setForeground(mBoundaryDrawable);
     }
 }

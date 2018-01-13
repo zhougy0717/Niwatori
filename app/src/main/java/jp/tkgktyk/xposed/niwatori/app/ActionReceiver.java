@@ -3,6 +3,7 @@ package jp.tkgktyk.xposed.niwatori.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -59,7 +60,9 @@ public class ActionReceiver extends Receiver implements IReceiver{
         if (existingReceiver == null) {
             XposedHelpers.setAdditionalInstanceField(mDecorView, FIELD_DIALOG_ACTION_RECEIVER, mReceiver);
             mDecorView.getContext().registerReceiver(mReceiver, NFW.FOCUSED_DIALOG_FILTER);
+            XposedHelpers.setAdditionalInstanceField("CURRENT DECOR VIEW", "VIEW", mDecorView);
         }
+        super.register();
     }
 
     public void unregister(){
@@ -71,5 +74,6 @@ public class ActionReceiver extends Receiver implements IReceiver{
             XposedHelpers.setAdditionalInstanceField(
                     mDecorView, FIELD_DIALOG_ACTION_RECEIVER, null);
         }
+        Log.e("Ben", "action receiver is removed");
     }
 }

@@ -883,6 +883,7 @@ public class FlyingLayout extends FrameLayout {
                 final Point start = new Point(mOffsetX, mOffsetY);
                 final Point end = new Point(newX, newY);
                 final ValueAnimator move = ValueAnimator.ofObject(mPointEvaluator, start, end);
+                Log.e("Ben", "move: start " + start.toString() + ", end " + end.toString());
                 move.addUpdateListener(mMoveAnimatorUpdateListener);
                 move.start();
             }
