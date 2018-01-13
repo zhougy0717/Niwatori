@@ -125,42 +125,42 @@ public class ActivityHandler extends XposedModule{
                 }
             }
         });
-        XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Activity activity = (Activity) param.thisObject;
-//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
-                    Log.e("Ben", "activity onCreate:" + activity);
-//                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(Activity.class, "onStart", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Activity activity = (Activity) param.thisObject;
-//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
-                    Log.e("Ben", "activity onStart:" + activity);
-                }
+//        XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
+//            @Override
+//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                Activity activity = (Activity) param.thisObject;
+////                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+//                    Log.e("Ben", "activity onCreate:" + activity);
+////                }
 //            }
-        });
-        XposedHelpers.findAndHookMethod(Activity.class, "onStop", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Activity activity = (Activity) param.thisObject;
-//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
-                    Log.e("Ben", "activity onStop:" + activity);
+//        });
+//        XposedHelpers.findAndHookMethod(Activity.class, "onStart", new XC_MethodHook() {
+//            @Override
+//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                Activity activity = (Activity) param.thisObject;
+////                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+//                    Log.e("Ben", "activity onStart:" + activity);
 //                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(Activity.class, "onDestroy", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Activity activity = (Activity) param.thisObject;
-//                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
-                    Log.e("Ben", "activity onDestroy:" + activity);
-//                }
-            }
-        });
+////            }
+//        });
+//        XposedHelpers.findAndHookMethod(Activity.class, "onStop", new XC_MethodHook() {
+//            @Override
+//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                Activity activity = (Activity) param.thisObject;
+////                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+//                    Log.e("Ben", "activity onStop:" + activity);
+////                }
+//            }
+//        });
+//        XposedHelpers.findAndHookMethod(Activity.class, "onDestroy", new XC_MethodHook() {
+//            @Override
+//            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                Activity activity = (Activity) param.thisObject;
+////                if (activity.getPackageName().startsWith("com.smzdm.client.android")){
+//                    Log.e("Ben", "activity onDestroy:" + activity);
+////                }
+//            }
+//        });
         XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {

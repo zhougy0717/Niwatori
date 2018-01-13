@@ -75,24 +75,24 @@ public class PopupWindowHandler extends XposedModule{
         //
         // register receiver
         //
-        XposedBridge.hookAllConstructors(PopupWindow.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Log.e("Ben", "Pop up window is contructed." + (PopupWindow)param.thisObject);
-            }
-        });
-        XposedBridge.hookAllMethods(PopupWindow.class, "showAsDropDown", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Log.e("Ben", "Pop up window show as drop down." + (PopupWindow)param.thisObject);
-            }
-        });
-        XposedBridge.hookAllMethods(PopupWindow.class, "showAtLocation", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Log.e("Ben", "Pop up window show at location." + (PopupWindow)param.thisObject);
-            }
-        });
+//        XposedBridge.hookAllConstructors(PopupWindow.class, new XC_MethodHook() {
+//            @Override
+//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                Log.e("Ben", "Pop up window is contructed." + (PopupWindow)param.thisObject);
+//            }
+//        });
+//        XposedBridge.hookAllMethods(PopupWindow.class, "showAsDropDown", new XC_MethodHook() {
+//            @Override
+//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                Log.e("Ben", "Pop up window show as drop down." + (PopupWindow)param.thisObject);
+//            }
+//        });
+//        XposedBridge.hookAllMethods(PopupWindow.class, "showAtLocation", new XC_MethodHook() {
+//            @Override
+//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                Log.e("Ben", "Pop up window show at location." + (PopupWindow)param.thisObject);
+//            }
+//        });
         XposedBridge.hookAllMethods(PopupWindow.class, "invokePopup", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
