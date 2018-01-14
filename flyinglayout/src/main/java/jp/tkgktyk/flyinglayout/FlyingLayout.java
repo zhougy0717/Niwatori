@@ -564,6 +564,7 @@ public class FlyingLayout extends FrameLayout {
                 final PointF end = new PointF(pivotX, pivotY);
                 final ValueAnimator animator = ValueAnimator.ofObject(mPointFEvaluator, start, end);
                 animator.addUpdateListener(mChangePivotAnimatorUpdateListener);
+                animator.setDuration(100);
                 animator.start();
             } else {
                 setChildrenPivot(pivotX, pivotY);
@@ -884,6 +885,7 @@ public class FlyingLayout extends FrameLayout {
                 final Point end = new Point(newX, newY);
                 final ValueAnimator move = ValueAnimator.ofObject(mPointEvaluator, start, end);
                 move.addUpdateListener(mMoveAnimatorUpdateListener);
+                move.setDuration(100);
                 move.start();
             }
         }
@@ -928,6 +930,7 @@ public class FlyingLayout extends FrameLayout {
                     if (animation) {
                         final ValueAnimator scaleDown = ValueAnimator.ofFloat(mScale, scale);
                         scaleDown.addUpdateListener(mScaleAnimatorUpdateListener);
+                        scaleDown.setDuration(100);
                         scaleDown.start();
                     } else {
                         setScale(scale);
