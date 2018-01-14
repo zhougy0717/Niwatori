@@ -1,11 +1,13 @@
 package jp.tkgktyk.xposed.niwatori.app;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Handler;
 
@@ -34,13 +37,11 @@ import jp.tkgktyk.xposed.niwatori.XposedModule;
 public class PopupWindowHandler extends XposedModule{
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
-    private static Handler mHandler = null;
-    private List<Handler> mActiveHandlers = new ArrayList<Handler>();
+    private static Handler mActiveHandler = null;
+    private static String mCurrentActivityClassName = null;
+    private static HashMap<String, Handler> mActivityHandlerDictionary = new HashMap<String, Handler>();
 
     private List<IReceiver> mActiveReceivers = new ArrayList<IReceiver>();
-//    public PopupWindowHandler(){
-//        XposedHelpers.setAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE RECEIVERS", mActiveReceivers);
-//    }
     private class Handler{
         private PopupWindow mPopupWindow;
         private FrameLayout mDecorView;
@@ -52,8 +53,6 @@ public class PopupWindowHandler extends XposedModule{
             mDecorView = (FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView");
 
             mHelper = ModActivity.createFlyingHelper(mDecorView);
-//            mSettingsLoadedReceiver = new SettingsLoadReceiver(mDecorView);
-//            mActionReceiver = new ActionReceiver(mDecorView);
             mActionReceiver = ActionReceiver.getInstance(mDecorView, NFW.FOCUSED_DIALOG_FILTER);
             mSettingsLoadedReceiver = SettingsLoadReceiver.getInstance(mDecorView, NFW.SETTINGS_CHANGED_FILTER);
         }
@@ -75,24 +74,6 @@ public class PopupWindowHandler extends XposedModule{
         //
         // register receiver
         //
-//        XposedBridge.hookAllConstructors(PopupWindow.class, new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                Log.e("Ben", "Pop up window is contructed." + (PopupWindow)param.thisObject);
-//            }
-//        });
-//        XposedBridge.hookAllMethods(PopupWindow.class, "showAsDropDown", new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                Log.e("Ben", "Pop up window show as drop down." + (PopupWindow)param.thisObject);
-//            }
-//        });
-//        XposedBridge.hookAllMethods(PopupWindow.class, "showAtLocation", new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                Log.e("Ben", "Pop up window show at location." + (PopupWindow)param.thisObject);
-//            }
-//        });
         XposedBridge.hookAllMethods(PopupWindow.class, "invokePopup", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -111,16 +92,20 @@ public class PopupWindowHandler extends XposedModule{
                 }
 
                 try {
-                    Log.e("Ben", "New pop up window created");
-                    mHandler = new PopupWindowHandler.Handler(pw);
-                    mHandler.registerReceiver();
+                    mActiveHandler = new PopupWindowHandler.Handler(pw);
+                    mActiveHandler.registerReceiver();
+                    mActivityHandlerDictionary.put(mCurrentActivityClassName, mActiveHandler);
                     final PopupWindow.OnDismissListener dismissListener =
                             (PopupWindow.OnDismissListener) XposedHelpers.getObjectField(pw, "mOnDismissListener");
                     pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
                         @Override
                         public void onDismiss() {
-                            mHandler.unregisterReceiver();
-                            dismissListener.onDismiss();
+                            if (mActiveHandler != null) {
+                                mActiveHandler.unregisterReceiver();
+                                mActiveHandler = null;
+                                mActivityHandlerDictionary.put(mCurrentActivityClassName, null);
+                            }
+                                dismissListener.onDismiss();
                         }
                     });
                 } catch (Throwable t) {
@@ -147,6 +132,15 @@ public class PopupWindowHandler extends XposedModule{
                         return invokeOriginalMethod(methodHookParam);
                     }
                 });
+
+        XposedHelpers.findAndHookMethod(Activity.class, "onCreate", Bundle.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                // TODO: clear the existing handler under this activity's name
+                Activity activity = (Activity) param.thisObject;
+                mActivityHandlerDictionary.put(activity.getClass().getName(), null);
+            }
+        });
     }
 
     private static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
@@ -154,18 +148,20 @@ public class PopupWindowHandler extends XposedModule{
                 decorView, FIELD_FLYING_HELPER);
     }
 
-    public static void onPause(){
-//        if (mHandler != null) {
-//            mHandler.unregisterReceiver();
-//            mHandler = null;
-//        }
-        Log.e("Ben", "popup window onPause: mHandler " + mHandler);
+    public static void onPause(String className){
+        // TODO: save the handler under the activity's name
+        if(mActiveHandler != null){
+            mActiveHandler.unregisterReceiver();
+            mActivityHandlerDictionary.put(className, mActiveHandler);
+        }
     }
 
-    public static void onResume(){
-//        if (mHandler != null) {
-//            mHandler.registerReceiver();
-//        }
-        Log.e("Ben", "popup window onResume: mHandler " + mHandler);
+    public static void onResume(String className){
+        // TODO: check the existing handler using the activity's class name
+        Handler handler = mActivityHandlerDictionary.get(className);
+        if (handler != null){
+            handler.registerReceiver();
+        }
+        mCurrentActivityClassName = className;
     }
 }

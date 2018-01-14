@@ -36,21 +36,4 @@ public class Receiver extends XposedModule{
         mDecorView = decorView;
         mFilter = filter;
     }
-//    protected void register() {
-//        List<IReceiver> activeReceivers = (List<IReceiver>)XposedHelpers.getAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE RECEIVERS");
-//        activeReceivers.add((IReceiver)this);
-//        XposedHelpers.setAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE REGISTERS", activeReceivers);
-//    }
-
-//    public static void unregisterAll(){
-//        List<IReceiver> activeReceivers = (List<IReceiver>)XposedHelpers.getAdditionalInstanceField("ACTIVE RECEIVERS", "ACTIVE RECEIVERS");
-//        if(activeReceivers == null) {
-//            return;
-//        }
-//        Log.e("Ben", "There are " + Integer.toString(activeReceivers.size()) + " receivers");
-//        for(IReceiver recv : activeReceivers) {
-//            recv.unregister();
-//        }
-//        activeReceivers.clear();
-//    }
 }
