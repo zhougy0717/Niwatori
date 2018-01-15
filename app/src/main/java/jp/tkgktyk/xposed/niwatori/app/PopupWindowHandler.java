@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
@@ -80,37 +81,42 @@ public class PopupWindowHandler extends XposedModule{
                 final PopupWindow pw = (PopupWindow) param.thisObject;
                 final FrameLayout decor = (FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView");
 
-                Rect r = new Rect();
-                decor.getWindowVisibleDisplayFrame(r);
+                decor.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        int width = decor.getWidth();
+                        int height = decor.getHeight();
 
-                decor.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-                int width = decor.getMeasuredWidth();
-                int height = decor.getMeasuredHeight();
-
-                if (((double)width/(r.right - r.left) <= 0.5) || ((double)height/(r.bottom - r.top) <= 0.5)) {
-                    return;
-                }
-
-                try {
-                    mActiveHandler = new PopupWindowHandler.Handler(pw);
-                    mActiveHandler.registerReceiver();
-                    mActivityHandlerDictionary.put(mCurrentActivityClassName, mActiveHandler);
-                    final PopupWindow.OnDismissListener dismissListener =
-                            (PopupWindow.OnDismissListener) XposedHelpers.getObjectField(pw, "mOnDismissListener");
-                    pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
-                        @Override
-                        public void onDismiss() {
-                            if (mActiveHandler != null) {
-                                mActiveHandler.unregisterReceiver();
-                                mActiveHandler = null;
-                                mActivityHandlerDictionary.put(mCurrentActivityClassName, null);
-                            }
-                                dismissListener.onDismiss();
+                        Rect r = new Rect();
+                        decor.getWindowVisibleDisplayFrame(r);
+                        if (((double)width/(r.right - r.left) <= 0.5) && ((double)height/(r.bottom - r.top) <= 0.5)) {
+                            return;
                         }
-                    });
-                } catch (Throwable t) {
-                    logE(t);
-                }
+
+                        try {
+                            mActiveHandler = new PopupWindowHandler.Handler(pw);
+                            mActiveHandler.registerReceiver();
+                            mActivityHandlerDictionary.put(mCurrentActivityClassName, mActiveHandler);
+                            final PopupWindow.OnDismissListener dismissListener =
+                                    (PopupWindow.OnDismissListener) XposedHelpers.getObjectField(pw, "mOnDismissListener");
+                            pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
+                                @Override
+                                public void onDismiss() {
+                                    if (mActiveHandler != null) {
+                                        mActiveHandler.unregisterReceiver();
+                                        mActiveHandler = null;
+                                        mActivityHandlerDictionary.put(mCurrentActivityClassName, null);
+                                    }
+                                    if (dismissListener != null) {
+                                        dismissListener.onDismiss();
+                                    }
+                                }
+                            });
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                    }
+                });
             }
         });
 
