@@ -47,6 +47,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".app.ShortcutDefaultActivity"
+            android:label="@string/shortcut_activity_name"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".app.AboutActivity"
             android:label="@string/about_activity_name"
             android:theme="@style/AppTheme"/>

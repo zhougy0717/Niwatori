@@ -6,6 +6,7 @@
 
     <!-- Shortcut name -->
     <string name="shortcut_activity_name">Режим работы одной рукой</string>
+    <string name="shortcut_default_activity_name">One Handed Default Mode</string>
     <string name="action_none">Нет</string>
     <string name="action_movable_screen">Передвигаемый экран</string>
     <string name="action_pin">Закрепить / Открепить положение</string>

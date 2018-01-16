@@ -6,6 +6,7 @@
 
     <!-- Shortcut name -->
     <string name="shortcut_activity_name">One-handed Mode</string>
+    <string name="shortcut_default_activity_name">One Handed Default Mode</string>
     <string name="action_none">None</string>
     <string name="action_movable_screen">Movable Screen</string>
     <string name="action_pin">Pin</string>
