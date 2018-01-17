@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.xposed.niwatori.FlyingHelper;
+import jp.tkgktyk.xposed.niwatori.ModActivity;
 import jp.tkgktyk.xposed.niwatori.NFW;
 import jp.tkgktyk.xposed.niwatori.XposedModule;
 
@@ -155,13 +156,13 @@ public class DialogHandler extends XposedModule{
         if (decorView == null) {
             return null;
         }
-        return getHelper(decorView);
+        return ModActivity.getHelper(decorView);
     }
 
-    private static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
-        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
-                decorView, FIELD_FLYING_HELPER);
-    }
+//    private static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
+//        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
+//                decorView, FIELD_FLYING_HELPER);
+//    }
 
     @Nullable
     private static FrameLayout getDecorView(@NonNull Dialog dialog) {

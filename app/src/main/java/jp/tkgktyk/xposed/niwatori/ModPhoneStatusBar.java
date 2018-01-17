@@ -237,7 +237,11 @@ public abstract class ModPhoneStatusBar extends XposedModule {
     }
 
     private static FlyingHelper getHelper(@NonNull Object obj) {
-        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(obj, FIELD_FLYING_HELPER);
+        FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(obj, FIELD_FLYING_HELPER);
+        mPrefs.makeWorldReadable();
+        NFW.Settings settings = newSettings(mPrefs);
+        helper.setSettings(settings);
+        return helper;
     }
 
     private static void modifySoftwareKey(ClassLoader classLoader) {

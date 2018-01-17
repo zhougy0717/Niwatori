@@ -108,7 +108,7 @@ public class SettingsActivity extends InAppBillingActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            getPreferenceManager().setSharedPreferencesMode(PreferenceActivity.MODE_WORLD_READABLE);
+//            getPreferenceManager().setSharedPreferencesMode(PreferenceActivity.MODE_WORLD_READABLE);
 //            File prefsFile = new File(getContext().getFilesDir() + "/../shared_prefs/" + NFW.PACKAGE_NAME + "_preferences" + ".xml");
 //            prefsFile.setReadable(true, false);
             getPreferenceManager().getSharedPreferences()

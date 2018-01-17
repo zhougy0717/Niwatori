@@ -268,7 +268,6 @@ public class ModActivity extends XposedModule {
                                 if (helper != null) {
                                     NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
                                     getHelper(decorView).onSettingsLoaded(settings);
-                                    Log.e("Ben", "onAttachedWindow: settings: " + settings + ", package:" + decorView.getContext().getPackageName());
                                 }
                             }
                         };
@@ -341,8 +340,11 @@ public class ModActivity extends XposedModule {
         return (FrameLayout) activity.getWindow().peekDecorView();
     }
 
-    private static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
-        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
+    public static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
+        FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
+        mPrefs.makeWorldReadable();
+        helper.setSettings(newSettings(mPrefs));
+        return helper;
     }
 }

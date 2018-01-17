@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.xposed.niwatori.FlyingHelper;
+import jp.tkgktyk.xposed.niwatori.ModActivity;
 import jp.tkgktyk.xposed.niwatori.NFW;
 import jp.tkgktyk.xposed.niwatori.XposedModule;
 
@@ -38,7 +39,8 @@ public class ActionReceiver extends Receiver implements IReceiver{
     public void unregister(){
         if (mRegistered) {
             mDecorView.getContext().unregisterReceiver(mReceiver);
-            getHelper(mDecorView).resetState(true);
+//            getHelper(mDecorView).resetState(true);
+            ModActivity.getHelper(mDecorView).resetState(true);
             mRegistered = false;
         }
 
@@ -71,7 +73,8 @@ public class ActionReceiver extends Receiver implements IReceiver{
     }
 
     private void handler (String action){
-        FlyingHelper helper = getHelper(mDecorView);
+//        FlyingHelper helper = getHelper(mDecorView);
+        FlyingHelper helper = ModActivity.getHelper(mDecorView);
         final String packageName = mDecorView.getContext().getPackageName();
         if (helper.getSettings().blackList.contains(packageName)) {
             if (helper.getSettings().logActions) {

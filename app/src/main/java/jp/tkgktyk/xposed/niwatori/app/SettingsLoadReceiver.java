@@ -67,27 +67,6 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
         final FlyingHelper helper = getHelper(mDecorView);
         if (helper != null) {
             getHelper(mDecorView).onSettingsLoaded(settings);
-            Log.e("Ben", "settings load receiver: settings: " + settings + ", package:" + mDecorView.getContext().getPackageName());
         }
     }
-
-//    public void register(){
-//        final BroadcastReceiver settingsLoadReceiver = (BroadcastReceiver) XposedHelpers
-//                .getAdditionalInstanceField(mDecorView, FIELD_SETTINGS_CHANGED_RECEIVER);
-//        if(settingsLoadReceiver == null) {
-//            XposedHelpers.setAdditionalInstanceField(mDecorView,
-//                    FIELD_SETTINGS_CHANGED_RECEIVER, mReceiver);
-//            mDecorView.getContext().registerReceiver(mReceiver,
-//                    NFW.SETTINGS_CHANGED_FILTER);
-//        }
-//    }
-//
-//    public void unregister(){
-//        final BroadcastReceiver settingsLoadReceiver = (BroadcastReceiver) XposedHelpers
-//                .getAdditionalInstanceField(mDecorView, FIELD_SETTINGS_CHANGED_RECEIVER);
-//        if(settingsLoadReceiver != null) {
-//            mDecorView.getContext().registerReceiver(mReceiver,
-//                    NFW.SETTINGS_CHANGED_FILTER);
-//        }
-//    }
 }

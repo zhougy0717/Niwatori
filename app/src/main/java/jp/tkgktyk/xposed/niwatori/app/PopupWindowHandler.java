@@ -128,7 +128,8 @@ public class PopupWindowHandler extends XposedModule{
                         try {
                             final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
                                 final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-                                final FlyingHelper helper = getHelper((FrameLayout) decorView);
+//                                final FlyingHelper helper = getHelper((FrameLayout) decorView);
+                                final FlyingHelper helper = ModActivity.getHelper(decorView);
                                 if (helper != null && helper.onTouchEvent(event)) {
                                     return true;
                                 }
@@ -149,10 +150,10 @@ public class PopupWindowHandler extends XposedModule{
         });
     }
 
-    private static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
-        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
-                decorView, FIELD_FLYING_HELPER);
-    }
+//    private static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
+//        return (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
+//                decorView, FIELD_FLYING_HELPER);
+//    }
 
     public static void onPause(String className){
         // TODO: save the handler under the activity's name

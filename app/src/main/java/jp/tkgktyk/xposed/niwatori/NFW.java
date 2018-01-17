@@ -108,8 +108,8 @@ public class NFW {
     @SuppressWarnings("deprecation")
     @SuppressLint("WorldReadableFiles")
     public static SharedPreferences getSharedPreferences(Context context) {
-        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_WORLD_READABLE);
-//        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_PRIVATE);
+//        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_WORLD_READABLE);
+        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_PRIVATE);
 //        File prefsFile = new File(context.getFilesDir() + "/../shared_prefs/" + PACKAGE_NAME + "_preferences" + ".xml");
 //        prefsFile.setReadable(true, false);
         return prefs;

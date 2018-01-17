@@ -98,19 +98,27 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/splits-support" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="de.robv.android.xposed:api:82:sources@jar" level="project" />
-    <orderEntry type="library" name="com.android.support:support-annotations:23.1.1@jar" level="project" />
-    <orderEntry type="library" name="com.google.guava:guava:18.0@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-fragment-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-annotations:25.0.0@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:support-core-ui-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-core-utils-25.0.0" level="project" />
     <orderEntry type="library" name="de.robv.android.xposed:api:82@jar" level="project" />
-    <orderEntry type="library" name="com.android.support:appcompat-v7-23.0.0" level="project" />
-    <orderEntry type="library" name="com.android.support:support-v4-23.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:appcompat-v7-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-media-compat-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-compat-25.0.0" level="project" />
+    <orderEntry type="library" name="de.robv.android.xposed:api:82:sources@jar" level="project" />
+    <orderEntry type="library" name="com.google.guava:guava:18.0@jar" level="project" />
+    <orderEntry type="library" name="com.android.support:animated-vector-drawable-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-vector-drawable-25.0.0" level="project" />
+    <orderEntry type="library" name="com.android.support:support-v4-25.0.0" level="project" />
     <orderEntry type="module" module-name="flyinglayout" />
-    <orderEntry type="library" name="android-android-23" level="project" />
+    <orderEntry type="library" name="android-android-25" level="project" />
   </component>
 </module>
