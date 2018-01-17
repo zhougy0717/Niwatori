@@ -92,10 +92,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
         });
 
         onSettingsLoaded(settings);
+        Log.e("Ben", "FlyingHelper intialize: settings: " + settings + ", package:" + getAttachedView().getContext().getPackageName());
     }
 
     public void onSettingsLoaded(NFW.Settings settings) {
         mSettings = settings;
+//        Log.e(" Ben", "onSettingsLoaded: " + settings + "," + mSettings.boundaryColorMS + ", package: " + getAttachedView().getContext().getPackageName());
         setSpeed(getSettings().speed);
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
@@ -134,6 +136,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else {
             mBoundaryDrawable.setStroke(mBoundaryWidth, getSettings().boundaryColorSS);
         }
+//        Log.e("Ben", "Going to move: MS:" + getSettings().boundaryColorMS + ", SS:" + getSettings().boundaryColorSS);
         getAttachedView().postInvalidate();
     }
 
@@ -145,6 +148,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else {
             mBoundaryDrawable.setStroke(mBoundaryWidth, Color.TRANSPARENT);
         }
+//        Log.e("Ben", "Going to move: MS:" + getSettings().boundaryColorMS + ", SS:" + getSettings().boundaryColorSS);
         getAttachedView().postInvalidate();
     }
 

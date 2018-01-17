@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 
 import com.google.common.base.Strings;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
@@ -107,7 +108,11 @@ public class NFW {
     @SuppressWarnings("deprecation")
     @SuppressLint("WorldReadableFiles")
     public static SharedPreferences getSharedPreferences(Context context) {
-        return context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_WORLD_READABLE);
+        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_WORLD_READABLE);
+//        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_PRIVATE);
+//        File prefsFile = new File(context.getFilesDir() + "/../shared_prefs/" + PACKAGE_NAME + "_preferences" + ".xml");
+//        prefsFile.setReadable(true, false);
+        return prefs;
     }
 
     public static void sendSettingsChanged(Context context, SharedPreferences prefs) {

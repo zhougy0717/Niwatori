@@ -268,6 +268,7 @@ public class ModActivity extends XposedModule {
                                 if (helper != null) {
                                     NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
                                     getHelper(decorView).onSettingsLoaded(settings);
+                                    Log.e("Ben", "onAttachedWindow: settings: " + settings + ", package:" + decorView.getContext().getPackageName());
                                 }
                             }
                         };

@@ -31,10 +31,12 @@ public class ActivityHandler extends XposedModule{
     private static class Handler{
         private FrameLayout mDecorView;
         private IReceiver mActionReceiver;
+        private IReceiver mSettingsLoadedReceiver;
         private FlyingHelper mHelper;
         public Handler(FrameLayout decorView) {
             mDecorView = decorView;
             mActionReceiver = ActionReceiver.getInstance(mDecorView, NFW.FOCUSED_ACTIVITY_FILTER);
+            mSettingsLoadedReceiver = SettingsLoadReceiver.getInstance(mDecorView, NFW.SETTINGS_CHANGED_FILTER);
         }
 
         private static Handler getInstance(FrameLayout decorView){
@@ -48,6 +50,7 @@ public class ActivityHandler extends XposedModule{
 
         public void registerReceiver(){
             mActionReceiver.register();
+            mSettingsLoadedReceiver.register();
             mHelper = getHelper(mDecorView);
             if (mHelper != null && mHelper.getSettings().smallScreenPersistent) {
                 NFW.requestResizedGlobal(mDecorView);
@@ -56,6 +59,7 @@ public class ActivityHandler extends XposedModule{
 
         public void unregisterReceiver(){
             mActionReceiver.unregister();
+            mSettingsLoadedReceiver.unregister();
             mHelper = getHelper(mDecorView);
             if (mHelper!=null && mHelper.getSettings().autoReset) {
                 // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events

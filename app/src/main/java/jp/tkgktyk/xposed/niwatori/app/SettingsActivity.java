@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 
+import java.io.File;
+
 import jp.tkgktyk.xposed.niwatori.BuildConfig;
 import jp.tkgktyk.xposed.niwatori.NFW;
 import jp.tkgktyk.xposed.niwatori.R;
@@ -107,6 +109,8 @@ public class SettingsActivity extends InAppBillingActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             getPreferenceManager().setSharedPreferencesMode(PreferenceActivity.MODE_WORLD_READABLE);
+//            File prefsFile = new File(getContext().getFilesDir() + "/../shared_prefs/" + NFW.PACKAGE_NAME + "_preferences" + ".xml");
+//            prefsFile.setReadable(true, false);
             getPreferenceManager().getSharedPreferences()
                     .registerOnSharedPreferenceChangeListener(mChangeListener);
         }

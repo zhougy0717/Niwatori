@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -66,6 +67,7 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
         final FlyingHelper helper = getHelper(mDecorView);
         if (helper != null) {
             getHelper(mDecorView).onSettingsLoaded(settings);
+            Log.e("Ben", "settings load receiver: settings: " + settings + ", package:" + mDecorView.getContext().getPackageName());
         }
     }
 

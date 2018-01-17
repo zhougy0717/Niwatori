@@ -10,7 +10,7 @@ android {
         }
     }
     compileSdkVersion 23
-    buildToolsVersion '23.0.2'
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "jp.tkgktyk.xposed.niwatori"
         minSdkVersion 16
@@ -37,5 +37,6 @@ dependencies {
     provided 'de.robv.android.xposed:api:82'
     provided 'de.robv.android.xposed:api:82:sources'
     compile project(':flyinglayout')
-    compile 'com.android.support:appcompat-v7:23.1.1'
+//    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:appcompat-v7:23.0.0'
 }
