@@ -24,7 +24,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     private static final String TAG = FlyingHelper.class.getSimpleName();
 
     private final InputMethodManager mInputMethodManager;
-    private NFW.Settings mSettings;
+//    private NFW.Settings mSettings;
 
     private final GradientDrawable mBoundaryDrawable = NFW.makeBoundaryDrawable(0, 0);
     private int mBoundaryWidth;
@@ -94,11 +94,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
         onSettingsLoaded(settings);
     }
 
-    public void setSettings(NFW.Settings settings){
-        mSettings = settings;
+    public void setSettings(NFW.Settings settings) {
+//        mSettings = settings;
     }
+
     public void onSettingsLoaded(NFW.Settings settings) {
-        mSettings = settings;
+//        mSettings = settings;
         setSpeed(getSettings().speed);
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
@@ -119,7 +120,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public NFW.Settings getSettings() {
-        return mSettings;
+//        return mSettings;
+        return PreferenceManager.getSettings();
     }
 
     private void updateBoundaryOnUnresize() {
@@ -263,7 +265,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void resize(boolean force) {
-        if (mSettings.smallScreenPersistent) {
+//        if (mSettings.smallScreenPersistent) {
+        if (PreferenceManager.getSettings().smallScreenPersistent) {
             NFW.setResizedGlobal(getAttachedView().getContext(), force);
         }
         if (force) {

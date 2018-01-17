@@ -39,14 +39,14 @@ public class ActivityHandler extends XposedModule{
             mSettingsLoadedReceiver = SettingsLoadReceiver.getInstance(mDecorView, NFW.SETTINGS_CHANGED_FILTER);
         }
 
-        private static Handler getInstance(FrameLayout decorView){
-            Handler handler = (Handler) XposedHelpers.getAdditionalInstanceField(decorView, "HANDLER");
-            if (handler == null) {
-                handler = new Handler(decorView);
-                XposedHelpers.setAdditionalInstanceField(decorView, "HANDLER", handler);
-            }
-            return handler;
-        }
+//        private static Handler getInstance(FrameLayout decorView){
+//            Handler handler = (Handler) XposedHelpers.getAdditionalInstanceField(decorView, "HANDLER");
+//            if (handler == null) {
+//                handler = new Handler(decorView);
+//                XposedHelpers.setAdditionalInstanceField(decorView, "HANDLER", handler);
+//            }
+//            return handler;
+//        }
 
         public void registerReceiver(){
             mActionReceiver.register();
