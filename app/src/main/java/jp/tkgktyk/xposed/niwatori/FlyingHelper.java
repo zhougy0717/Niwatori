@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -121,7 +119,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public NFW.Settings getSettings() {
 //        return mSettings;
-        return PreferenceManager.getSettings();
+        return WorldReadablePreference.getSettings();
     }
 
     private void updateBoundaryOnUnresize() {
@@ -266,7 +264,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public void resize(boolean force) {
 //        if (mSettings.smallScreenPersistent) {
-        if (PreferenceManager.getSettings().smallScreenPersistent) {
+        if (WorldReadablePreference.getSettings().smallScreenPersistent) {
             NFW.setResizedGlobal(getAttachedView().getContext(), force);
         }
         if (force) {

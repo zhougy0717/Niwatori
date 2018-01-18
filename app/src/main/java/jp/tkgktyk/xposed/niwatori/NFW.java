@@ -105,13 +105,10 @@ public class NFW {
     public static final int DOUBLE_TAP_ON_RECENTS = 2;
     public static final int LONG_PRESS_ON_RECENTS = 3;
 
-    @SuppressWarnings("deprecation")
-    @SuppressLint("WorldReadableFiles")
+
     public static SharedPreferences getSharedPreferences(Context context) {
-//        SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_WORLD_READABLE);
+        WorldReadablePreference.sharedPreferenceFix(context);
         SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_PRIVATE);
-//        File prefsFile = new File(context.getFilesDir() + "/../shared_prefs/" + PACKAGE_NAME + "_preferences" + ".xml");
-//        prefsFile.setReadable(true, false);
         return prefs;
     }
 
