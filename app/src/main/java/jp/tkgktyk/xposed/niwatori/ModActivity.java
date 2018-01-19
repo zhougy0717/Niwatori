@@ -31,10 +31,8 @@ import com.google.common.base.Strings;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import jp.tkgktyk.flyinglayout.FlyingLayout;
 import jp.tkgktyk.xposed.niwatori.app.DialogHandler;
 import jp.tkgktyk.xposed.niwatori.app.PopupWindowHandler;
 
@@ -56,13 +54,11 @@ public class ModActivity extends XposedModule {
 
     private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
 
-    private static XSharedPreferences mPrefs;
-
     public static FlyingHelper createFlyingHelper (FrameLayout decorView){
         try {
             FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(decorView, FIELD_FLYING_HELPER);
             if(helper == null){
-                helper = new FlyingHelper(decorView, 1, false, newSettings(mPrefs));
+                helper = new FlyingHelper(decorView, 1, false);
                 XposedHelpers.setAdditionalInstanceField(decorView, FIELD_FLYING_HELPER, helper);
             }
             return helper;
@@ -72,8 +68,7 @@ public class ModActivity extends XposedModule {
             return null;
         }
     }
-    public static void initZygote(XSharedPreferences prefs) {
-        mPrefs = prefs;
+    public static void initZygote() {
         try {
             installToDecorView();
 //            installToActivity();
@@ -343,8 +338,6 @@ public class ModActivity extends XposedModule {
     public static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
         FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
-        mPrefs.makeWorldReadable();
-        helper.setSettings(newSettings(mPrefs));
         return helper;
     }
 }

@@ -27,13 +27,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
     private final GradientDrawable mBoundaryDrawable = NFW.makeBoundaryDrawable(0, 0);
     private int mBoundaryWidth;
 
-    public FlyingHelper(FrameLayout view, int frameLayoutHierarchy, boolean useContainer,
-                        NFW.Settings settings) throws NoSuchMethodException {
+    public FlyingHelper(FrameLayout view, int frameLayoutHierarchy, boolean useContainer/*,
+                        NFW.Settings settings*/) throws NoSuchMethodException {
         super(view, frameLayoutHierarchy);
 
         mInputMethodManager = (InputMethodManager) view.getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
+        NFW.Settings settings = WorldReadablePreference.getSettings();
         initialize(useContainer, settings);
     }
 

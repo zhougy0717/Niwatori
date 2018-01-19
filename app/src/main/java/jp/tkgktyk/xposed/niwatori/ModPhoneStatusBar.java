@@ -28,7 +28,6 @@ public abstract class ModPhoneStatusBar extends XposedModule {
 
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
-    private static XSharedPreferences mPrefs;
     // for status bar
     protected static FlyingHelper mHelper;
 
@@ -87,10 +86,6 @@ public abstract class ModPhoneStatusBar extends XposedModule {
         }
     };
 
-    public static void initZygote(XSharedPreferences prefs) {
-        mPrefs = prefs;
-    }
-
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (!loadPackageParam.packageName.equals("com.android.systemui")) {
             return;
@@ -100,7 +95,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             //
             // for Software Keys
             //
-            NFW.Settings settings = newSettings(mPrefs);
+            NFW.Settings settings = WorldReadablePreference.getSettings();
             if (settings.extraActionOnRecents != NFW.NONE_ON_RECENTS) {
                 final ClassLoader classLoader = loadPackageParam.classLoader;
                 modifySoftwareKey(classLoader);
@@ -119,7 +114,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                 try {
                     final FrameLayout panelHolder = (FrameLayout) param.thisObject;
                     // need to reload on each package?
-                    mHelper = new FlyingHelper(panelHolder, 1, false, newSettings(mPrefs));
+                    mHelper = new FlyingHelper(panelHolder, 1, false);
                     XposedHelpers.setAdditionalInstanceField(panelHolder,
                             FIELD_FLYING_HELPER, mHelper);
 
@@ -238,9 +233,6 @@ public abstract class ModPhoneStatusBar extends XposedModule {
 
     private static FlyingHelper getHelper(@NonNull Object obj) {
         FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(obj, FIELD_FLYING_HELPER);
-        mPrefs.makeWorldReadable();
-        NFW.Settings settings = newSettings(mPrefs);
-        helper.setSettings(settings);
         return helper;
     }
 

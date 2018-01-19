@@ -1,15 +1,22 @@
 package jp.tkgktyk.xposed.niwatori.app;
 
+import android.annotation.TargetApi;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.common.collect.Sets;
 
+import java.util.Collections;
 import java.util.Set;
 
 import jp.tkgktyk.flyinglayout.FlyingLayout;
@@ -23,9 +30,22 @@ import jp.tkgktyk.xposed.niwatori.R;
 public class MyApp extends Application {
     private static final String TAG = MyApp.class.getSimpleName();
 
+    @TargetApi(25)
     @Override
     public void onCreate() {
         Log.d(TAG, "check version");
+
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+
+        ShortcutInfo webShortcut = new ShortcutInfo.Builder(this, "shortcut_web")
+                .setShortLabel("catinean.com")
+                .setLongLabel("Open catinean.com web site")
+                .setIcon(Icon.createWithResource(this, R.drawable.ic_action_expand_notifications))
+                .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("https://catinean.com")))
+                .build();
+
+        shortcutManager.setDynamicShortcuts(Collections.singletonList(webShortcut));
+        Log.e ("Ben", "Create dynamic shortcut");
         // get last running version
         String keyVersionName = getString(R.string.key_version_name);
         MyVersion old = new MyVersion(NFW.getSharedPreferences(this).getString(keyVersionName, ""));

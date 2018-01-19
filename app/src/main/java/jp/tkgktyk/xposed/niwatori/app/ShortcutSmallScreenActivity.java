@@ -1,8 +1,17 @@
 package jp.tkgktyk.xposed.niwatori.app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+
+import java.util.Collections;
 
 import jp.tkgktyk.xposed.niwatori.NFW;
 import jp.tkgktyk.xposed.niwatori.R;
@@ -10,7 +19,7 @@ import jp.tkgktyk.xposed.niwatori.R;
 /**
  * Created by tkgktyk on 2015/02/13.
  */
-public class ShortcutDefaultActivity extends Activity {
+public class ShortcutSmallScreenActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,6 +28,10 @@ public class ShortcutDefaultActivity extends Activity {
                 .equals(Intent.ACTION_CREATE_SHORTCUT)) {
 //            NFW.Settings settings = XposedModule.getSettings();
 //            String action = settings.extraAction;
+
+//            SharedPreferences prefs = NFW.getSharedPreferences(this);
+//            String extra = prefs.getString("key_extra_action", NFW.ACTION_MOVABLE_SCREEN);
+//            Log.e("Ben", "extra: " + extra);
 
             Intent shortcut = new Intent(this, ActionActivity.class);
             shortcut.setAction(NFW.ACTION_SMALL_SCREEN);
@@ -34,6 +47,7 @@ public class ShortcutDefaultActivity extends Activity {
         else {
             setResult(RESULT_CANCELED);
         }
+
         finish();
 
 //        mShortcutNameList = new ArrayList<>(mShortcutNameIdList.length);

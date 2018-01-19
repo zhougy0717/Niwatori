@@ -47,8 +47,27 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".app.ShortcutDefaultActivity"
-            android:label="@string/shortcut_activity_name"
+            android:name=".app.ShortcutSmallScreenActivity"
+            android:label="@string/action_small_screen"
+            android:icon="@drawable/ic_action_small_screen"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ShortcutMovableScreenActivity"
+            android:label="@string/action_movable_screen"
+            android:icon="@drawable/ic_action_movable_screen"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ShortcutSlideDownActivity"
+            android:label="@string/action_pin_or_reset"
+            android:icon="@drawable/ic_action_slide_down"
             android:theme="@style/DialogTheme">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT"/>

@@ -14,9 +14,10 @@ import de.robv.android.xposed.XposedHelpers;
  * Created by tkgktyk on 2015/02/12.
  */
 public class ModInputMethod extends XposedModule {
-    public static void initZygote(XSharedPreferences prefs) {
+    public static void initZygote(/*XSharedPreferences prefs*/) {
         try {
-            NFW.Settings settings = newSettings(prefs);
+//            NFW.Settings settings = newSettings(prefs);
+            NFW.Settings settings = WorldReadablePreference.getSettings();
             if (settings.autoReset) {
                 final XC_MethodHook onSoftInputShown = new XC_MethodHook() {
                     @Override
