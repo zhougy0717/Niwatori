@@ -2,6 +2,8 @@ package jp.tkgktyk.xposed.niwatori;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -81,6 +83,10 @@ public class ActivityHandler extends XposedModule{
                     Handler handler = new Handler(decorView);
                     handler.registerReceiver();
                     PopupWindowHandler.onResume(activity.getClass().getName());
+
+                    if (decorView.getBackground() == null) {
+                        XposedHelpers.callMethod(decorView, "setWindowBackground", new ColorDrawable(Color.WHITE));
+                    }
                 } catch (Throwable t) {
                     logE(t);
                 }
