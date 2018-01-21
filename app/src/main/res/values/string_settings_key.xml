@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="key_version_name" translatable="false">key_version_name</string>
+
+    <!-- Blacklist -->
+    <string name="key_blacklist" translatable="false">key_blacklist</string>
+    <!-- Animation -->
+    <string name="key_animation" translatable="false">key_animation</string>
+    <!-- Auto Reset -->
+    <string name="key_auto_reset" translatable="false">key_auto_reset</string>
+    <!-- Extra Action -->
+    <string name="key_extra_action" translatable="false">key_extra_action</string>
+    <!-- Actions -->
+    <string name="key_action_when_tap_outside" translatable="false">key_action_when_tap_outside</string>
+    <string name="key_action_when_double_tap_outside" translatable="false">key_action_when_double_tap_outside</string>
+
+    <!-- Speed -->
+    <string name="key_speed" translatable="false">key_speed</string>
+    <!-- Auto Pin -->
+    <string name="key_auto_pin" translatable="false">key_auto_pin</string>
+    <!-- Boundary Color -->
+    <string name="key_boundary_color_ms" translatable="false">key_boundary_color_ms</string>
+    <!-- Initial position -->
+    <string name="key_initial_position" translatable="false">key_initial_position</string>
+    <string name="key_initial_x_percent" translatable="false">key_initial_x_percent</string>
+    <string name="key_initial_y_percent" translatable="false">key_initial_y_percent</string>
+
+    <!-- Small Screen -->
+    <!-- Boundary Color -->
+    <string name="key_boundary_color_ss" translatable="false">key_boundary_color_ss</string>
+    <!-- Size -->
+    <string name="key_small_screen" translatable="false">key_small_screen</string>
+    <string name="key_small_screen_size" translatable="false">key_small_screen_size</string>
+    <string name="key_small_screen_pivot_x" translatable="false">key_small_screen_pivot_x</string>
+    <string name="key_small_screen_pivot_y" translatable="false">key_small_screen_pivot_y</string>
+    <!-- Another Resize Method -->
+    <string name="key_another_resize_method_targets" translatable="false">key_another_resize_method_targets</string>
+    <!-- Persistent -->
+    <string name="key_small_screen_persistent" translatable="false">key_small_screen_persistent</string>
+
+    <!-- Log Actions -->
+    <string name="key_log_actions" translatable="false">key_log_actions</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="key_purchase_premium_settings" translatable="false">key_purchase_premium_settings</string>
+    <!-- Links -->
+    <string name="key_google_play" translatable="false">key_google_play</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="key_extra_action_on_recents" translatable="false">key_extra_action_on_recents</string>
+
+    <!-- About -->
+    <string name="key_about" translatable="false">key_about</string>
+</resources>

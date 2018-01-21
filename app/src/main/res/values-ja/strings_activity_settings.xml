@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Displayed in launcher -->
+    <string name="settings_activity_name">@string/app_name</string>
+
+    <!-- Instructions -->
+    <string name="title_instructions">概要</string>
+    <string name="summary_instructions">このModはいくつかの片手モードを提供します：\n・Movable Screen\n・Slide Down\n・Small Screen\nショートカットから片手モードを開始できます。</string>
+    <!-- Shortcuts -->
+    <string name="title_shortcuts">ショートカット（片手モード）</string>
+    <string name="summary_shortcuts">・Movable Screen: 表示位置を動かせるようになります。\n・Pin: 表示位置を固定します。\n・Slide Down: 表示位置を変更します。\n・Small Screen: 表示サイズを変更します。\nナビゲーションキーのアクションやリングターゲットなどに登録して使用してください。</string>
+    <!-- Note -->
+    <string name="title_notes">その他</string>
+    <string name="summary_notes">自動リセット機能を使わない場合はステータスバー開くのにショートカットを使ってください。</string>
+
+    <!-- Settings -->
+    <string name="title_settings">設定</string>
+    <string name="current_s1">現在値: %1$s</string>
+
+    <!-- General -->
+    <string name="category_general">General</string>
+    <!-- Blacklist -->
+    <string name="title_blacklist">@string/blacklist_activity_name</string>
+    <!-- Animation -->
+    <string name="title_animation">アニメーション</string>
+    <string name="summary_animation_on">なめらかな移動</string>
+    <string name="summary_animation_off">すぐに移動</string>
+    <!-- Auto Reset -->
+    <string name="title_auto_reset">自動リセット</string>
+    <string name="summary_auto_reset">キーボード周りに問題が発生したらOFFにしてください。（要再起動）</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">Extra Action</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">Tap Outside</string>
+    <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
+
+    <!-- Movable Screen -->
+    <string name="category_movable_screen">Movable Screen</string>
+    <!-- Speed -->
+    <string name="title_speed">スピード</string>
+    <string name="note_speed">推奨値:\n  - スマートフォンは2くらいです</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">自動Pin</string>
+    <string name="summary_auto_pin">移動後に自動でPinを実行</string>
+    <!-- Boundary Color -->
+    <string name="title_boundary_color">境界線の色</string>
+    <string name="none">None</string>
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="lime">Lime</string>
+    <string name="yellow">Yellow</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="grey">Grey</string>
+    <string name="blue_grey">Blue Grey</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">初期位置*</string>
+    <string name="summary_initial_position">Slide Down時にこの場所へ移動します。</string>
+    <string name="usage_of_initial_position">ドラッグで位置を変更</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
+
+    <!-- Small Screen -->
+    <string name="category_small_screen">Small Screen</string>
+    <!-- Small Screen Size -->
+    <string name="title_small_screen">サイズ*</string>
+    <string name="summary_small_screen">大きさと中心軸を変更</string>
+    <string name="pivot_x_d1">Pivot X = %1$d%%</string>
+    <string name="pivot_y_d1">Pivot Y = %1$d%%</string>
+    <string name="size_d1">Size = %1$d%%</string>
+    <string name="pivot_x">Pivot X</string>
+    <string name="pivot_y">Pivot Y</string>
+    <string name="size">Size</string>
+    <!-- Another Resize Method -->
+    <string name="title_another_resize_method">Another Resize Method</string>
+    <string name="summary_another_resize_method">Apply another method to specified apps</string>
+    <!-- Persistent -->
+    <string name="title_small_screen_persistent">Persistent</string>
+
+    <!-- Others -->
+    <string name="category_other">その他</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">アクション履歴を記録する</string>
+    <string name="summary_log_actions">履歴と、どのアプリに使われたか</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="title_purchase_premium_settings">プレミアム設定</string>
+    <string name="summary_purchase_premium_settings">グラフィカルな設定画面を使用するには寄付をお願いします（*印の項目）</string>
+    <string name="summary_unavailable_premium_settings">アプリ内課金が利用できません</string>
+    <string name="title_premium_settings">Premium Settings</string>
+    <string name="note_premium_settings">Please donate to use graphical settings!</string>
+    <string name="already_donated">Already donated</string>
+    <string name="thank_you_very_much">Thank you!</string>
+    <string name="back">Back</string>
+
+    <!-- Links -->
+    <string name="title_google_play">Google Playバージョンのアプリ</string>
+    <string name="summary_google_play">Google Playに移動します</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="title_extra_action_on_recents">Extra Action on Recents</string>
+    <string name="tap_on_recens">Tap</string>
+    <string name="double_tap_on_recens">Double Tap</string>
+    <string name="long_press_on_recens">Long Press</string>
+
+    <!-- About -->
+    <string name="title_about">@string/about_activity_name</string>
+</resources>
