@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Displayed in launcher -->
+    <string name="settings_activity_name">@string/app_name</string>
+
+    <!-- Instructions -->
+    <string name="title_instructions">Instructions</string>
+    <string name="summary_instructions">This mod is a collection of one-handed mode:\n- Movable Screen\n- Slide Down\n- Small Screen\nYou can start one-handed mode by shortcuts.</string>
+    <!-- Shortcuts -->
+    <string name="title_shortcuts">Shortcuts [One-handed mode]</string>
+    <string name="summary_shortcuts">- Movable Screen: starts movable mode.\n- Slide Down: moves the display position.\n- Small Screen: resize screen size.\nRegister them with navigation key\'s action, navigation ring target, etc.</string>
+    <!-- Note -->
+    <string name="title_notes">Notes</string>
+    <string name="summary_notes">There are no notes.</string>
+
+    <!-- Settings -->
+    <string name="title_settings">Settings</string>
+    <string name="current_s1">Current: %1$s</string>
+
+    <!-- General -->
+    <string name="category_general">General</string>
+    <!-- Blacklist -->
+    <string name="title_blacklist">@string/blacklist_activity_name</string>
+    <!-- Animation -->
+    <string name="title_animation">Animation</string>
+    <string name="summary_animation_on">Smooth movement</string>
+    <string name="summary_animation_off">Move immediately</string>
+    <!-- Auto Reset -->
+    <string name="title_auto_reset">Auto Reset</string>
+    <string name="summary_auto_reset">Turn off if keyboard causes issue. (requires reboot)</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">Extra Action</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">Tap Outside</string>
+    <string name="title_action_when_double_tap_outside">Double Tap Outside</string>
+
+    <!-- Movable Screen -->
+    <string name="category_movable_screen">Movable Screen</string>
+    <!-- Speed -->
+    <string name="title_speed">Speed</string>
+    <string name="note_speed">Recommended value:\n  - around 2 for smartphones.</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">Auto Pin</string>
+    <string name="summary_auto_pin">Pin after moving</string>
+    <!-- Boundary Color -->
+    <string name="title_boundary_color">Boundary Color</string>
+    <string name="none">None</string>
+    <string name="red">Red</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="deep_purple">Deep Purple</string>
+    <string name="indigo">Indigo</string>
+    <string name="blue">Blue</string>
+    <string name="light_blue">Light Blue</string>
+    <string name="cyan">Cyan</string>
+    <string name="teal">Teal</string>
+    <string name="green">Green</string>
+    <string name="light_green">Light Green</string>
+    <string name="lime">Lime</string>
+    <string name="yellow">Yellow</string>
+    <string name="amber">Amber</string>
+    <string name="orange">Orange</string>
+    <string name="deep_orange">Deep Orange</string>
+    <string name="brown">Brown</string>
+    <string name="grey">Grey</string>
+    <string name="blue_grey">Blue Grey</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">Initial Position*</string>
+    <string name="summary_initial_position">Slide down to here</string>
+    <string name="usage_of_initial_position">Drag to change position</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
+
+    <!-- Small Screen -->
+    <string name="category_small_screen">Small Screen</string>
+    <!-- Small Screen Size -->
+    <string name="title_small_screen">Size*</string>
+    <string name="summary_small_screen">Change size and pivot</string>
+    <string name="pivot_x_d1">Pivot X = %1$d%%</string>
+    <string name="pivot_y_d1">Pivot Y = %1$d%%</string>
+    <string name="size_d1">Size = %1$d%%</string>
+    <string name="pivot_x">Pivot X</string>
+    <string name="pivot_y">Pivot Y</string>
+    <string name="size">Size</string>
+    <!-- Another Resize Method -->
+    <string name="title_another_resize_method">Another Resize Method</string>
+    <string name="summary_another_resize_method">Apply another method to specified apps</string>
+    <!-- Persistent -->
+    <string name="title_small_screen_persistent">Persistent</string>
+
+    <!-- Other -->
+    <string name="category_other">Other</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">Log Actions</string>
+    <string name="summary_log_actions">History and who consumed</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="title_purchase_premium_settings">Premium Settings</string>
+    <string name="summary_purchase_premium_settings">Donate to use graphical settings (marked *)</string>
+    <string name="summary_unavailable_premium_settings">\"In-app Billing\" is not available on your phone.</string>
+    <string name="title_premium_settings">Premium Settings</string>
+    <string name="note_premium_settings">Please donate to use graphical settings!</string>
+    <string name="already_donated">Already donated</string>
+    <string name="thank_you_very_much">Thank you!</string>
+    <string name="back">Back</string>
+
+    <!-- Links -->
+    <string name="title_google_play">Get Google Play version</string>
+    <string name="summary_google_play">Tap to go to Google Play</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="title_extra_action_on_recents">Extra Action on Recents</string>
+    <string name="tap_on_recens">Tap</string>
+    <string name="double_tap_on_recens">Double Tap</string>
+    <string name="long_press_on_recens">Long Press</string>
+
+    <!-- About -->
+    <string name="title_about">@string/about_activity_name</string>
+</resources>

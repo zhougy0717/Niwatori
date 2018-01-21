@@ -1,0 +1,38 @@
+<resources>
+    <!-- Displayed in Xposed framework -->
+    <string name="app_name">Niwatori - Режим управления одной рукой</string>
+
+    <string name="billing_is_not_supported">Внутрипрограммыные покупки не поддеживаются</string>
+
+    <!-- Shortcut name -->
+    <string name="shortcut_activity_name">Режим работы одной рукой</string>
+    <string name="action_none">Нет</string>
+    <string name="action_movable_screen">Передвигаемый экран</string>
+    <string name="action_pin">Закрепить / Открепить положение</string>
+    <string name="action_pin_or_reset">Перемещение вниз</string>
+    <string name="action_small_screen">Уменьшенный экран</string>
+    <string name="action_extra_action">Основное действие</string>
+    <string name="action_cs_swap_left_right">Перемещение Влево/Вправо</string>
+    <string name="action_reset">Сброс</string>
+    <string name="action_soft_reset">Программный сброс</string>
+    <string name="action_sb_expand_notifications">Уведомление с основным действием</string>
+    <string name="action_sb_expand_quick_settings">Быстрые настройки основныго действия</string>
+
+    <!-- App Selector -->
+    <string name="app_select_activity_name">Выбрать</string>
+    <string name="only_selected">Только выбранные</string>
+    <string name="blacklist_activity_name">Список исключений</string>
+    <string name="another_resize_method_targets_activity_name">Другой метод изменения размера</string>
+
+    <!-- Initial Position -->
+    <string name="initial_position_activity_name">Начальная позиция</string>
+
+    <!-- Small Screen -->
+    <string name="small_screen_activity_name">Уменьшенный экран</string>
+
+    <!-- About -->
+    <string name="about_activity_name">О приложении</string>
+	
+	<!-- Persistent Service -->
+    <string name="state_persistent_small_screen">Быстрый доступ к уменьшенному экрану</string>
+</resources>

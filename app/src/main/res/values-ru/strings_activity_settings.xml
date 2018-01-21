@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Displayed in launcher -->
+    <string name="settings_activity_name">@string/app_name</string>
+
+    <!-- Instructions -->
+    <string name="title_instructions">Инструкция</string>
+    <string name="summary_instructions">Этот мод предназначен для удобного использования приложений одной рукой:\n- Передвигаемый экран\n- Cкользить вниз\n- Уменьшенный экран\nВы можете использовать эти режимы ярлыками.</string>
+    <!-- Shortcuts -->
+    <string name="title_shortcuts">Ярлыки [Режимы использования]</string>
+    <string name="summary_shortcuts">- Передвигаемый экран - Перемещение на заданное положение окна (без закрепления), а повторное нажатие - сброс.\n- Перемещение вниз - Смещение вниз, а при повторном - сброс положени.\n- Уменьшенный экран - Уменьшение окна приложения, а повторно - сброс.\nИспользование режимов с помощью клавиш панели навигации, ярлыков кольца навигации и т.д.</string>
+    <!-- Note -->
+    <string name="title_notes">Примечания</string>
+    <string name="summary_notes">Примечания отсутствуют.</string>
+
+    <!-- Settings -->
+    <string name="title_settings">Настройки</string>
+    <string name="current_s1">Состояние: %1$s</string>
+
+    <!-- General -->
+    <string name="category_general">Основное</string>
+    <!-- Blacklist -->
+    <string name="title_blacklist">@string/blacklist_activity_name</string>
+    <!-- Animation -->
+    <string name="title_animation">Анимация</string>
+    <string name="summary_animation_on">Плавное движение</string>
+    <string name="summary_animation_off">Немедленный переход</string>
+    <!-- Auto Reset -->
+    <string name="title_auto_reset">Сброс автоматически</string>
+    <string name="summary_auto_reset">Выключите, если появляются проблемы. *Требуется перезагрузка</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">Основное действие</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">Нажатие мимо</string>
+    <string name="title_action_when_double_tap_outside">Двойное нажатие мимо</string>
+
+    <!-- Movable Screen -->
+    <string name="category_movable_screen">Передвигаемый экран</string>
+    <!-- Speed -->
+    <string name="title_speed">Скорость</string>
+    <string name="note_speed">Рекомендуемое значение:\n *Около 2-ух для смартфона</string>
+    <!-- Boundary Color -->
+    <string name="title_boundary_color">Цвет границы</string>
+    <string name="none">Нет</string>
+    <string name="red">Красный</string>
+    <string name="pink">Розовый</string>
+    <string name="purple">Фиолетовый</string>
+    <string name="deep_purple">Тёмно-фиолетовый</string>
+    <string name="indigo">Индиго</string>
+    <string name="blue">Синий</string>
+    <string name="light_blue">Голубой</string>
+    <string name="cyan">Сине-зелёный</string>
+    <string name="teal">Зеленовато-голубой</string>
+    <string name="green">Зелёный</string>
+    <string name="light_green">Светло-зеленый</string>
+    <string name="lime">Лайм</string>
+    <string name="yellow">Жёлтый</string>
+    <string name="amber">Янтарь</string>
+    <string name="orange">Оранжевый</string>
+    <string name="deep_orange">Тёмно оранжевый</string>
+    <string name="brown">Коричневый</string>
+    <string name="grey">Серый</string>
+    <string name="blue_grey">Тёмно-синий</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">Исходное положение</string>
+    <string name="summary_initial_position">Перемещение на данное положение, когда приложение перемещается вниз</string>
+    <string name="usage_of_initial_position">Перетащите, чтобы изменить положение.\nНажмите клавишу возврата, чтобы сохранить.</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
+
+    <!-- Small Screen -->
+    <string name="category_small_screen">Уменьшенный экран</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">Автоматически закрепить</string>
+    <string name="summary_auto_pin">Закрепить после Вашего перемещения</string>
+    <!-- Small Screen Size -->
+    <string name="title_small_screen">Размер</string>
+    <string name="summary_small_screen">Изменить размер и начальное положение</string>
+    <string name="pivot_x_d1">Исходная точка X = %1$d%%</string>
+    <string name="pivot_y_d1">Исходная точка Y = %1$d%%</string>
+    <string name="size_d1">Размер = %1$d%%</string>
+    <string name="pivot_x">Точка X</string>
+    <string name="pivot_y">Точка Y</string>
+    <string name="size">Размер</string>
+    <!-- Another Resize Method -->
+    <string name="title_another_resize_method">Другой метод изменения размера</string>
+    <string name="summary_another_resize_method">Применить другой метод для указанных приложений</string>
+	<!-- Persistent -->
+    <string name="title_small_screen_persistent">Уведомление для быстрого доступа</string>
+
+    <!-- Other -->
+    <string name="category_other">Другое</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">Вести журнал</string>
+    <string name="summary_log_actions">История работы</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="title_purchase_premium_settings">Премиум настройки</string>
+    <string name="summary_purchase_premium_settings">Пожертвуйте, чтобы разблокировать все параметры</string>
+    <string name="summary_unavailable_premium_settings">\"Внутрипрограммные покупки\" недоступены на вашем телефоне.</string>
+    <string name="title_premium_settings">Премиум настройки</string>
+    <string name="note_premium_settings">Купите, чтобы использовать графические настройки!</string>
+    <string name="already_donated">Уже пожертвовано</string>
+    <string name="thank_you_very_much">Спасибо!</string>
+    <string name="back">Назад</string>
+
+    <!-- Links -->
+    <string name="title_google_play">Получить Google Play версию</string>
+    <string name="summary_google_play">Нажмите, чтобы перейти в Google Play</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="title_extra_action_on_recents">Основное действие на Недавние</string>
+    <string name="tap_on_recens">Нажатие</string>
+    <string name="double_tap_on_recens">Двойное нажатие</string>
+    <string name="long_press_on_recens">Долгое нажатие</string>
+
+    <!-- About -->
+    <string name="title_about">О приложении</string>
+</resources>

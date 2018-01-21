@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="intent_action_none" translatable="false"></string>
+    <string name="intent_action_movable_screen" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.MOVABLE_SCREEN</string>
+    <string name="intent_action_pin" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN</string>
+    <string name="intent_action_pin_or_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</string>
+    <string name="intent_action_small_screen" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SMALL_SCREEN</string>
+    <string name="intent_action_extra_action" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.EXTRA_ACTION</string>
+    <string name="intent_action_cs_swap_left_right" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT</string>
+    <string name="intent_action_soft_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SOFT_RESET</string>
+    <!-- Outside Action -->
+    <string-array name="outside_actions">
+        <item>@string/action_none</item>
+        <item>@string/action_pin</item>
+        <item>@string/action_cs_swap_left_right</item>
+        <item>@string/action_soft_reset</item>
+    </string-array>
+    <string-array name="outside_action_values" translatable="false">
+        <item>@string/intent_action_none</item>
+        <item>@string/intent_action_pin</item>
+        <item>@string/intent_action_cs_swap_left_right</item>
+        <item>@string/intent_action_soft_reset</item>
+    </string-array>
+    <!-- Extra Action -->
+    <string-array name="extra_actions" translatable="false">
+        <item>@string/action_movable_screen</item>
+        <item>@string/action_pin_or_reset</item>
+        <item>@string/action_small_screen</item>
+    </string-array>
+    <string-array name="extra_action_values" translatable="false">
+        <item>@string/intent_action_movable_screen</item>
+        <item>@string/intent_action_pin_or_reset</item>
+        <item>@string/intent_action_small_screen</item>
+    </string-array>
+    <!-- Boundary Color -->
+    <string-array name="boundary_colors">
+        <item>@string/none</item>
+        <item>@string/red</item>
+        <item>@string/pink</item>
+        <item>@string/purple</item>
+        <item>@string/deep_purple</item>
+        <item>@string/indigo</item>
+        <item>@string/blue</item>
+        <item>@string/light_blue</item>
+        <item>@string/cyan</item>
+        <item>@string/teal</item>
+        <item>@string/green</item>
+        <item>@string/light_green</item>
+        <item>@string/lime</item>
+        <item>@string/yellow</item>
+        <item>@string/amber</item>
+        <item>@string/orange</item>
+        <item>@string/deep_orange</item>
+        <item>@string/brown</item>
+        <item>@string/grey</item>
+        <item>@string/blue_grey</item>
+    </string-array>
+    <string name="default_boundary_color_ms" translatable="false">#689F38</string>
+    <string name="default_boundary_color_ss" translatable="false">#00000000</string>
+    <string-array name="boundary_color_values" translatable="false">
+        <item>#00000000</item>
+        <item>#D32F2F</item>
+        <item>#C2185B</item>
+        <item>#7B1FA2</item>
+        <item>#512DA8</item>
+        <item>#303F9F</item>
+        <item>#1976D2</item>
+        <item>#0288D1</item>
+        <item>#0097A7</item>
+        <item>#00796B</item>
+        <item>#388E3C</item>
+        <item>#689F38</item>
+        <item>#AFB42B</item>
+        <item>#FBC02D</item>
+        <item>#FFA000</item>
+        <item>#F57C00</item>
+        <item>#E64A19</item>
+        <item>#5D4037</item>
+        <item>#616161</item>
+        <item>#455A64</item>
+    </string-array>
+    <!-- Small Screen Size -->
+    <integer name="default_small_screen_size" translatable="false">60</integer>
+    <integer name="default_small_screen_pivot_x" translatable="false">0</integer>
+    <integer name="default_small_screen_pivot_y" translatable="false">100</integer>
+    <!-- Extra Action on Recents -->
+    <string-array name="events_on_recents" translatable="false">
+        <item>@string/action_none</item>
+        <item>@string/tap_on_recens</item>
+        <item>@string/double_tap_on_recens</item>
+        <item>@string/long_press_on_recens</item>
+    </string-array>
+    <string-array name="event_values_on_recents" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string name="default_event_on_recents" translatable="false">0</string>
+</resources>

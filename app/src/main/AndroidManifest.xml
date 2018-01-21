@@ -1,0 +1,108 @@
+<manifest
+    package="jp.tkgktyk.xposed.niwatori"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <uses-permission android:name="com.android.vending.BILLING"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <application
+        android:name=".app.MyApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true"/>
+        <meta-data
+            android:name="xposedminversion"
+            android:value="2.0*"/>
+        <meta-data
+            android:name="xposeddescription"
+            android:value="@string/xposed_description"/>
+
+        <activity
+            android:name=".app.SettingsActivity"
+            android:label="@string/settings_activity_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ActionActivity"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ShortcutActivity"
+            android:label="@string/shortcut_activity_name"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ShortcutSmallScreenActivity"
+            android:label="@string/action_small_screen"
+            android:icon="@drawable/ic_action_small_screen"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ShortcutMovableScreenActivity"
+            android:label="@string/action_movable_screen"
+            android:icon="@drawable/ic_action_movable_screen"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.ShortcutSlideDownActivity"
+            android:label="@string/action_pin_or_reset"
+            android:icon="@drawable/ic_action_slide_down"
+            android:theme="@style/DialogTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".app.AboutActivity"
+            android:label="@string/about_activity_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".app.AppSelectActivity"
+            android:label="@string/app_select_activity_name"
+            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".app.InitialPositionActivity"
+            android:theme="@style/TranslucentTheme"/>
+        <activity
+            android:name=".app.SmallScreenActivity"
+            android:label="@string/small_screen_activity_name"
+            android:theme="@style/AppTheme"/>
+
+        <receiver android:name=".app.ChangeSettingsActionReceiver">
+            <intent-filter>
+                <action android:name="jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".app.BootCompletedReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".app.PersistentService"/>
+    </application>
+
+</manifest>

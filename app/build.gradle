@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+        config {
+            keyAlias 'myKey'
+            keyPassword 'zhougy1984'
+            storeFile file('C:/Users/zhougua/Projects/Niwatori/key/niwatori.jks')
+            storePassword 'zhougy1984'
+        }
+    }
+    compileSdkVersion 25
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        applicationId "jp.tkgktyk.xposed.niwatori"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode 28
+        versionName '0.5.0'
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    provided fileTree(include: ['*.jar'], dir: 'provided_libs')
+    provided 'de.robv.android.xposed:api:82'
+    provided 'de.robv.android.xposed:api:82:sources'
+    compile project(':flyinglayout')
+    compile 'com.android.support:appcompat-v7:25.0.0'
+//    compile 'com.android.support:appcompat-v7:23.0.0'
+}

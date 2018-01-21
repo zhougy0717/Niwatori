@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context=".app.SmallScreenActivity">
+
+    <jp.tkgktyk.flyinglayout.FlyingLayout
+        xmlns:flying="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/smallScreen"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        flying:touchEventEnabled="false"
+        flying:useContainer="false">
+
+        <ImageView
+            android:id="@+id/boundary"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:contentDescription="boundary"/>
+
+        <TextView
+            android:id="@+id/pivotXText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="top|center_horizontal"
+            android:paddingLeft="@dimen/activity_vertical_margin"
+            android:text="@string/pivot_x_d1"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+            android:id="@+id/pivotYText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="left|center_vertical"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:text="@string/pivot_y_d1"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+        <TextView
+            android:id="@+id/sizeText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center_horizontal"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:text="@string/size_d1"
+            android:textAppearance="?android:attr/textAppearanceLarge"/>
+    </jp.tkgktyk.flyinglayout.FlyingLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="1">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pivot_x"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <SeekBar
+                android:id="@+id/pivotXSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pivot_y"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <SeekBar
+                android:id="@+id/pivotYSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:text="@string/size"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <SeekBar
+                android:id="@+id/sizeSeekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="1"/>
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
