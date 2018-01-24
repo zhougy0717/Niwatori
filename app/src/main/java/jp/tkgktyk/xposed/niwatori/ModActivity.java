@@ -33,7 +33,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import jp.tkgktyk.xposed.niwatori.app.DialogHandler;
 
 /**
  * Created by tkgktyk on 2015/02/12.
@@ -299,7 +298,7 @@ public class ModActivity extends XposedModule {
         decorView.setBackground(censorDrawable(decorView, decorView.getBackground()));
     }
 
-    private static Drawable censorDrawable(View decorView, Drawable drawable) {
+    public static Drawable censorDrawable(View decorView, Drawable drawable) {
         if (drawable == null) {
             final TypedValue a = new TypedValue();
             if (decorView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true)) {
