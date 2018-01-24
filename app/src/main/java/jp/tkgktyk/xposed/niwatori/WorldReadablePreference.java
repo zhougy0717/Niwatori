@@ -13,7 +13,7 @@ import de.robv.android.xposed.XSharedPreferences;
  * Created by zhougua on 1/17/2018.
  */
 
-public class WorldReadablePreference {
+public class WorldReadablePreference extends XposedModule{
     private static XSharedPreferences mPrefs = null;
     private static final String mPrefFile = "/data/data/" + NFW.PACKAGE_NAME + "/shared_prefs/" + NFW.PACKAGE_NAME + "_preferences.xml";
     private static final String mPrefFolder = "/data/data/" + NFW.PACKAGE_NAME + "/shared_prefs/";
@@ -63,6 +63,7 @@ public class WorldReadablePreference {
         permissionFix();
         mPrefs.makeWorldReadable();
         mPrefs.reload();
+//        log("pref exists: " + mPrefs.getFile().exists() + ", can read: " +mPrefs.getFile().canRead());
         return new NFW.Settings(mPrefs);
     }
 }

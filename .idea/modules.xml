@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Niwatori.iml" filepath="$PROJECT_DIR$/Niwatori.iml" />
-      <module fileurl="file://C:\Users\zhougua\Projects\Niwatori\Niwatori_bak.iml" filepath="C:\Users\zhougua\Projects\Niwatori\Niwatori_bak.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/flyinglayout/flyinglayout.iml" filepath="$PROJECT_DIR$/flyinglayout/flyinglayout.iml" />
     </modules>

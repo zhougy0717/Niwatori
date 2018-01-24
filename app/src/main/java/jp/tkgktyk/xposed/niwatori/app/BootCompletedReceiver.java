@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import jp.tkgktyk.xposed.niwatori.NFW;
+import jp.tkgktyk.xposed.niwatori.WorldReadablePreference;
 
 /**
  * Created by tkgktyk on 2015/06/09.
@@ -28,6 +29,7 @@ import jp.tkgktyk.xposed.niwatori.NFW;
 public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
+        WorldReadablePreference.sharedPreferenceFix();
         NFW.Settings settings = new NFW.Settings(NFW.getSharedPreferences(context));
         if (settings.smallScreenPersistent) {
             context.startService(new Intent(context, PersistentService.class));
