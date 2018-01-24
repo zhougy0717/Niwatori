@@ -306,19 +306,13 @@ public class ModActivity extends XposedModule {
                     // color
                     final int color = a.data;
                     logD("background color: " + String.format("#%08X", color));
-                    if (Color.alpha(color) == 0xFF) {
-                        // opaque
                         logD("set opaque background color");
                         drawable = new ColorDrawable(color);
-                    }
                 } else {
                     final Drawable d = decorView.getResources().getDrawable(a.resourceId);
                     logD("background drawable opacity: " + Integer.toString(d.getOpacity()));
-                    if (d.getOpacity() == PixelFormat.OPAQUE) {
-                        // opaque
                         logD("set opaque background drawable");
                         drawable = d;
-                    }
                 }
             }
 //        } else if (drawable.getOpacity() == PixelFormat.OPAQUE) {
