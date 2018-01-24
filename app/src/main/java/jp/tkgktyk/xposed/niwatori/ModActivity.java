@@ -33,7 +33,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import jp.tkgktyk.xposed.niwatori.app.DialogHandler;
 
 /**
  * Created by tkgktyk on 2015/02/12.
@@ -299,7 +298,7 @@ public class ModActivity extends XposedModule {
         decorView.setBackground(censorDrawable(decorView, decorView.getBackground()));
     }
 
-    private static Drawable censorDrawable(View decorView, Drawable drawable) {
+    public static Drawable censorDrawable(View decorView, Drawable drawable) {
         if (drawable == null) {
             final TypedValue a = new TypedValue();
             if (decorView.getContext().getTheme().resolveAttribute(android.R.attr.windowBackground, a, true)) {
@@ -307,19 +306,13 @@ public class ModActivity extends XposedModule {
                     // color
                     final int color = a.data;
                     logD("background color: " + String.format("#%08X", color));
-                    if (Color.alpha(color) == 0xFF) {
-                        // opaque
                         logD("set opaque background color");
                         drawable = new ColorDrawable(color);
-                    }
                 } else {
                     final Drawable d = decorView.getResources().getDrawable(a.resourceId);
                     logD("background drawable opacity: " + Integer.toString(d.getOpacity()));
-                    if (d.getOpacity() == PixelFormat.OPAQUE) {
-                        // opaque
                         logD("set opaque background drawable");
                         drawable = d;
-                    }
                 }
             }
 //        } else if (drawable.getOpacity() == PixelFormat.OPAQUE) {

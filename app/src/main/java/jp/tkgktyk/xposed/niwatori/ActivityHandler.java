@@ -77,7 +77,7 @@ public class ActivityHandler extends XposedModule{
                     PopupWindowHandler.onResume(activity.getClass().getName());
 
                     if (decorView.getBackground() == null) {
-                        XposedHelpers.callMethod(decorView, "setWindowBackground", new ColorDrawable(Color.WHITE));
+                        XposedHelpers.callMethod(decorView, "setWindowBackground", ModActivity.censorDrawable(decorView, null)/*new ColorDrawable(Color.WHITE)*/);
                     }
                 } catch (Throwable t) {
                     logE(t);

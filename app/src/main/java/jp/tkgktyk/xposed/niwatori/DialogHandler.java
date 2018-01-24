@@ -1,4 +1,4 @@
-package jp.tkgktyk.xposed.niwatori.app;
+package jp.tkgktyk.xposed.niwatori;
 
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
