@@ -107,6 +107,7 @@ public class NFW {
 
 
     public static SharedPreferences getSharedPreferences(Context context) {
+        WorldReadablePreference.sharedPreferenceFix();
         SharedPreferences prefs = context.getSharedPreferences(PACKAGE_NAME + "_preferences", Context.MODE_PRIVATE);
         return prefs;
     }

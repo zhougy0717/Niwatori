@@ -34,9 +34,6 @@ public class WorldReadablePreference extends XposedModule{
     }
 
     private static void createPrefObserver() {
-        if (mFileObserver != null) {
-            return;
-        }
         mFileObserver = new FileObserver(mPrefFolder,
                 FileObserver.ATTRIB) {
             @Override
@@ -50,10 +47,9 @@ public class WorldReadablePreference extends XposedModule{
     }
 
     public static void sharedPreferenceFix() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            permissionFix();
+        if (mFileObserver == null) {
+            createPrefObserver();
         }
-        createPrefObserver();
     }
 
     public static NFW.Settings getSettings() {
@@ -64,6 +60,7 @@ public class WorldReadablePreference extends XposedModule{
         mPrefs.makeWorldReadable();
         mPrefs.reload();
 //        log("pref exists: " + mPrefs.getFile().exists() + ", can read: " +mPrefs.getFile().canRead());
+//        Log.e("Ben", "pref exists: " + mPrefs.getFile().exists() + ", can read: " +mPrefs.getFile().canRead());
         return new NFW.Settings(mPrefs);
     }
 }

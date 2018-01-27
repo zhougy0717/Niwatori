@@ -98,10 +98,8 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/shaders" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/splits-support" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/symbols" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/tmp" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/transforms" />
       <excludeFolder url="file://$MODULE_DIR$/build/outputs" />
-      <excludeFolder url="file://$MODULE_DIR$/build/reports" />
       <excludeFolder url="file://$MODULE_DIR$/build/tmp" />
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
@@ -121,6 +119,5 @@
     <orderEntry type="library" name="com.android.support:support-v4-25.0.0" level="project" />
     <orderEntry type="module" module-name="flyinglayout" />
     <orderEntry type="library" name="android-android-25" level="project" />
-    <orderEntry type="module" module-name="flyinglayout" />
   </component>
 </module>

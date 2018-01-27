@@ -89,7 +89,9 @@
             android:label="@string/small_screen_activity_name"
             android:theme="@style/AppTheme"/>
 
-        <receiver android:name=".app.ChangeSettingsActionReceiver">
+        <receiver android:name=".app.ChangeSettingsActionReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT"/>
             </intent-filter>

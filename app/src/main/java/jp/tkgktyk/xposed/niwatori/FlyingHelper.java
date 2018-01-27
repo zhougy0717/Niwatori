@@ -207,7 +207,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
-            getAttachedView().getContext().sendBroadcast(new Intent(action));
+            Intent intent = new Intent(action);
+            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+            getAttachedView().getContext().sendBroadcast(intent);
         }
     }
 

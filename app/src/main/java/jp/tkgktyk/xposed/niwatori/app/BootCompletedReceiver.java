@@ -19,6 +19,7 @@ package jp.tkgktyk.xposed.niwatori.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import jp.tkgktyk.xposed.niwatori.NFW;
 import jp.tkgktyk.xposed.niwatori.WorldReadablePreference;
@@ -29,7 +30,7 @@ import jp.tkgktyk.xposed.niwatori.WorldReadablePreference;
 public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        WorldReadablePreference.sharedPreferenceFix();
+//        WorldReadablePreference.sharedPreferenceFix();
         NFW.Settings settings = new NFW.Settings(NFW.getSharedPreferences(context));
         if (settings.smallScreenPersistent) {
             context.startService(new Intent(context, PersistentService.class));
