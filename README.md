@@ -35,6 +35,11 @@ To enable each mode, you have several choices:
   - You can bind it with fooview.
   - Any other tools that can invoke shortcut functionality.
 
+## Known Issues
+
+1. Because some ROM's, for example Oxygen OS, have their own auto boot control. Niwatori need to be in the white list to provide swap left/right function with auto boot permission.
+2. Shared preference .xml is not created at the very first time after installation. You may need to open Niwatori to have it create it.
+
 # Release Note
 
 ## v0.5.2
