@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="intent_action_none" translatable="false"></string>
-    <string name="intent_action_movable_screen" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.MOVABLE_SCREEN</string>
-    <string name="intent_action_pin" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN</string>
-    <string name="intent_action_pin_or_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.PIN_OR_RESET</string>
-    <string name="intent_action_small_screen" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SMALL_SCREEN</string>
-    <string name="intent_action_extra_action" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.EXTRA_ACTION</string>
-    <string name="intent_action_cs_swap_left_right" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT</string>
-    <string name="intent_action_soft_reset" translatable="false">jp.tkgktyk.xposed.niwatori.intent.action.SOFT_RESET</string>
+    <string name="intent_action_movable_screen" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.MOVABLE_SCREEN</string>
+    <string name="intent_action_pin" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.PIN</string>
+    <string name="intent_action_pin_or_reset" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.PIN_OR_RESET</string>
+    <string name="intent_action_small_screen" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.SMALL_SCREEN</string>
+    <string name="intent_action_extra_action" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.EXTRA_ACTION</string>
+    <string name="intent_action_cs_swap_left_right" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT</string>
+    <string name="intent_action_soft_reset" translatable="false">cn.zhougy0717.xposed.niwatori.intent.action.SOFT_RESET</string>
     <!-- Outside Action -->
     <string-array name="outside_actions">
         <item>@string/action_none</item>

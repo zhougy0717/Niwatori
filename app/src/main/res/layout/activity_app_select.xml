@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/selectable_list"
-        android:name="jp.tkgktyk.xposed.niwatori.app.AppSelectFragment"
+        android:name="cn.zhougy0717.xposed.niwatori.app.AppSelectFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"

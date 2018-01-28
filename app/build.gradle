@@ -12,7 +12,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
     defaultConfig {
-        applicationId "jp.tkgktyk.xposed.niwatori"
+        applicationId "cn.zhougy0717.xposed.niwatori"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 30

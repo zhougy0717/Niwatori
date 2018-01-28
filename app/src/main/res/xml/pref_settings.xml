@@ -28,7 +28,7 @@
                 android:key="@string/key_blacklist"
                 android:title="@string/title_blacklist"/>
             <!-- Animation -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+            <cn.zhougy0717.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="true"
                 android:icon="@null"
                 android:key="@string/key_animation"
@@ -36,7 +36,7 @@
                 android:summaryOn="@string/summary_animation_on"
                 android:title="@string/title_animation"/>
             <!-- Reset Automatically -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+            <cn.zhougy0717.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
                 android:icon="@null"
                 android:key="@string/key_auto_reset"
@@ -80,7 +80,7 @@
                 android:selectAllOnFocus="true"
                 android:title="@string/title_speed"/>
             <!-- Auto Pin -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+            <cn.zhougy0717.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
                 android:icon="@null"
                 android:key="@string/key_auto_pin"
@@ -126,7 +126,7 @@
                 android:summary="@string/summary_another_resize_method"
                 android:title="@string/title_another_resize_method"/>
             <!-- Persistent -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+            <cn.zhougy0717.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
                 android:icon="@null"
                 android:key="@string/key_small_screen_persistent"
@@ -137,7 +137,7 @@
         <PreferenceCategory
             android:title="@string/category_other">
             <!-- Log Actions -->
-            <jp.tkgktyk.xposed.niwatori.app.SwitchPreference
+            <cn.zhougy0717.xposed.niwatori.app.SwitchPreference
                 android:defaultValue="false"
                 android:icon="@null"
                 android:key="@string/key_log_actions"
@@ -158,7 +158,7 @@
                 android:title="@string/title_google_play">
                 <intent
                     android:action="android.intent.action.VIEW"
-                    android:data="market://details?id=jp.tkgktyk.xposed.niwatori"/>
+                    android:data="market://details?id=cn.zhougy0717.xposed.niwatori"/>
             </Preference>
             <!-- Extra Action on Recents -->
             <ListPreference

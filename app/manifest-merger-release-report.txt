@@ -53,7 +53,7 @@ ADDED from AndroidManifest.xml:20:9
 		ADDED from AndroidManifest.xml:22:13
 	android:name
 		ADDED from AndroidManifest.xml:21:13
-activity#jp.tkgktyk.xposed.niwatori.app.SettingsActivity
+activity#cn.zhougy0717.xposed.niwatori.app.SettingsActivity
 ADDED from AndroidManifest.xml:24:9
 	android:label
 		ADDED from AndroidManifest.xml:26:13
@@ -69,7 +69,7 @@ category#android.intent.category.LAUNCHER
 ADDED from AndroidManifest.xml:29:17
 	android:name
 		ADDED from AndroidManifest.xml:29:27
-activity#jp.tkgktyk.xposed.niwatori.app.ActionActivity
+activity#cn.zhougy0717.xposed.niwatori.app.ActionActivity
 ADDED from AndroidManifest.xml:32:9
 	android:excludeFromRecents
 		ADDED from AndroidManifest.xml:34:13
@@ -81,7 +81,7 @@ ADDED from AndroidManifest.xml:32:9
 		ADDED from AndroidManifest.xml:33:13
 intent-filter#android.intent.action.MAIN
 ADDED from AndroidManifest.xml:37:13
-activity#jp.tkgktyk.xposed.niwatori.app.ShortcutActivity
+activity#cn.zhougy0717.xposed.niwatori.app.ShortcutActivity
 ADDED from AndroidManifest.xml:41:9
 	android:label
 		ADDED from AndroidManifest.xml:43:13
@@ -95,7 +95,7 @@ action#android.intent.action.CREATE_SHORTCUT
 ADDED from AndroidManifest.xml:46:17
 	android:name
 		ADDED from AndroidManifest.xml:46:25
-activity#jp.tkgktyk.xposed.niwatori.app.AboutActivity
+activity#cn.zhougy0717.xposed.niwatori.app.AboutActivity
 ADDED from AndroidManifest.xml:49:9
 	android:label
 		ADDED from AndroidManifest.xml:51:13
@@ -103,7 +103,7 @@ ADDED from AndroidManifest.xml:49:9
 		ADDED from AndroidManifest.xml:52:13
 	android:name
 		ADDED from AndroidManifest.xml:50:13
-activity#jp.tkgktyk.xposed.niwatori.app.AppSelectActivity
+activity#cn.zhougy0717.xposed.niwatori.app.AppSelectActivity
 ADDED from AndroidManifest.xml:53:9
 	android:label
 		ADDED from AndroidManifest.xml:55:13
@@ -111,13 +111,13 @@ ADDED from AndroidManifest.xml:53:9
 		ADDED from AndroidManifest.xml:56:13
 	android:name
 		ADDED from AndroidManifest.xml:54:13
-activity#jp.tkgktyk.xposed.niwatori.app.InitialPositionActivity
+activity#cn.zhougy0717.xposed.niwatori.app.InitialPositionActivity
 ADDED from AndroidManifest.xml:57:9
 	android:theme
 		ADDED from AndroidManifest.xml:59:13
 	android:name
 		ADDED from AndroidManifest.xml:58:13
-activity#jp.tkgktyk.xposed.niwatori.app.SmallScreenActivity
+activity#cn.zhougy0717.xposed.niwatori.app.SmallScreenActivity
 ADDED from AndroidManifest.xml:60:9
 	android:label
 		ADDED from AndroidManifest.xml:62:13
@@ -125,17 +125,17 @@ ADDED from AndroidManifest.xml:60:9
 		ADDED from AndroidManifest.xml:63:13
 	android:name
 		ADDED from AndroidManifest.xml:61:13
-receiver#jp.tkgktyk.xposed.niwatori.app.ChangeSettingsActionReceiver
+receiver#cn.zhougy0717.xposed.niwatori.app.ChangeSettingsActionReceiver
 ADDED from AndroidManifest.xml:65:9
 	android:name
 		ADDED from AndroidManifest.xml:65:19
-intent-filter#jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT
+intent-filter#cn.zhougy0717.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT
 ADDED from AndroidManifest.xml:66:13
-action#jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT
+action#cn.zhougy0717.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT
 ADDED from AndroidManifest.xml:67:17
 	android:name
 		ADDED from AndroidManifest.xml:67:25
-receiver#jp.tkgktyk.xposed.niwatori.app.BootCompletedReceiver
+receiver#cn.zhougy0717.xposed.niwatori.app.BootCompletedReceiver
 ADDED from AndroidManifest.xml:71:9
 	android:name
 		ADDED from AndroidManifest.xml:71:19
@@ -149,7 +149,7 @@ category#android.intent.category.DEFAULT
 ADDED from AndroidManifest.xml:74:17
 	android:name
 		ADDED from AndroidManifest.xml:74:27
-service#jp.tkgktyk.xposed.niwatori.app.PersistentService
+service#cn.zhougy0717.xposed.niwatori.app.PersistentService
 ADDED from AndroidManifest.xml:78:9
 	android:name
 		ADDED from AndroidManifest.xml:78:18

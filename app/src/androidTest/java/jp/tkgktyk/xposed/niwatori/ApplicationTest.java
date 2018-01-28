@@ -1,4 +1,4 @@
-package jp.tkgktyk.xposed.niwatori;
+package cn.zhougy0717.xposed.niwatori;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

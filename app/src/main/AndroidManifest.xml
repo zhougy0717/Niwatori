@@ -1,5 +1,5 @@
 <manifest
-    package="jp.tkgktyk.xposed.niwatori"
+    package="cn.zhougy0717.xposed.niwatori"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="com.android.vending.BILLING"/>
@@ -93,7 +93,7 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter>
-                <action android:name="jp.tkgktyk.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT"/>
+                <action android:name="cn.zhougy0717.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT"/>
             </intent-filter>
         </receiver>
 
