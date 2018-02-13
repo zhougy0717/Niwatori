@@ -1,9 +1,11 @@
 package cn.zhougy0717.xposed.niwatori;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.widget.FrameLayout;
 
@@ -62,45 +64,75 @@ public class ActivityHandler extends XposedModule{
             }
         }
     }
+
+    static class MyCallbacks implements Application.ActivityLifecycleCallbacks{
+        @Override
+        public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
+
+        }
+
+        @Override
+        public void onActivityStarted(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivityResumed(Activity activity) {
+            try {
+                //                final Activity activity = (Activity) param.thisObject;
+                FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
+                Handler handler = new Handler(decorView);
+                handler.registerReceiver();
+                PopupWindowHandler.onResume(activity.getClass().getName());
+
+                if (decorView.getBackground() == null) {
+                    XposedHelpers.callMethod(decorView, "setWindowBackground", ModActivity.censorDrawable(decorView, null)/*new ColorDrawable(Color.WHITE)*/);
+                }
+            } catch (Throwable t) {
+                logE(t);
+            }
+        }
+
+        @Override
+        public void onActivityPaused(Activity activity) {
+            try {
+                //                Activity activity = (Activity) param.thisObject;
+                logD(activity + "#onPause");
+                FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
+                Handler handler = new Handler(decorView);
+                handler.unregisterReceiver();
+                PopupWindowHandler.onPause(activity.getClass().getName());
+            } catch (Throwable t) {
+                logE(t);
+            }
+        }
+
+        @Override
+        public void onActivityStopped(Activity activity) {
+
+        }
+
+        @Override
+        public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
+
+        }
+
+        @Override
+        public void onActivityDestroyed(Activity activity) {
+
+        }
+    }
     public static void install() {
         //
         // initialize addtional fields
         //
-        XposedHelpers.findAndHookMethod(Activity.class, "onResume", new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Application.class, "onCreate", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    final Activity activity = (Activity) param.thisObject;
-                    FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
-                    Handler handler = new Handler(decorView);
-                    handler.registerReceiver();
-                    PopupWindowHandler.onResume(activity.getClass().getName());
-
-                    if (decorView.getBackground() == null) {
-                        XposedHelpers.callMethod(decorView, "setWindowBackground", ModActivity.censorDrawable(decorView, null)/*new ColorDrawable(Color.WHITE)*/);
-                    }
-                } catch (Throwable t) {
-                    logE(t);
-                }
+                Application application = (Application)param.thisObject;
+                application.registerActivityLifecycleCallbacks(new MyCallbacks());
             }
         });
-
-        XposedHelpers.findAndHookMethod(Activity.class, "onPause", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    Activity activity = (Activity) param.thisObject;
-                    logD(activity + "#onPause");
-                    FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
-                    Handler handler = new Handler(decorView);
-                    handler.unregisterReceiver();
-                    PopupWindowHandler.onPause(activity.getClass().getName());
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
-
         //
         // screen rotation
         //

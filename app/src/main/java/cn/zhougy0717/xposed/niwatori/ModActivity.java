@@ -333,6 +333,14 @@ public class ModActivity extends XposedModule {
     public static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
         FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
+        try {
+            if (helper == null) {
+                helper = createFlyingHelper(decorView);
+            }
+        } catch (Throwable t) {
+            logE(t);
+//            Log.e("Ben", Log.getStackTraceString(t));
+        }
         return helper;
     }
 }
