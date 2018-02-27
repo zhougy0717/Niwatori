@@ -23,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 import android.widget.TabHost;
@@ -206,49 +207,6 @@ public class ModActivity extends XposedModule {
                             }
                         }
                     });
-            final Class<?> classFrameLayout = classDecorView.getSuperclass();
-            XposedHelpers.findAndHookMethod(classFrameLayout, "onLayout", boolean.class,
-                    int.class, int.class, int.class, int.class, new XC_MethodReplacement() {
-                        @Override
-                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                            try {
-                                final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
-                                final FlyingHelper helper = getHelper(decorView);
-                                if (helper != null) {
-                                    final boolean changed = (Boolean) methodHookParam.args[0];
-                                    final int left = (Integer) methodHookParam.args[1];
-                                    final int top = (Integer) methodHookParam.args[2];
-                                    final int right = (Integer) methodHookParam.args[3];
-                                    final int bottom = (Integer) methodHookParam.args[4];
-                                    helper.onLayout(changed, left, top, right, bottom);
-                                    return null;
-                                }
-                            } catch (Throwable t) {
-                                logE(t);
-                            }
-                            return invokeOriginalMethod(methodHookParam);
-                        }
-                    });
-//            XposedHelpers.findAndHookMethod(classFrameLayout, "onMeasure", int.class, int.class,
-//                    new XC_MethodReplacement() {
-//                @Override
-//                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-//                    try {
-//                        final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
-//                        final FlyingHelper helper = getHelper(decorView);
-//                        if (helper != null) {
-//                            logD();
-//                            final int widthMeasureSpec = (Integer) methodHookParam.args[0];
-//                            final int heightMeasureSpec = (Integer) methodHookParam.args[1];
-//                            helper.onMeasure(widthMeasureSpec, heightMeasureSpec);
-//                            return null;
-//                        }
-//                    } catch (Throwable t) {
-//                        logE(t);
-//                    }
-//                    return invokeOriginalMethod(methodHookParam);
-//                }
-//            });
 
             XposedHelpers.findAndHookMethod(classDecorView, "onAttachedToWindow", new XC_MethodHook() {
                 @Override
@@ -330,7 +288,7 @@ public class ModActivity extends XposedModule {
         return (FrameLayout) activity.getWindow().peekDecorView();
     }
 
-    public static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
+    public static FlyingHelper getHelper(@NonNull final FrameLayout decorView) {
         FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
 
@@ -348,6 +306,13 @@ public class ModActivity extends XposedModule {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     return h.onTouchEvent(event);
+                }
+            });
+            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    boolean changed = (left!=oldLeft) || (right!=oldRight) || (bottom!=oldBottom) || (top!=oldTop);
+                    h.onLayout(changed, left, top, right, bottom);
                 }
             });
         }
