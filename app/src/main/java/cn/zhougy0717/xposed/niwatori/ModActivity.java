@@ -41,31 +41,31 @@ public class ModActivity extends XposedModule {
     private static final String CLASS_DECOR_VIEW_M = "com.android.internal.policy.PhoneWindow$DecorView";
     private static final String CLASS_DECOR_VIEW_N = "com.android.internal.policy.DecorView";
     private static final String CLASS_DECOR_VIEW =
-            (Build.VERSION.SDK_INT >= 24)? CLASS_DECOR_VIEW_N :
-                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)? CLASS_DECOR_VIEW_M :
+            (Build.VERSION.SDK_INT >= 24) ? CLASS_DECOR_VIEW_N :
+                    (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) ? CLASS_DECOR_VIEW_M :
                             "com.android.internal.policy.impl.PhoneWindow$DecorView";
 
-//    private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
+    //    private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
     private static final String CLASS_CONTEXT_IMPL = "android.app.ContextImpl";
 
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
 
-    public static FlyingHelper createFlyingHelper (FrameLayout decorView){
+    public static FlyingHelper createFlyingHelper(FrameLayout decorView) {
         try {
             FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(decorView, FIELD_FLYING_HELPER);
-            if(helper == null){
+            if (helper == null) {
                 helper = new FlyingHelper(decorView, 1, false);
                 XposedHelpers.setAdditionalInstanceField(decorView, FIELD_FLYING_HELPER, helper);
             }
             return helper;
-        }
-        catch (Throwable t){
+        } catch (Throwable t) {
             logE(t);
             return null;
         }
     }
+
     public static void initZygote() {
         try {
             installToDecorView();
@@ -309,13 +309,13 @@ public class ModActivity extends XposedModule {
                     // color
                     final int color = a.data;
                     logD("background color: " + String.format("#%08X", color));
-                        logD("set opaque background color");
-                        drawable = new ColorDrawable(color);
+                    logD("set opaque background color");
+                    drawable = new ColorDrawable(color);
                 } else {
                     final Drawable d = decorView.getResources().getDrawable(a.resourceId);
                     logD("background drawable opacity: " + Integer.toString(d.getOpacity()));
-                        logD("set opaque background drawable");
-                        drawable = d;
+                    logD("set opaque background drawable");
+                    drawable = d;
                 }
             }
 //        } else if (drawable.getOpacity() == PixelFormat.OPAQUE) {
@@ -333,14 +333,25 @@ public class ModActivity extends XposedModule {
     public static FlyingHelper getHelper(@NonNull FrameLayout decorView) {
         FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
+
         try {
-            if (helper == null) {
+            if ((helper == null) && (decorView.getClass().getName().equals(CLASS_DECOR_VIEW))) {
                 helper = createFlyingHelper(decorView);
             }
         } catch (Throwable t) {
             logE(t);
 //            Log.e("Ben", Log.getStackTraceString(t));
         }
+        if (helper != null) {
+            final FlyingHelper h = helper;
+            XposedHelpers.callMethod(decorView, "setOnTouchListener", new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return h.onTouchEvent(event);
+                }
+            });
+        }
+
         return helper;
     }
 }
