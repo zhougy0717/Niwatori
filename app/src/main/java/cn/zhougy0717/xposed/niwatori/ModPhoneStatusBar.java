@@ -23,7 +23,9 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  * Created by tkgktyk on 2015/02/13.
  */
 public abstract class ModPhoneStatusBar extends XposedModule {
-    private static final String CLASS_PHONE_STATUS_BAR = "com.android.systemui.statusbar.phone.PhoneStatusBar";
+    private static final String CLASS_PHONE_STATUS_BAR =
+            (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)? "com.android.systemui.statusbar.phone.StatusBar":
+                    "com.android.systemui.statusbar.phone.PhoneStatusBar";
     private static final String CLASS_PHONE_STATUS_BAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
 
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";

@@ -9,12 +9,12 @@ android {
             storePassword 'zhougy1984'
         }
     }
-    compileSdkVersion 25
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "cn.zhougy0717.xposed.niwatori"
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 30
         versionName '0.5.2'
     }
@@ -37,6 +37,6 @@ dependencies {
     provided 'de.robv.android.xposed:api:82'
     provided 'de.robv.android.xposed:api:82:sources'
     compile project(':flyinglayout')
-    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:appcompat-v7:26.1.0'
     //    compile 'com.android.support:appcompat-v7:23.0.0'
 }

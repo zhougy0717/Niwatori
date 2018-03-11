@@ -2,15 +2,19 @@ package cn.zhougy0717.xposed.niwatori;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
+import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
@@ -97,10 +101,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
 //        mSettings = settings;
     }
 
-    public void onSettingsLoaded(NFW.Settings settings) {
-//        mSettings = settings;
+    public void onSettingsLoaded() {
+        //        mSettings = settings;
         setSpeed(getSettings().speed);
-        setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
+        float smallScreenPivotX = getAttachedView().getContext().getSharedPreferences("small_screen", 0).getInt("key_small_screen_pivot_x", 0)/100f;
+        if (smallScreenPivotX == 0){
+            smallScreenPivotX = getSettings().smallScreenPivotX;
+        }
+        setPivot(smallScreenPivotX, getSettings().smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
             setResizeMode(FlyingLayout.RESIZE_MODE_PADDING);
         } else {
@@ -116,6 +124,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
                 getAttachedView().requestLayout();
             }
         });
+    }
+
+    public void onSettingsLoaded(NFW.Settings settings) {
+        onSettingsLoaded();
     }
 
     public NFW.Settings getSettings() {
@@ -207,9 +219,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
-            Intent intent = new Intent(action);
-            intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
-            getAttachedView().getContext().sendBroadcast(intent);
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences("small_screen", 0);
+            final int initX = prefs.getInt("key_initial_x_percent", 0);
+            final int pivotX = prefs.getInt("key_small_screen_pivot_x", 0);
+            prefs.edit()
+                    .putInt("key_initial_x_percent", -initX)
+                    .putInt("key_small_screen_pivot_x", 100-pivotX)
+                    .apply();
+            onSettingsLoaded();
         }
     }
 

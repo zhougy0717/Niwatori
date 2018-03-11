@@ -204,15 +204,15 @@ public class FlyingLayout extends FrameLayout {
                 mView.requestLayout();
             }
         };
-        private final ValueAnimator.AnimatorUpdateListener mChangePivotAnimatorUpdateListener
-                = new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                PointF pivot = (PointF) animation.getAnimatedValue();
-                setChildrenPivot(pivot.x, pivot.y);
-                mView.requestLayout();
-            }
-        };
+//        private final ValueAnimator.AnimatorUpdateListener mChangePivotAnimatorUpdateListener
+//                = new ValueAnimator.AnimatorUpdateListener() {
+//            @Override
+//            public void onAnimationUpdate(ValueAnimator animation) {
+//                PointF pivot = (PointF) animation.getAnimatedValue();
+//                setChildrenPivot(pivot.x, pivot.y);
+//                mView.requestLayout();
+//            }
+//        };
         private final ValueAnimator.AnimatorUpdateListener mScaleAnimatorUpdateListener
                 = new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -558,17 +558,17 @@ public class FlyingLayout extends FrameLayout {
             final View view = getUseContainer() ? mView.getChildAt(0) : mView;
             final float pivotX = view.getWidth() * mPivotX;
             final float pivotY = view.getHeight() * mPivotY;
-            if (animation) {
-                final View child = mView.getChildAt(0);
-                final PointF start = new PointF(child.getPivotX(), child.getPivotY());
-                final PointF end = new PointF(pivotX, pivotY);
-                final ValueAnimator animator = ValueAnimator.ofObject(mPointFEvaluator, start, end);
-                animator.addUpdateListener(mChangePivotAnimatorUpdateListener);
-                animator.setDuration(100);
-                animator.start();
-            } else {
+//            if (animation) {
+//                final View child = mView.getChildAt(0);
+//                final PointF start = new PointF(child.getPivotX(), child.getPivotY());
+//                final PointF end = new PointF(pivotX, pivotY);
+//                final ValueAnimator animator = ValueAnimator.ofObject(mPointFEvaluator, start, end);
+//                animator.addUpdateListener(mChangePivotAnimatorUpdateListener);
+//                animator.setDuration(100);
+//                animator.start();
+//            } else {
                 setChildrenPivot(pivotX, pivotY);
-            }
+//            }
         }
 
         public boolean onInterceptTouchEvent(MotionEvent ev) {
