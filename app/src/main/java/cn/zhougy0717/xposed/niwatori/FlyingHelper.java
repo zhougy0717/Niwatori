@@ -104,7 +104,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void onSettingsLoaded() {
         //        mSettings = settings;
         setSpeed(getSettings().speed);
-        float smallScreenPivotX = getAttachedView().getContext().getSharedPreferences("small_screen", 0).getInt("key_small_screen_pivot_x", 0)/100f;
+        float smallScreenPivotX = 0;
+        if (!getAttachedView().getContext().getPackageName().equals("android")) {
+            smallScreenPivotX = getAttachedView().getContext().getSharedPreferences("small_screen", 0).getInt("key_small_screen_pivot_x", 0) / 100f;
+        }
         if (smallScreenPivotX == 0){
             smallScreenPivotX = getSettings().smallScreenPivotX;
         }

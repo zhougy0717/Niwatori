@@ -1,5 +1,6 @@
 package cn.zhougy0717.xposed.niwatori;
 
+import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +19,8 @@ import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
+
+import static android.content.Context.KEYGUARD_SERVICE;
 
 /**
  * Created by tkgktyk on 2015/02/13.
@@ -115,6 +118,24 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 try {
                     final FrameLayout panelHolder = (FrameLayout) param.thisObject;
+                    final GestureDetector gestureDetector = new GestureDetector(panelHolder.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                        public boolean onDown(MotionEvent evt) {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onSingleTapConfirmed(MotionEvent e) {
+                            XposedHelpers.callMethod(mPhoneStatusBar, "animateCollapsePanels");
+                            return true;
+                        }
+
+                        @Override
+                        public boolean onDoubleTap(MotionEvent e) {
+                            mHelper.performAction(NFW.ACTION_SMALL_SCREEN);
+                            mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
+                            return true;
+                        }
+                    });
                     // need to reload on each package?
                     mHelper = new FlyingHelper(panelHolder, 1, false);
                     XposedHelpers.setAdditionalInstanceField(panelHolder,
@@ -131,6 +152,23 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                         }
                     }, NFW.SETTINGS_CHANGED_FILTER);
                     log("attached to status bar");
+                    panelHolder.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            View scroller = (View) XposedHelpers.getObjectField(v, "mStackScroller");
+                            int height = (int) XposedHelpers.getIntField(scroller, "mCurrentStackHeight");
+                            boolean result = false;
+                            KeyguardManager mKeyguardManager = (KeyguardManager) panelHolder.getContext().getSystemService(KEYGUARD_SERVICE);
+
+                            if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
+                                return false;
+                            }
+                            if (!mHelper.isResized() && mHelper.staysHome() && event.getY() > height) {
+                                result = gestureDetector.onTouchEvent(event);
+                            }
+                            return result;
+                        }
+                    });
                 } catch (Throwable t) {
                     logE(t);
                 }
