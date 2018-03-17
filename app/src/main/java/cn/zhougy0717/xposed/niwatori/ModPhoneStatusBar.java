@@ -7,10 +7,12 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XC_MethodHook;
@@ -31,7 +33,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                     "com.android.systemui.statusbar.phone.PhoneStatusBar";
     private static final String CLASS_PHONE_STATUS_BAR_VIEW = "com.android.systemui.statusbar.phone.PhoneStatusBarView";
 
-    private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
+    protected static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     // for status bar
     protected static FlyingHelper mHelper;
@@ -43,6 +45,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
     abstract protected String getPanelCollapsedName();
 
     abstract protected void hookPanelHolderOnTouch(ClassLoader classLoader);
+    abstract protected void hookPanelConstructor(ClassLoader classLoader);
 
     protected void expandNotificationBar(){
         XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandNotificationsPanel");
@@ -51,7 +54,27 @@ public abstract class ModPhoneStatusBar extends XposedModule {
         XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandSettingsPanel");
     }
 
-    private final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
+    protected GestureDetector createShadowGesture(Context context) {
+        return new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            public boolean onDown(MotionEvent evt) {
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapConfirmed(MotionEvent e) {
+                XposedHelpers.callMethod(mPhoneStatusBar, "animateCollapsePanels");
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                mHelper.performAction(NFW.ACTION_SMALL_SCREEN);
+                mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
+                return true;
+            }
+        });
+    }
+    protected final BroadcastReceiver mGlobalReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             try {
@@ -112,76 +135,15 @@ public abstract class ModPhoneStatusBar extends XposedModule {
     }
 
     private void installToStatusBar(ClassLoader classLoader) {
-        final Class<?> classPanelHolder = XposedHelpers.findClass(getPanelHolderName(), classLoader);
-        XposedBridge.hookAllConstructors(classPanelHolder, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                try {
-                    final FrameLayout panelHolder = (FrameLayout) param.thisObject;
-                    final GestureDetector gestureDetector = new GestureDetector(panelHolder.getContext(), new GestureDetector.SimpleOnGestureListener() {
-                        public boolean onDown(MotionEvent evt) {
-                            return true;
-                        }
-
-                        @Override
-                        public boolean onSingleTapConfirmed(MotionEvent e) {
-                            XposedHelpers.callMethod(mPhoneStatusBar, "animateCollapsePanels");
-                            return true;
-                        }
-
-                        @Override
-                        public boolean onDoubleTap(MotionEvent e) {
-                            mHelper.performAction(NFW.ACTION_SMALL_SCREEN);
-                            mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
-                            return true;
-                        }
-                    });
-                    // need to reload on each package?
-                    mHelper = new FlyingHelper(panelHolder, 1, false);
-                    XposedHelpers.setAdditionalInstanceField(panelHolder,
-                            FIELD_FLYING_HELPER, mHelper);
-
-                    panelHolder.getContext().registerReceiver(mGlobalReceiver, NFW.STATUS_BAR_FILTER);
-                    panelHolder.getContext().registerReceiver(new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context context, Intent intent) {
-                            logD("reload settings");
-                            // need to reload on each package?
-                            NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
-                            mHelper.onSettingsLoaded(settings);
-                        }
-                    }, NFW.SETTINGS_CHANGED_FILTER);
-                    log("attached to status bar");
-                    panelHolder.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            View scroller = (View) XposedHelpers.getObjectField(v, "mStackScroller");
-                            int height = (int) XposedHelpers.getIntField(scroller, "mCurrentStackHeight");
-                            boolean result = false;
-                            KeyguardManager mKeyguardManager = (KeyguardManager) panelHolder.getContext().getSystemService(KEYGUARD_SERVICE);
-
-                            if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
-                                return false;
-                            }
-                            if (!mHelper.isResized() && mHelper.staysHome() && event.getY() > height) {
-                                result = gestureDetector.onTouchEvent(event);
-                            }
-                            return result;
-                        }
-                    });
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
+        hookPanelConstructor(classLoader);
         hookPanelHolderOnTouch(classLoader);
-
-        final Class<?> classFrameLayout = classPanelHolder.getSuperclass();
-        final Class<?> classViewGroup = classFrameLayout.getSuperclass();
-        final Class<?> classView = classViewGroup.getSuperclass();
+//
+//        final Class<?> classFrameLayout = classPanelHolder.getSuperclass();
+//        final Class<?> classViewGroup = classFrameLayout.getSuperclass();
+//        final Class<?> classView = classViewGroup.getSuperclass();
         XposedHelpers.findAndHookMethod(
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                        classView : classFrameLayout, "draw", Canvas.class,
+                        View.class : FrameLayout.class, "draw", Canvas.class,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -196,7 +158,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                         }
                     }
                 });
-        XposedHelpers.findAndHookMethod(classFrameLayout, "onLayout", boolean.class,
+        XposedHelpers.findAndHookMethod(FrameLayout.class, "onLayout", boolean.class,
                 int.class, int.class, int.class, int.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
@@ -217,7 +179,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                         return invokeOriginalMethod(methodHookParam);
                     }
                 });
-        XposedHelpers.findAndHookMethod(classViewGroup, "onInterceptTouchEvent", MotionEvent.class,
+        XposedHelpers.findAndHookMethod(ViewGroup.class, "onInterceptTouchEvent", MotionEvent.class,
                 new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
