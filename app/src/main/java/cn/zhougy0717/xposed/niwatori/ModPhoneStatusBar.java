@@ -56,16 +56,6 @@ public abstract class ModPhoneStatusBar extends XposedModule {
 
     protected GestureDetector createShadowGesture(Context context) {
         return new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            public boolean onDown(MotionEvent evt) {
-                return true;
-            }
-
-            @Override
-            public boolean onSingleTapConfirmed(MotionEvent e) {
-                XposedHelpers.callMethod(mPhoneStatusBar, "animateCollapsePanels");
-                return true;
-            }
-
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 mHelper.performAction(NFW.ACTION_SMALL_SCREEN);
@@ -134,13 +124,52 @@ public abstract class ModPhoneStatusBar extends XposedModule {
         }
     }
 
+    private void handleNotificationGesture(ClassLoader classLoader){
+        final Class<?> classPanelView = XposedHelpers.findClass("com.android.systemui.statusbar.phone.NotificationPanelView", classLoader);
+        final Class<?> classStatusBar = XposedHelpers.findClass("com.android.systemui.statusbar.phone.PhoneStatusBar", classLoader);
+        XposedBridge.hookAllMethods(classStatusBar, "onScreenTurnedOff", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                mHelper.resetState(true);
+            }
+        });
+        XposedBridge.hookAllConstructors(classPanelView, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                View v = (View) param.thisObject;
+                final GestureDetector gestureDetector = createShadowGesture(v.getContext());
+                XposedHelpers.setAdditionalInstanceField(v, "gesture", gestureDetector);
+            }
+        });
+        XposedBridge.hookAllMethods(classPanelView, "onTouchEvent", new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                View v = (View) param.thisObject;
+                MotionEvent e = (MotionEvent) param.args[0];
+                GestureDetector gestureDetector = (GestureDetector) XposedHelpers.getAdditionalInstanceField(v, "gesture");
+                boolean result = false;
+                KeyguardManager mKeyguardManager = (KeyguardManager) v.getContext().getSystemService(KEYGUARD_SERVICE);
+                if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
+                    return invokeOriginalMethod(param);
+                }
+                if (!mHelper.isResized() && mHelper.staysHome()) {
+                    if (gestureDetector.onTouchEvent(e)) {
+                        return true;
+                    }
+                }
+                if (!result && !mHelper.isResized() && mHelper.staysHome()) {
+                    result = (boolean) invokeOriginalMethod(param);
+                }
+                return result;
+            }
+        });
+    }
     private void installToStatusBar(ClassLoader classLoader) {
         hookPanelConstructor(classLoader);
         hookPanelHolderOnTouch(classLoader);
-//
-//        final Class<?> classFrameLayout = classPanelHolder.getSuperclass();
-//        final Class<?> classViewGroup = classFrameLayout.getSuperclass();
-//        final Class<?> classView = classViewGroup.getSuperclass();
+
+        handleNotificationGesture(classLoader);
+
         XposedHelpers.findAndHookMethod(
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                         View.class : FrameLayout.class, "draw", Canvas.class,

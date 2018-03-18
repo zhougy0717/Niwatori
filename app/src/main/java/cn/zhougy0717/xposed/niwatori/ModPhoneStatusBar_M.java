@@ -49,34 +49,6 @@ public class ModPhoneStatusBar_M extends ModPhoneStatusBar {
         return "onAllPanelsCollapsed";
     }
 
-    private void installTouchListenerOnNotificationPanelView(ClassLoader classLoader){
-        final Class<?> classNotificationPanelView = XposedHelpers.findClass("com.android.systemui.statusbar.phone.NotificationPanelView", classLoader);
-        XposedBridge.hookAllConstructors(classNotificationPanelView, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) throws Throwable {
-                final View notificationPanelView = (View) param.thisObject;
-                final GestureDetector gestureDetector = createShadowGesture(notificationPanelView.getContext());
-                notificationPanelView.setOnTouchListener(new View.OnTouchListener() {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event) {
-                        View scroller = (View) XposedHelpers.getObjectField(notificationPanelView, "mNotificationStackScroller");
-                        int height = (int) XposedHelpers.getIntField(scroller, "mCurrentStackHeight");
-                        boolean result = false;
-                        KeyguardManager mKeyguardManager = (KeyguardManager) v.getContext().getSystemService(KEYGUARD_SERVICE);
-
-                        if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
-                            return false;
-                        }
-                        if (!mHelper.isResized() && mHelper.staysHome() && event.getY() > height) {
-                            result = gestureDetector.onTouchEvent(event);
-                        }
-                        return result;
-                    }
-                });
-            }
-        });
-    }
-
     protected void hookPanelConstructor(ClassLoader classLoader) {
         final Class<?> classPanelHolder = XposedHelpers.findClass(getPanelHolderName(), classLoader);
         XposedBridge.hookAllConstructors(classPanelHolder, new XC_MethodHook() {
@@ -107,6 +79,5 @@ public class ModPhoneStatusBar_M extends ModPhoneStatusBar {
             }
         });
 
-        installTouchListenerOnNotificationPanelView(classLoader);
     }
 }

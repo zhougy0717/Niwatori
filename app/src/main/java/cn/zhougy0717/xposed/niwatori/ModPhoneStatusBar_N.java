@@ -102,23 +102,6 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
                         }
                     }, NFW.SETTINGS_CHANGED_FILTER);
                     log("attached to status bar");
-                    panelHolder.setOnTouchListener(new View.OnTouchListener() {
-                        @Override
-                        public boolean onTouch(View v, MotionEvent event) {
-                            View scroller = (View) XposedHelpers.getObjectField(v, "mStackScroller");
-                            int height = (int) XposedHelpers.getIntField(scroller, "mCurrentStackHeight");
-                            boolean result = false;
-                            KeyguardManager mKeyguardManager = (KeyguardManager) panelHolder.getContext().getSystemService(KEYGUARD_SERVICE);
-
-                            if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
-                                return false;
-                            }
-                            if (!mHelper.isResized() && mHelper.staysHome() && event.getY() > height) {
-                                result = gestureDetector.onTouchEvent(event);
-                            }
-                            return result;
-                        }
-                    });
                 } catch (Throwable t) {
                     logE(t);
                 }
