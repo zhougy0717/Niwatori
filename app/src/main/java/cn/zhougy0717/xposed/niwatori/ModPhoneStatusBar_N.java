@@ -4,6 +4,8 @@ import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.os.Build;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -108,4 +110,25 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
             }
         });
     }
+
+    @Override
+    protected void hookPanelHolderDraw(ClassLoader classLoader){
+        XposedHelpers.findAndHookMethod(View.class, "draw", Canvas.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            View v = (View) param.thisObject;
+                            if (v.getClass().getName().endsWith("NotificationPanelView")) {
+                                final Canvas canvas = (Canvas) param.args[0];
+                                mHelper.draw(canvas);
+                            }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                    }
+                });
+    }
 }
+
+

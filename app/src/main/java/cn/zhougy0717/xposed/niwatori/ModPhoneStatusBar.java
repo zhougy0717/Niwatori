@@ -46,6 +46,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
 
     abstract protected void hookPanelHolderOnTouch(ClassLoader classLoader);
     abstract protected void hookPanelConstructor(ClassLoader classLoader);
+//    abstract protected void hookPanelHolderDraw(ClassLoader classLoader);
 
     protected void expandNotificationBar(){
         XposedHelpers.callMethod(mPhoneStatusBar, "animateExpandNotificationsPanel");
@@ -164,15 +165,10 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             }
         });
     }
-    private void installToStatusBar(ClassLoader classLoader) {
-        hookPanelConstructor(classLoader);
-        hookPanelHolderOnTouch(classLoader);
 
-        handleNotificationGesture(classLoader);
-
-        XposedHelpers.findAndHookMethod(
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                        View.class : FrameLayout.class, "draw", Canvas.class,
+    protected void hookPanelHolderDraw(ClassLoader classLoader){
+        // This is for version before Marshmallow(6.0)
+        XposedHelpers.findAndHookMethod(FrameLayout.class, "draw", Canvas.class,
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -187,6 +183,15 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                         }
                     }
                 });
+    }
+    private void installToStatusBar(ClassLoader classLoader) {
+        hookPanelConstructor(classLoader);
+        hookPanelHolderOnTouch(classLoader);
+
+        handleNotificationGesture(classLoader);
+        hookPanelHolderDraw(classLoader);
+
+
         XposedHelpers.findAndHookMethod(FrameLayout.class, "onLayout", boolean.class,
                 int.class, int.class, int.class, int.class, new XC_MethodReplacement() {
                     @Override
