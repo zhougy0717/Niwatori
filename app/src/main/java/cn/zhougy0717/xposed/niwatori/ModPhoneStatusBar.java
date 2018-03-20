@@ -139,7 +139,8 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 View v = (View) param.thisObject;
                 final GestureDetector gestureDetector = createShadowGesture(v.getContext());
-                XposedHelpers.setAdditionalInstanceField(v, "gesture", gestureDetector);
+                XposedHelpers.setAdditionalInstanceField(v, "CUSTOM_GESTURE_DETECTOR", gestureDetector);
+                XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", false);
             }
         });
         XposedBridge.hookAllMethods(classPanelView, "onTouchEvent", new XC_MethodReplacement() {
@@ -147,21 +148,32 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 View v = (View) param.thisObject;
                 MotionEvent e = (MotionEvent) param.args[0];
-                GestureDetector gestureDetector = (GestureDetector) XposedHelpers.getAdditionalInstanceField(v, "gesture");
+                GestureDetector gestureDetector = (GestureDetector) XposedHelpers.getAdditionalInstanceField(v, "CUSTOM_GESTURE_DETECTOR");
                 boolean result = false;
                 KeyguardManager mKeyguardManager = (KeyguardManager) v.getContext().getSystemService(KEYGUARD_SERVICE);
                 if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
                     return invokeOriginalMethod(param);
                 }
+
                 if (!mHelper.isResized() && mHelper.staysHome()) {
                     if (gestureDetector.onTouchEvent(e)) {
+                        /**
+                         *  Why do we need to ignore next ACTION_UP?
+                         *  Double tap takes effect in the next ACTION_DOWN event.
+                         *  If we don't ignore the coming ACTION_UP, systemui will respond to it and collapse the notification panel.
+                         *  That's not what I want.
+                         */
+                        XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", true);
                         return true;
                     }
                 }
-                if (!result && !mHelper.isResized() && mHelper.staysHome()) {
-                    result = (boolean) invokeOriginalMethod(param);
+
+                boolean ignoreUp = (boolean)XposedHelpers.getAdditionalInstanceField(v,"IGNORE_NEXT_UP");
+                if(ignoreUp && e.getAction()==MotionEvent.ACTION_UP){
+                    XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", false);
+                    return true;
                 }
-                return result;
+                return invokeOriginalMethod(param);
             }
         });
     }
