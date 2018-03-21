@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
@@ -84,9 +85,6 @@ public class ModActivity extends XposedModule {
                         final Context context = (Context) methodHookParam.thisObject;
                         final Intent intent = (Intent) methodHookParam.args[0];
                         final String action = intent.getAction();
-//                        if (context.getPackageName().startsWith("com.tencent.qqmusic")){
-//                            Log.e("Ben", "intent:" + intent);
-//                        }
                         if (!Strings.isNullOrEmpty(action) && action.startsWith(NFW.PREFIX_ACTION)) {
                             NFW.performAction(context, action);
                             return null;
@@ -270,10 +268,15 @@ public class ModActivity extends XposedModule {
                     logD("set opaque background color");
                     drawable = new ColorDrawable(color);
                 } else {
-                    final Drawable d = decorView.getResources().getDrawable(a.resourceId);
-                    logD("background drawable opacity: " + Integer.toString(d.getOpacity()));
-                    logD("set opaque background drawable");
-                    drawable = d;
+                    try {
+                        final Drawable d = decorView.getResources().getDrawable(a.resourceId);
+                        logD("background drawable opacity: " + Integer.toString(d.getOpacity()));
+                        logD("set opaque background drawable");
+                        drawable = d;
+                    }
+                    catch (Throwable t) {
+                        drawable = new ColorDrawable(Color.BLACK);
+                    }
                 }
             }
 //        } else if (drawable.getOpacity() == PixelFormat.OPAQUE) {
@@ -316,7 +319,6 @@ public class ModActivity extends XposedModule {
                 }
             });
         }
-
         return helper;
     }
 }
