@@ -15,8 +15,8 @@ android {
         applicationId "cn.zhougy0717.xposed.niwatori"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 31
-        versionName '0.5.3'
+        versionCode 32
+        versionName '0.5.4'
     }
     buildTypes {
         release {

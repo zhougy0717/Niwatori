@@ -42,6 +42,17 @@ To enable each mode, you have several choices:
 
 # Release Note
 
+## v0.5.4
+
+1. Add double tap gesture on notification panel. You can play with Notification panel much easier with Niwatori.
+2. Fix background issue in Discord and Taobao.
+
+## v0.5.3
+
+1. Compile with Oreo (API 26).
+2. Swap directly instead of broadcasting intent to work better in Oreo.
+3. Enhance compatibility.
+
 ## v0.5.2
 
 1. Improve the compatibility.
