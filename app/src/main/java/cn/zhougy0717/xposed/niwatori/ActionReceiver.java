@@ -35,7 +35,7 @@ public class ActionReceiver extends Receiver implements IReceiver{
         if (mRegistered) {
             mDecorView.getContext().unregisterReceiver(mReceiver);
 //            getHelper(mDecorView).resetState(true);
-            ModActivity.getHelper(mDecorView).resetState(true);
+//            ModActivity.getHelper(mDecorView).resetState(true);
             mRegistered = false;
         }
 
