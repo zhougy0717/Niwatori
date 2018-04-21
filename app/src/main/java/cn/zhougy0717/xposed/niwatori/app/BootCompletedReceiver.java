@@ -30,9 +30,9 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 //        WorldReadablePreference.sharedPreferenceFix();
-        Settings settings = new Settings(NFW.getSharedPreferences(context));
-        if (settings.smallScreenPersistent) {
-            context.startService(new Intent(context, PersistentService.class));
-        }
+//        Settings settings = new Settings(NFW.getSharedPreferences(context));
+//        if (settings.smallScreenPersistent) {
+//            context.startService(new Intent(context, PersistentService.class));
+//        }
     }
 }

@@ -371,13 +371,13 @@ public class SettingsActivity extends InAppBillingActivity {
             setUpSwitch(R.string.key_small_screen_persistent, new OnSwitchChangeListener() {
                 @Override
                 public void onChange(SwitchPreference sw, boolean enabled) {
-                    Context context = sw.getContext();
-                    Intent service = new Intent(context, PersistentService.class);
-                    if (enabled) {
-                        context.startService(service);
-                    } else {
-                        context.stopService(service);
-                    }
+//                    Context context = sw.getContext();
+//                    Intent service = new Intent(context, PersistentService.class);
+//                    if (enabled) {
+//                        context.startService(service);
+//                    } else {
+//                        context.stopService(service);
+//                    }
                 }
             });
             // Other

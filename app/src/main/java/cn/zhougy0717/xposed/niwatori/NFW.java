@@ -145,13 +145,13 @@ public class NFW {
         return drawable;
     }
 
-    public static void requestResizedGlobal(Context context) {
-        context.sendBroadcast(new Intent(PersistentService.ACTION_REQUEST_RESIZE));
-    }
-
-    public static void requestResizedGlobal(FrameLayout decorView) {
-        decorView.getContext().sendBroadcast(new Intent(PersistentService.ACTION_REQUEST_RESIZE));
-    }
+//    public static void requestResizedGlobal(Context context) {
+//        context.sendBroadcast(new Intent(PersistentService.ACTION_REQUEST_RESIZE));
+//    }
+//
+//    public static void requestResizedGlobal(FrameLayout decorView) {
+//        decorView.getContext().sendBroadcast(new Intent(PersistentService.ACTION_REQUEST_RESIZE));
+//    }
 
     public static void setResizedGlobal(Context context, boolean resized) {
 //        context.sendBroadcast(new Intent(resized ?
