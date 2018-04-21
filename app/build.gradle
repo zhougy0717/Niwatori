@@ -10,7 +10,7 @@ android {
         }
     }
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "cn.zhougy0717.xposed.niwatori"
         minSdkVersion 16
@@ -29,14 +29,32 @@ android {
     }
     productFlavors {
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    provided fileTree(include: ['*.jar'], dir: 'provided_libs')
-    provided 'de.robv.android.xposed:api:82'
-    provided 'de.robv.android.xposed:api:82:sources'
-    compile project(':flyinglayout')
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    //    compile 'com.android.support:appcompat-v7:23.0.0'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    compileOnly fileTree(include: ['*.jar'], dir: 'provided_libs')
+    compileOnly 'de.robv.android.xposed:api:82'
+    compileOnly 'de.robv.android.xposed:api:82:sources'
+    implementation project(':flyinglayout')
+    api 'com.android.support:appcompat-v7:26.1.0'
+
+    // Required -- JUnit 4 framework
+    testImplementation 'junit:junit:4.12'
+    // Optional -- Mockito framework
+    testImplementation 'org.mockito:mockito-core:2.8.9'
+    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation 'org.powermock:powermock-module-junit4:1.+'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.+'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.+'
+    testImplementation "org.powermock:powermock-classloading-xstream:1.7.+"
+
+    testCompileOnly 'de.robv.android.xposed:api:82'
+    testCompileOnly 'de.robv.android.xposed:api:82:sources'
 }

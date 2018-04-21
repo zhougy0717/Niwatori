@@ -12,9 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import de.robv.android.xposed.XSharedPreferences;
+import cn.zhougy0717.xposed.niwatori.app.ChangeSettingsActionReceiver;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
@@ -24,6 +23,7 @@ import jp.tkgktyk.flyinglayout.FlyingLayout;
  */
 public class FlyingHelper extends FlyingLayout.Helper {
     private static final String TAG = FlyingHelper.class.getSimpleName();
+    public static final String TEMP_SCREEN_INFO_PREF_FILENAME = "temp_screen_info";
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
@@ -38,11 +38,11 @@ public class FlyingHelper extends FlyingLayout.Helper {
         mInputMethodManager = (InputMethodManager) view.getContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        NFW.Settings settings = WorldReadablePreference.getSettings();
+        Settings settings = WorldReadablePreference.getSettings();
         initialize(useContainer, settings);
     }
 
-    private void initialize(boolean useContainer, NFW.Settings settings) {
+    private void initialize(boolean useContainer, Settings settings) {
         final Context niwatoriContext = NFW.getNiwatoriContext(getAttachedView().getContext());
         if (niwatoriContext != null) {
             mBoundaryWidth = Math.round(niwatoriContext.getResources().getDimension(R.dimen.boundary_width));
@@ -97,7 +97,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         onSettingsLoaded(settings);
     }
 
-    public void setSettings(NFW.Settings settings) {
+    public void setSettings(Settings settings) {
 //        mSettings = settings;
     }
 
@@ -106,7 +106,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         setSpeed(getSettings().speed);
         float smallScreenPivotX = 0;
         if (!getAttachedView().getContext().getPackageName().equals("android")) {
-            smallScreenPivotX = getAttachedView().getContext().getSharedPreferences("small_screen", 0).getInt("key_small_screen_pivot_x", 0) / 100f;
+            smallScreenPivotX = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0).getInt("key_small_screen_pivot_x", 0) / 100f;
         }
         if (smallScreenPivotX == 0){
             smallScreenPivotX = getSettings().smallScreenPivotX;
@@ -129,11 +129,11 @@ public class FlyingHelper extends FlyingLayout.Helper {
         });
     }
 
-    public void onSettingsLoaded(NFW.Settings settings) {
+    public void onSettingsLoaded(Settings settings) {
         onSettingsLoaded();
     }
 
-    public NFW.Settings getSettings() {
+    public Settings getSettings() {
 //        return mSettings;
         return WorldReadablePreference.getSettings();
     }
@@ -222,13 +222,21 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences("small_screen", 0);
-            final int initX = prefs.getInt("key_initial_x_percent", 0);
-            final int pivotX = prefs.getInt("key_small_screen_pivot_x", 0);
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+            int pivotX;
+            if(prefs.getAll().keySet().contains("key_small_screen_pivot_x")){
+                pivotX = prefs.getInt("key_small_screen_pivot_x", 0);
+            }
+            else {
+                pivotX = (int)(100 * getSettings().smallScreenPivotX);
+            }
             prefs.edit()
-                    .putInt("key_initial_x_percent", -initX)
                     .putInt("key_small_screen_pivot_x", 100-pivotX)
                     .apply();
+            Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
+            intent.putExtra("key_small_screen_pivot_x", 100-pivotX);
+            Log.e("Ben", "pivotX: " + pivotX);
+            getAttachedView().getContext().sendBroadcast(intent);
             onSettingsLoaded();
         }
     }
@@ -282,6 +290,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void resize() {
+        Log.e("Ben", getAttachedView() + " is going to " + (isResized()?"reset":"resize"));
         resize(!isResized());
     }
 

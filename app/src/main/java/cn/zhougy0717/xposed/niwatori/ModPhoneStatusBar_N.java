@@ -1,12 +1,9 @@
 package cn.zhougy0717.xposed.niwatori;
 
-import android.app.KeyguardManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
-import android.os.Build;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,8 +13,6 @@ import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-
-import static android.content.Context.KEYGUARD_SERVICE;
 
 /**
  * Created by zhougua on 1/8/2018.
@@ -99,7 +94,7 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
                         public void onReceive(Context context, Intent intent) {
                             logD("reload settings");
                             // need to reload on each package?
-                            NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+                            Settings settings = (Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
                             mHelper.onSettingsLoaded(settings);
                         }
                     }, NFW.SETTINGS_CHANGED_FILTER);

@@ -19,10 +19,9 @@ package cn.zhougy0717.xposed.niwatori.app;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import cn.zhougy0717.xposed.niwatori.NFW;
-import cn.zhougy0717.xposed.niwatori.WorldReadablePreference;
+import cn.zhougy0717.xposed.niwatori.Settings;
 
 /**
  * Created by tkgktyk on 2015/06/09.
@@ -31,7 +30,7 @@ public class BootCompletedReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 //        WorldReadablePreference.sharedPreferenceFix();
-        NFW.Settings settings = new NFW.Settings(NFW.getSharedPreferences(context));
+        Settings settings = new Settings(NFW.getSharedPreferences(context));
         if (settings.smallScreenPersistent) {
             context.startService(new Intent(context, PersistentService.class));
         }

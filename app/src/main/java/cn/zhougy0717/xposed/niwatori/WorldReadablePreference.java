@@ -1,9 +1,7 @@
 package cn.zhougy0717.xposed.niwatori;
 
-import android.content.Context;
 import android.os.Build;
 import android.os.FileObserver;
-import android.util.Log;
 
 import java.io.File;
 
@@ -52,7 +50,7 @@ public class WorldReadablePreference extends XposedModule{
         }
     }
 
-    public static NFW.Settings getSettings() {
+    public static Settings getSettings() {
         if (mPrefs == null) {
             mPrefs = new XSharedPreferences(NFW.PACKAGE_NAME);
         }
@@ -61,6 +59,6 @@ public class WorldReadablePreference extends XposedModule{
         mPrefs.reload();
 //        log("pref exists: " + mPrefs.getFile().exists() + ", can read: " +mPrefs.getFile().canRead());
 //        Log.e("Ben", "pref exists: " + mPrefs.getFile().exists() + ", can read: " +mPrefs.getFile().canRead());
-        return new NFW.Settings(mPrefs);
+        return new Settings(mPrefs);
     }
 }

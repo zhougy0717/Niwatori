@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -17,7 +16,6 @@ import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -114,7 +112,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             //
             // for Software Keys
             //
-            NFW.Settings settings = WorldReadablePreference.getSettings();
+            Settings settings = WorldReadablePreference.getSettings();
             if (settings.extraActionOnRecents != NFW.NONE_ON_RECENTS) {
                 final ClassLoader classLoader = loadPackageParam.classLoader;
                 modifySoftwareKey(classLoader);
@@ -324,7 +322,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                             @Override
                             public boolean onSingleTapConfirmed(MotionEvent e) {
                                 try {
-                                    NFW.Settings settings = mHelper.getSettings();
+                                    Settings settings = mHelper.getSettings();
                                     if (settings.extraActionOnRecents != NFW.TAP_ON_RECENTS) {
                                         clickListener.onClick(recentsButton);
                                     } else {
@@ -340,7 +338,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                             @Override
                             public void onLongPress(MotionEvent e) {
                                 try {
-                                    NFW.Settings settings = mHelper.getSettings();
+                                    Settings settings = mHelper.getSettings();
                                     if (settings.extraActionOnRecents != NFW.LONG_PRESS_ON_RECENTS) {
                                         if (longClickListener != null) {
                                             longClickListener.onLongClick(recentsButton);
@@ -360,7 +358,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                             @Override
                             public boolean onDoubleTap(MotionEvent e) {
                                 try {
-                                    NFW.Settings settings = mHelper.getSettings();
+                                    Settings settings = mHelper.getSettings();
                                     if (settings.extraActionOnRecents != NFW.DOUBLE_TAP_ON_RECENTS) {
                                         if (settings.extraActionOnRecents == NFW.TAP_ON_RECENTS) {
                                             clickListener.onClick(recentsButton);

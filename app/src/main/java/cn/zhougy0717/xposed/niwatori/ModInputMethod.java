@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedHelpers;
 
 /**
@@ -17,7 +16,7 @@ public class ModInputMethod extends XposedModule {
     public static void initZygote(/*XSharedPreferences prefs*/) {
         try {
 //            NFW.Settings settings = newSettings(prefs);
-            NFW.Settings settings = WorldReadablePreference.getSettings();
+            Settings settings = WorldReadablePreference.getSettings();
             if (settings.autoReset) {
                 final XC_MethodHook onSoftInputShown = new XC_MethodHook() {
                     @Override

@@ -10,9 +10,9 @@ import de.robv.android.xposed.XposedBridge;
  * Created by tkgktyk on 2015/02/08.
  */
 public class XposedModule {
-    public static NFW.Settings newSettings(XSharedPreferences prefs) {
+    public static Settings newSettings(XSharedPreferences prefs) {
         prefs.reload();
-        return new NFW.Settings(prefs);
+        return new Settings(prefs);
     }
 
     private static String prefix() {

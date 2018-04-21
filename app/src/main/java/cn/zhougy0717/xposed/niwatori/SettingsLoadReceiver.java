@@ -51,14 +51,14 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
         mReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+                Settings settings = (Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
                 handler(settings);
             }
         };
         return mReceiver;
     }
 
-    private void handler(NFW.Settings settings){
+    private void handler(Settings settings){
         logD(mDecorView.getContext().getPackageName() + ": reload settings");
         // need to reload on each package?
         final FlyingHelper helper = getHelper(mDecorView);

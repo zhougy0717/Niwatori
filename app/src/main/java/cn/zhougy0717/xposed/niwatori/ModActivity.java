@@ -1,33 +1,22 @@
 package cn.zhougy0717.xposed.niwatori;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.PopupWindow;
-import android.widget.TabHost;
 
 import com.google.common.base.Strings;
 
@@ -218,7 +207,7 @@ public class ModActivity extends XposedModule {
                                 // need to reload on each package?
                                 final FlyingHelper helper = getHelper(decorView);
                                 if (helper != null) {
-                                    NFW.Settings settings = (NFW.Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+                                    Settings settings = (Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
                                     getHelper(decorView).onSettingsLoaded(settings);
                                 }
                             }
