@@ -142,7 +142,8 @@ public class DialogHandler extends XposedModule{
             logD("DecorView is null");
             return;
         }
-        if (helper.getSettings().autoReset) {
+//        if (helper.getSettings().autoReset) {
+        if(!helper.getSettings().smallScreenPersistent) {
             // When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
             // because through an Activity. So shouldn't reset automatically.
             helper.resetState(true);

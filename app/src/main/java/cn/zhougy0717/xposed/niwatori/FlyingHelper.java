@@ -104,12 +104,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void onSettingsLoaded() {
         //        mSettings = settings;
         setSpeed(getSettings().speed);
-        float smallScreenPivotX = 0;
+        float smallScreenPivotX = getSettings().smallScreenPivotX;
         if (!getAttachedView().getContext().getPackageName().equals("android")) {
-            smallScreenPivotX = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0).getInt("key_small_screen_pivot_x", 0) / 100f;
-        }
-        if (smallScreenPivotX == 0){
-            smallScreenPivotX = getSettings().smallScreenPivotX;
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+            if (prefs.getAll().keySet().contains("key_small_screen_pivot_x")){
+                smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0) / 100f;
+            }
         }
         setPivot(smallScreenPivotX, getSettings().smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
@@ -235,7 +235,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
                     .apply();
             Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
             intent.putExtra("key_small_screen_pivot_x", 100-pivotX);
-            Log.e("Ben", "pivotX: " + pivotX);
             getAttachedView().getContext().sendBroadcast(intent);
             onSettingsLoaded();
         }
@@ -290,11 +289,11 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void resize() {
-        Log.e("Ben", getAttachedView() + " is going to " + (isResized()?"reset":"resize"));
         resize(!isResized());
     }
 
     public void resize(boolean force) {
+        setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
 //        if (mSettings.smallScreenPersistent) {
         if (WorldReadablePreference.getSettings().smallScreenPersistent) {
             NFW.setResizedGlobal(getAttachedView().getContext(), force);

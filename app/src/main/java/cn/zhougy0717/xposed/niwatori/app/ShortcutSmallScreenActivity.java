@@ -26,12 +26,6 @@ public class ShortcutSmallScreenActivity extends Activity {
 
         if (getIntent().getAction()
                 .equals(Intent.ACTION_CREATE_SHORTCUT)) {
-//            NFW.Settings settings = XposedModule.getSettings();
-//            String action = settings.extraAction;
-
-//            SharedPreferences prefs = NFW.getSharedPreferences(this);
-//            String extra = prefs.getString("key_extra_action", NFW.ACTION_MOVABLE_SCREEN);
-//            Log.e("Ben", "extra: " + extra);
 
             Intent shortcut = new Intent(this, ActionActivity.class);
             shortcut.setAction(NFW.ACTION_SMALL_SCREEN);

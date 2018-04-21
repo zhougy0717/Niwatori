@@ -28,8 +28,6 @@ public class ReceiverManager {
         mSettingsLoadedReceiver.register();
         mHelper = ModActivity.getHelper(mDecorView);
         if (mHelper != null && mHelper.getSettings().smallScreenPersistent) {
-//                NFW.requestResizedGlobal(mDecorView);
-            Log.e("Ben", "now the screen is resized: " + mHelper.getSettings().screenResized);
             if (mHelper.getSettings().screenResized) {
                 mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
             }
@@ -43,7 +41,8 @@ public class ReceiverManager {
         mActionReceiver.unregister();
         mSettingsLoadedReceiver.unregister();
         mHelper = ModActivity.getHelper(mDecorView);
-        if (mHelper!=null && mHelper.getSettings().autoReset) {
+//        if (mHelper!=null && mHelper.getSettings().autoReset) {
+        if (mHelper!=null && !mHelper.getSettings().smallScreenPersistent) {
             // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
             // because through an Activity. So shouldn't reset automatically.
             mHelper.resetState(true);

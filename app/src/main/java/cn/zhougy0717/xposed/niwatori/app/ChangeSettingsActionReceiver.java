@@ -58,7 +58,6 @@ public class ChangeSettingsActionReceiver extends BroadcastReceiver {
                     .apply();
         }
         if (intent.hasExtra("key_small_screen_pivot_x")) {
-            Log.e("Ben", "receive key_small_screen_pivot_x " + intent.getIntExtra("key_small_screen_pivot_x", 0));
             prefs.edit().putInt("key_small_screen_pivot_x", intent.getIntExtra("key_small_screen_pivot_x", 0))
                     .apply();
         }

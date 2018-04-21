@@ -15,16 +15,6 @@ import jp.tkgktyk.flyinglayout.FlyingLayout;
  */
 public class Settings implements Serializable {
     static final long serialVersionUID = 1L;
-
-    public static class ScreenInfo implements Serializable{
-        public float smallScreenPivotX;
-        public boolean screenResized;
-        ScreenInfo(float smallScreenPivotX, boolean screenResized){
-            this.smallScreenPivotX = smallScreenPivotX;
-            this.screenResized = screenResized;
-        }
-    }
-    ScreenInfo mScreenInfo;
     public Set<String> blackList;
     public boolean animation;
     public boolean autoReset;
@@ -55,9 +45,6 @@ public class Settings implements Serializable {
         load(prefs);
     }
 
-    public float getSmallScreenPivotX(){
-        return mScreenInfo.smallScreenPivotX;
-    }
     public void load(SharedPreferences prefs) {
         blackList = prefs.getStringSet("key_blacklist", Collections.<String>emptySet());
         animation = prefs.getBoolean("key_animation", true);
@@ -74,10 +61,8 @@ public class Settings implements Serializable {
 
         boundaryColorSS = Color.parseColor(prefs.getString("key_boundary_color_ss", "#00000000")); // default is Transparent
         smallScreenSize = prefs.getInt("key_small_screen_size", 70) / 100f;
-
         smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x",
                 Math.round(FlyingLayout.DEFAULT_PIVOT_X * 100)) / 100f;
-
         smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y",
                 Math.round(FlyingLayout.DEFAULT_PIVOT_Y * 100)) / 100f;
         anotherResizeMethodTargets = prefs.getStringSet("key_another_resize_method_targets",
@@ -91,7 +76,5 @@ public class Settings implements Serializable {
 
         screenResized = prefs.getBoolean("screen_resized", false);
 
-        mScreenInfo = new ScreenInfo(smallScreenPivotX, screenResized);
-        Log.e("Ben", "smallScreenPivotX: " + smallScreenPivotX);
     }
 }
