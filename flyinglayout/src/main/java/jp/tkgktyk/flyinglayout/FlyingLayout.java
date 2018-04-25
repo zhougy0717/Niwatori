@@ -155,6 +155,9 @@ public class FlyingLayout extends FrameLayout {
          * @param v
          */
         public void onLongPressOutside(ViewGroup v);
+
+        public void onScrollLeft(ViewGroup v);
+        public void onScrollRight(ViewGroup v);
     }
 
     public static class Helper {
@@ -260,6 +263,7 @@ public class FlyingLayout extends FrameLayout {
             mView = view;
             mTouchSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
             mGestureDetector = new GestureDetector(mView.getContext(), new GestureDetector.SimpleOnGestureListener() {
+                private static final int FLING_MIN_DISTANCE = 20;
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     if (!insideOfContents(e)) {
@@ -282,6 +286,43 @@ public class FlyingLayout extends FrameLayout {
                         mOnFlyingEventListener.onClickOutside(mView);
                         return true;
                     }
+                    return false;
+                }
+
+                private float mLastX = 0;
+                @Override
+                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
+                    if (e1 == null) {
+                        return false;
+                    }
+                    Log.e("Ben", "onScroll: e1 " + e1.getX());
+                    if (!insideOfContents(e1)) {
+                        if (mLastX - e2.getX() > FLING_MIN_DISTANCE) {
+//                            Log.e("Ben", "swipe left");
+                            mOnFlyingEventListener.onScrollLeft(mView);
+                            mLastX = e2.getX();
+                            return true;
+                        } else if (e2.getX() - mLastX > FLING_MIN_DISTANCE) {
+//                            Log.e("Ben", "swipe right");
+                            mOnFlyingEventListener.onScrollRight(mView);
+                            mLastX = e2.getX();
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    Log.e("Ben", "onFling");
+//                    mOnFlyingEventListener.onScrollFinished(mView);
+                    return false;
+                }
+
+                @Override
+                public boolean onDown(MotionEvent e){
+                    Log.e("Ben", "onDown");
+                    mLastX = e.getX();
                     return false;
                 }
             });
@@ -873,6 +914,7 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public void moveWithoutSpeed(int deltaX, int deltaY, boolean animation) {
+            Log.e("Ben", "deltaX: " + deltaX + ", deltaY: " + deltaY);
             final int hLimit = mView.getWidth() - getHorizontalPadding();
             final int vLimit = mView.getHeight() - getVerticalPadding();
             final int newX = clamp(mOffsetX + deltaX, hLimit);
@@ -1139,5 +1181,10 @@ public class FlyingLayout extends FrameLayout {
         public void onLongPressOutside(ViewGroup v) {
             // nothing to do
         }
+
+        @Override
+        public void onScrollLeft(ViewGroup v){}
+        @Override
+        public void onScrollRight(ViewGroup v){}
     }
 }

@@ -1,5 +1,6 @@
 package cn.zhougy0717.xposed.niwatori;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +10,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
@@ -24,6 +24,9 @@ import jp.tkgktyk.flyinglayout.FlyingLayout;
 public class FlyingHelper extends FlyingLayout.Helper {
     private static final String TAG = FlyingHelper.class.getSimpleName();
     public static final String TEMP_SCREEN_INFO_PREF_FILENAME = "temp_screen_info";
+    public static final int SMALLEST_SMALL_SCREEN_SIZE = 40;
+    public static final int BIGGEST_SMALL_SCREEN_SIZE = 90;
+    public static final int SMALL_SCREEN_SIZE_DELTA = 2;
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
@@ -54,45 +57,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         }
         setTouchEventEnabled(false);
         setUseContainer(useContainer);
-        setOnFlyingEventListener(new FlyingLayout.SimpleOnFlyingEventListener() {
-            @Override
-            public void onDragFinished(ViewGroup v) {
-                if (getSettings().autoPin) {
-                    pin();
-                }
-            }
-
-            @Override
-            public void onClickOutside(ViewGroup v) {
-                if (!NFW.isDefaultAction(getSettings().actionWhenTapOutside)) {
-                    performAction(getSettings().actionWhenTapOutside);
-//                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                }
-            }
-
-            @Override
-            public void onLongPressOutside(ViewGroup v) {
-                /**
-                 * DON'T USE LONG PRESS ACTION
-                 * --
-                 * Touch event listener loses the touch event when view is gone by touch event.
-                 * Then long tap handler is not stopped so its event is fired.
-                 * ex. the outside of Dialog, status bar shade.
-                 */
-//                if (!NFW.isDefaultAction(getSettings().actionWhenLongPressOutside)) {
-//                    performAction(getSettings().actionWhenLongPressOutside);
-//                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-//                }
-            }
-
-            @Override
-            public void onDoubleClickOutside(ViewGroup v) {
-                if (!NFW.isDefaultAction(getSettings().actionWhenDoubleTapOutside)) {
-                    performAction(getSettings().actionWhenDoubleTapOutside);
-//                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                }
-            }
-        });
+        setOnFlyingEventListener(new MySimpleOnFlyingEventListener(this));
 
         onSettingsLoaded(settings);
     }
@@ -111,14 +76,32 @@ public class FlyingHelper extends FlyingLayout.Helper {
                 smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0) / 100f;
             }
         }
-        setPivot(smallScreenPivotX, getSettings().smallScreenPivotY);
+
+        float smallScreenPivotY = getSettings().smallScreenPivotY;
+        if (!getAttachedView().getContext().getPackageName().equals("android")) {
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+            if (prefs.getAll().keySet().contains("key_small_screen_pivot_y")){
+                smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 0) / 100f;
+            }
+        }
+
+        float smallScreenSize = getSettings().smallScreenSize;
+        if (!getAttachedView().getContext().getPackageName().equals("android")) {
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+            if (prefs.getAll().keySet().contains("key_small_screen_size")){
+                smallScreenSize = prefs.getInt("key_small_screen_size", 0) / 100f;
+            }
+        }
+        Log.e("Ben", getAttachedView() + "onSettingsLoaded: smallScreenPivotX/Y " + smallScreenPivotX + "," + smallScreenPivotY);
+        setPivot(smallScreenPivotX, smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
             setResizeMode(FlyingLayout.RESIZE_MODE_PADDING);
         } else {
             setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
         }
         if (isResized()) {
-            setScale(getSettings().smallScreenSize);
+            Log.e("Ben", "onSettingsLoaded smallScreenSize: " + smallScreenSize);
+            setScale(smallScreenSize);
         }
         updateBoundary();
         getAttachedView().post(new Runnable() {
@@ -258,7 +241,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         enableMovable();
     }
 
-    private void pin() {
+    public void pin() {
         if (!isResized() && staysHome()) {
             moveToInitialPosition(true);
             hideSoftInputMethod();
@@ -351,6 +334,16 @@ public class FlyingHelper extends FlyingLayout.Helper {
         }
         if ((force || !handled) && isResized()) {
             resize(false);
+
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
+            if (prefs.getAll().keySet().contains("key_small_screen_size")) {
+                int smallScreenSize = prefs.getInt("key_small_screen_size", 70);
+                Context context = getAttachedView().getContext();
+                Intent intent = new Intent(NFW.getNiwatoriContext(context), ChangeSettingsActionReceiver.class);
+                intent.putExtra("key_small_screen_size", smallScreenSize);
+                Log.e("Ben", "onScrollLeft smallScreenSize: " + smallScreenSize);
+                context.sendBroadcast(intent);
+            }
         }
     }
 
@@ -376,7 +369,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
         mBoundaryDrawable.draw(canvas);
     }
 
+    @SuppressLint("NewApi")
     public void setForeground(View decorview) {
         decorview.setForeground(mBoundaryDrawable);
     }
+
 }

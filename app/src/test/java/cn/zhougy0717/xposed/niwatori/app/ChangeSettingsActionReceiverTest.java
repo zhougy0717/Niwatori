@@ -46,10 +46,12 @@ public class ChangeSettingsActionReceiverTest {
         Intent intent = new Intent();
         intent.putExtra("key_small_screen_pivot_x", 1);
         intent.putExtra("screen_resized", true);
+        intent.putExtra("key_small_screen_size", 12);
 
         ChangeSettingsActionReceiver receiver = new ChangeSettingsActionReceiver();
         receiver.onReceive(context, intent);
         assertEquals(1, prefs.getInt("key_small_screen_pivot_x", 0));
         assertTrue(prefs.getBoolean("screen_resized", false));
+        assertEquals(12, prefs.getInt("key_small_screen_size",0));
     }
 }
