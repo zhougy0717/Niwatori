@@ -24,9 +24,10 @@ import jp.tkgktyk.flyinglayout.FlyingLayout;
 public class FlyingHelper extends FlyingLayout.Helper {
     private static final String TAG = FlyingHelper.class.getSimpleName();
     public static final String TEMP_SCREEN_INFO_PREF_FILENAME = "temp_screen_info";
-    public static final int SMALLEST_SMALL_SCREEN_SIZE = 40;
-    public static final int BIGGEST_SMALL_SCREEN_SIZE = 90;
-    public static final int SMALL_SCREEN_SIZE_DELTA = 2;
+    public static final float SMALLEST_SMALL_SCREEN_SIZE = 0.4f;
+    public static final float BIGGEST_SMALL_SCREEN_SIZE = 0.9f;
+    public static final float SMALL_SCREEN_SIZE_DELTA = 0.02f;
+    public static final int SMALL_SCREEN_MARGIN = 15;
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
@@ -69,29 +70,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void onSettingsLoaded() {
         //        mSettings = settings;
         setSpeed(getSettings().speed);
-        float smallScreenPivotX = getSettings().smallScreenPivotX;
-        if (!getAttachedView().getContext().getPackageName().equals("android")) {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            if (prefs.getAll().keySet().contains("key_small_screen_pivot_x")){
-                smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0) / 100f;
-            }
-        }
-
-        float smallScreenPivotY = getSettings().smallScreenPivotY;
-        if (!getAttachedView().getContext().getPackageName().equals("android")) {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            if (prefs.getAll().keySet().contains("key_small_screen_pivot_y")){
-                smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 0) / 100f;
-            }
-        }
-
-        float smallScreenSize = getSettings().smallScreenSize;
-        if (!getAttachedView().getContext().getPackageName().equals("android")) {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            if (prefs.getAll().keySet().contains("key_small_screen_size")){
-                smallScreenSize = prefs.getInt("key_small_screen_size", 0) / 100f;
-            }
-        }
+//        if (!getAttachedView().getContext().getPackageName().equals("android")) {
+//            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+//            getSettings().update(prefs);
+//        }
+        float smallScreenPivotX = getSettings().getSmallScreenPivotX();
+        float smallScreenPivotY = getSettings().getSmallScreenPivotY();
+        float smallScreenSize = getSettings().getSmallScreenSize();
         Log.e("Ben", getAttachedView() + "onSettingsLoaded: smallScreenPivotX/Y " + smallScreenPivotX + "," + smallScreenPivotY);
         setPivot(smallScreenPivotX, smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
@@ -99,7 +84,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else {
             setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
         }
-        if (isResized()) {
+        if (isResized() && !isMovable()) {
             Log.e("Ben", "onSettingsLoaded smallScreenSize: " + smallScreenSize);
             setScale(smallScreenSize);
         }
@@ -118,7 +103,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public Settings getSettings() {
 //        return mSettings;
-        return WorldReadablePreference.getSettings();
+        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+        return WorldReadablePreference.getSettings().update(prefs);
     }
 
     private void updateBoundaryOnUnresize() {
@@ -206,19 +192,33 @@ public class FlyingHelper extends FlyingLayout.Helper {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
             SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            int pivotX;
-            if(prefs.getAll().keySet().contains("key_small_screen_pivot_x")){
-                pivotX = prefs.getInt("key_small_screen_pivot_x", 0);
-            }
-            else {
-                pivotX = (int)(100 * getSettings().smallScreenPivotX);
-            }
+            int pivotX = (int)(100*getSettings().getSmallScreenPivotX());
+
+//            if (getSettings().getSmallScreenPivotX() < 0.5) {
+//                prefs.edit()
+//                        .putInt("key_small_screen_pivot_x", 0)
+//                        .putInt("key_initial_x_percent", FlyingHelper.SMALL_SCREEN_MARGIN)
+//                        .apply();
+//            }
+//            else {
+//                prefs.edit()
+//                        .putInt("key_small_screen_pivot_x", 100)
+//                        .putInt("key_initial_x_percent", -FlyingHelper.SMALL_SCREEN_MARGIN)
+//                        .apply();
+//            }
+//            moveToInitialPosition(false);
             prefs.edit()
                     .putInt("key_small_screen_pivot_x", 100-pivotX)
                     .apply();
             Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
             intent.putExtra("key_small_screen_pivot_x", 100-pivotX);
             getAttachedView().getContext().sendBroadcast(intent);
+            if (pivotX < 0.5) {
+                moveWithoutSpeed(-2* SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), false);
+            }
+            else {
+                moveWithoutSpeed(2* SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), false);
+            }
             onSettingsLoaded();
         }
     }
@@ -226,7 +226,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
     private void toggleMovable() {
         if (isMovable()) {
             disableMovable();
-            goHome(getSettings().animation);
+            if (isResized()){
+                goHomeWithMargin(getSettings().animation);
+            }
+            else {
+                goHome(getSettings().animation);
+            }
         } else {
             forceMovable();
         }
@@ -259,7 +264,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (staysHome()) {
             forcePinOrReset();
         } else {
-            goHome(getSettings().animation);
+            if (isResized()) {
+                goHomeWithMargin(getSettings().animation);
+            }
+            else {
+                goHome(getSettings().animation);
+            }
             disableMovable();
         }
         updateBoundary();
@@ -277,23 +287,37 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public void resize(boolean force) {
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
-//        if (mSettings.smallScreenPersistent) {
         if (WorldReadablePreference.getSettings().smallScreenPersistent) {
             NFW.setResizedGlobal(getAttachedView().getContext(), force);
         }
+//        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+//        if (getSettings().getSmallScreenPivotX() < 0.5) {
+//            prefs.edit()
+//                    .putInt("key_small_screen_pivot_x", 0)
+//                    .putInt("key_initial_x_percent", -2*FlyingHelper.SMALL_SCREEN_MARGIN)
+//                    .apply();
+//        }
+//        else {
+//            prefs.edit()
+//                    .putInt("key_small_screen_pivot_x", 100)
+//                    .putInt("key_initial_x_percent", 2*FlyingHelper.SMALL_SCREEN_MARGIN)
+//                    .apply();
+//        }
+//        if (force) {
+//            Log.e("Ben", "initial x in resize: " + getSettings().initialXp);
+//            moveToInitialPosition(false);
+//        }
+//        else {
+//            prefs.edit().remove("key_initial_x_percent").apply();
+//        }
         if (force) {
+            goHomeWithMargin(getSettings().animation);
             forceResize();
             updateBoundaryOnResize();
         } else {
-//            if (getPivotX() == getSettings().smallScreenPivotX
-//                    && getPivotY() == getSettings().smallScreenPivotY) {
+            goHome(getSettings().animation);
             super.resize(FlyingLayout.DEFAULT_SCALE, getSettings().animation);
             updateBoundaryOnUnresize();
-//            } else {
-//                setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
-//                performLayoutAdjustment(getSettings().animation);
-//                updateBoundaryOnResize();
-//            }
         }
     }
 
@@ -323,28 +347,54 @@ public class FlyingHelper extends FlyingLayout.Helper {
         return moved;
     }
 
+    private boolean staysHomeWithMargin(){
+        return getOffsetX()== SMALL_SCREEN_MARGIN*getAttachedView().getWidth()/100 && getOffsetY()==0;
+    }
+
+    private void goHomeWithMargin(boolean animation){
+        Log.e("Ben", "goHomeWithMargin: " + getAttachedView().getWidth());
+        if (getSettings().getSmallScreenPivotX() < 0.5) {
+            moveWithoutSpeed(-getOffsetX() + SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), animation);
+        }
+        else {
+            moveWithoutSpeed(-getOffsetX() - SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), animation);
+        }
+    }
+
     public void resetState(boolean force) {
         boolean handled = false;
         if (isMovable() || !staysHome()) {
             disableMovable();
             // goHome must be placed after pin() for "Reset when collapsed"
             // option.
-            goHome(getSettings().animation);
-            handled = true;
-        }
-        if ((force || !handled) && isResized()) {
-            resize(false);
-
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
-            if (prefs.getAll().keySet().contains("key_small_screen_size")) {
-                int smallScreenSize = prefs.getInt("key_small_screen_size", 70);
-                Context context = getAttachedView().getContext();
-                Intent intent = new Intent(NFW.getNiwatoriContext(context), ChangeSettingsActionReceiver.class);
-                intent.putExtra("key_small_screen_size", smallScreenSize);
-                Log.e("Ben", "onScrollLeft smallScreenSize: " + smallScreenSize);
-                context.sendBroadcast(intent);
+            if (isResized() && !staysHomeWithMargin()) {
+                goHomeWithMargin(getSettings().animation);
+                handled = true;
+            }
+            else if(isResized() && staysHomeWithMargin()) {
+                handled = false;
+            }
+            else {
+                goHome(getSettings().animation);
+                handled = true;
             }
         }
+        if ((force || !handled) && isResized()) {
+            goHome(getSettings().animation);
+            resize(false);
+        }
+    }
+
+    public void onExit() {
+        Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
+
+        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
+//        getSettings().update(prefs);
+        intent.putExtra("key_small_screen_size", Math.round(100*getSettings().getSmallScreenSize()));
+        intent.putExtra("key_small_screen_pivot_x", Math.round(100*getSettings().getSmallScreenPivotX()));
+        intent.putExtra("key_small_screen_pivot_y", Math.round(100*getSettings().getSmallScreenPivotY()));
+        getAttachedView().getContext().sendBroadcast(intent);
+        prefs.edit().clear().apply();
     }
 
     private void hideSoftInputMethod() {

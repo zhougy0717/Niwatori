@@ -45,6 +45,35 @@ public class Settings implements Serializable {
         load(prefs);
     }
 
+    public float getSmallScreenSize(){
+        return smallScreenSize;
+    }
+    public float getSmallScreenPivotX(){
+        return smallScreenPivotX;
+    }
+    public float getSmallScreenPivotY(){
+        return smallScreenPivotY;
+    }
+
+    public Settings update(SharedPreferences prefs){
+        Set<String> keySet = prefs.getAll().keySet();
+        if (keySet.contains("key_small_screen_pivot_x")) {
+            smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0)/100f;
+        }
+        if (keySet.contains("key_small_screen_pivot_y")) {
+            smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 100)/100f;
+        }
+        if (keySet.contains("key_small_screen_size")) {
+            smallScreenSize = prefs.getInt("key_small_screen_size", 70)/100f;
+        }
+        if (keySet.contains("key_initial_x_percent")) {
+            initialXp = prefs.getInt("key_initial_x_percent", 0);
+        }
+        if (keySet.contains("key_initial_y_percent")) {
+            initialYp = prefs.getInt("key_initial_y_percent", 0);
+        }
+        return this;
+    }
     public void load(SharedPreferences prefs) {
         blackList = prefs.getStringSet("key_blacklist", Collections.<String>emptySet());
         animation = prefs.getBoolean("key_animation", true);

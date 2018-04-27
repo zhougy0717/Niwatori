@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import jp.tkgktyk.flyinglayout.FlyingLayout;
 
@@ -52,25 +51,17 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
         }
     }
 
-    private void changeSize(ViewGroup v, int delta){
+    private void changeSize(ViewGroup v, float delta){
         int w = v.getWidth();
         int h = v.getHeight();
 
-        int smallScreenSize = (int)(100*mHelper.getSettings().smallScreenSize);
-        int smallScreenPivotX = (int)(100*mHelper.getSettings().smallScreenPivotX);
-        int smallScreenPivotY = (int)(100*mHelper.getSettings().smallScreenPivotY);
         SharedPreferences prefs = v.getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
-        if (prefs.getAll().keySet().contains("key_small_screen_size")) {
-            smallScreenSize = prefs.getInt("key_small_screen_size", 70);
-        }
-        if (prefs.getAll().keySet().contains("key_small_screen_pivot_x")) {
-            smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0);
-        }
-        if (prefs.getAll().keySet().contains("key_small_screen_pivot_y")) {
-            smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 100);
-        }
+        mHelper.getSettings().update(prefs);
+        float smallScreenPivotX = mHelper.getSettings().getSmallScreenPivotX();
+        float smallScreenPivotY = mHelper.getSettings().getSmallScreenPivotY();
+        float smallScreenSize = mHelper.getSettings().getSmallScreenSize();
 
-        int oldSize = smallScreenSize;
+        float oldSize = smallScreenSize;
         smallScreenSize += delta;
         if (smallScreenSize < FlyingHelper.SMALLEST_SMALL_SCREEN_SIZE) {
             smallScreenSize = FlyingHelper.SMALLEST_SMALL_SCREEN_SIZE;
@@ -78,24 +69,25 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
         else if(smallScreenSize > FlyingHelper.BIGGEST_SMALL_SCREEN_SIZE){
             smallScreenSize = FlyingHelper.BIGGEST_SMALL_SCREEN_SIZE;
         }
-        int realDelta = smallScreenSize - oldSize;
-        prefs.edit().putInt("key_small_screen_size", smallScreenSize).apply();
+        float realDelta = smallScreenSize - oldSize;
+        prefs.edit().putInt("key_small_screen_size",Math.round(100*smallScreenSize)).apply();
+        Log.e("Ben", "small screen size in local pref " + prefs.getInt("key_small_screen_size", 0));
         mHelper.onSettingsLoaded();
-        if (smallScreenPivotX < 50) {
-            mHelper.moveWithoutSpeed(w*realDelta*smallScreenPivotX/(100*100),-h*realDelta*(100-smallScreenPivotY)/(100*100),false);
-        }
-        else {
-            mHelper.moveWithoutSpeed(-w*realDelta*(100-smallScreenPivotX)/(100*100),-h*realDelta*(100-smallScreenPivotY)/(100*100),false);
-        }
+//        if (smallScreenPivotX < 0.5f) {
+//            mHelper.moveWithoutSpeed(Math.round(w*realDelta*smallScreenPivotX),Math.round(-h*realDelta*(1-smallScreenPivotY)),false);
+//        }
+//        else {
+//            mHelper.moveWithoutSpeed(Math.round(-w*realDelta*(1-smallScreenPivotX)),Math.round(-h*realDelta*(1-smallScreenPivotY)),false);
+//        }
     }
 
     @Override
-    public void onScrollLeft(ViewGroup v){
+    public void onShrink(ViewGroup v){
         changeSize(v, -FlyingHelper.SMALL_SCREEN_SIZE_DELTA);
     }
 
     @Override
-    public void onScrollRight(ViewGroup v){
+    public void onEnlarge(ViewGroup v){
         changeSize(v, FlyingHelper.SMALL_SCREEN_SIZE_DELTA);
     }
 }

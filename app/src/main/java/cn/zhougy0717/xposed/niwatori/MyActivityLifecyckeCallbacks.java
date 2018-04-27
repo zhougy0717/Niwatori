@@ -45,8 +45,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
             ReceiverManager handler = new ReceiverManager(decorView);
             handler.unregisterReceiver();
             PopupWindowHandler.onPause(activity.getClass().getName());
-            decorView.getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE)
-                .edit().clear().apply();
+            ModActivity.getHelper(decorView).onExit();
         } catch (Throwable t) {
             XposedModule.logE(t);
         }

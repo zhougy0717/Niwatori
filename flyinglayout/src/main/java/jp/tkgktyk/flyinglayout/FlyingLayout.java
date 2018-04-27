@@ -47,6 +47,7 @@ public class FlyingLayout extends FrameLayout {
     public static final float DEFAULT_PIVOT_X = 0.0f;
     public static final float DEFAULT_PIVOT_Y = 0.5f;
     public static final int DEFAULT_RESIZE_MODE = RESIZE_MODE_SCALE;
+
     private static final String TAG = FlyingLayout.class.getSimpleName();
     private Helper mHelper;
 
@@ -156,8 +157,8 @@ public class FlyingLayout extends FrameLayout {
          */
         public void onLongPressOutside(ViewGroup v);
 
-        public void onScrollLeft(ViewGroup v);
-        public void onScrollRight(ViewGroup v);
+        public void onShrink(ViewGroup v);
+        public void onEnlarge(ViewGroup v);
     }
 
     public static class Helper {
@@ -289,7 +290,7 @@ public class FlyingLayout extends FrameLayout {
                     return false;
                 }
 
-                private float mLastX = 0;
+                private float mLastY = 0;
                 @Override
                 public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
                     if (e1 == null) {
@@ -297,15 +298,15 @@ public class FlyingLayout extends FrameLayout {
                     }
                     Log.e("Ben", "onScroll: e1 " + e1.getX());
                     if (!insideOfContents(e1)) {
-                        if (mLastX - e2.getX() > FLING_MIN_DISTANCE) {
+                        if (mLastY - e2.getY() > FLING_MIN_DISTANCE) {
 //                            Log.e("Ben", "swipe left");
-                            mOnFlyingEventListener.onScrollLeft(mView);
-                            mLastX = e2.getX();
+                            mOnFlyingEventListener.onEnlarge(mView);
+                            mLastY = e2.getY();
                             return true;
-                        } else if (e2.getX() - mLastX > FLING_MIN_DISTANCE) {
+                        } else if (e2.getY() - mLastY > FLING_MIN_DISTANCE) {
 //                            Log.e("Ben", "swipe right");
-                            mOnFlyingEventListener.onScrollRight(mView);
-                            mLastX = e2.getX();
+                            mOnFlyingEventListener.onShrink(mView);
+                            mLastY = e2.getY();
                             return true;
                         }
                     }
@@ -313,16 +314,9 @@ public class FlyingLayout extends FrameLayout {
                 }
 
                 @Override
-                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-                    Log.e("Ben", "onFling");
-//                    mOnFlyingEventListener.onScrollFinished(mView);
-                    return false;
-                }
-
-                @Override
                 public boolean onDown(MotionEvent e){
                     Log.e("Ben", "onDown");
-                    mLastX = e.getX();
+                    mLastY = e.getY();
                     return false;
                 }
             });
@@ -937,7 +931,7 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public boolean staysHome() {
-            return mOffsetX == 0 && mOffsetY == 0;
+            return mOffsetX ==0 && mOffsetY == 0;
         }
 
         public void rotate() {
@@ -1183,8 +1177,8 @@ public class FlyingLayout extends FrameLayout {
         }
 
         @Override
-        public void onScrollLeft(ViewGroup v){}
+        public void onShrink(ViewGroup v){}
         @Override
-        public void onScrollRight(ViewGroup v){}
+        public void onEnlarge(ViewGroup v){}
     }
 }

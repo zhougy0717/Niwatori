@@ -130,6 +130,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 mHelper.resetState(true);
+                mHelper.onExit();
             }
         });
         XposedBridge.hookAllConstructors(classPanelView, new XC_MethodHook() {
@@ -266,6 +267,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                             try {
 //                                if (mHelper.getSettings().autoReset) {
                                 mHelper.resetState(true);
+                                mHelper.onExit();
 //                                }
                             } catch (Throwable t) {
                                 logE(t);

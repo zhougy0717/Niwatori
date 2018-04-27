@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import com.thoughtworks.xstream.security.InterfaceTypePermission;
 
+import org.codehaus.plexus.util.cli.Arg;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -35,6 +36,7 @@ import de.robv.android.xposed.XposedBridge;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -44,6 +46,8 @@ import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.spy;
+import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
+import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 /**
@@ -220,4 +224,62 @@ public class FlyingHelperTest {
 
         verify(spyHelper).setScale(0.34f);
     }
+
+    @Test
+    public void it_should_clear_localPrefs_and_sendBroadcast_to_update_globalPrefs() throws Exception {
+        localPrefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+        localPrefs.edit()
+                .putInt("key_small_screen_pivot_x", 12)
+                .putInt("key_small_screen_size", 34)
+                .apply();
+
+        FrameLayout mockView = mock(FrameLayout.class);
+        Context mockContext = mock(Context.class);
+        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(localPrefs);
+        when(spyHelper.getAttachedView()).thenReturn(mockView);
+        when(mockView.getContext()).thenReturn(mockContext);
+
+        PowerMockito.mockStatic(NFW.class);
+        when(NFW.class, "getNiwatoriContext", any(Context.class)).thenReturn(mockContext);
+
+        spyHelper.onExit();
+
+        assertEquals(0, localPrefs.getAll().keySet().size());
+
+        ArgumentCaptor<Intent> argumentCaptor = ArgumentCaptor.forClass(Intent.class);
+        verify(mockContext).sendBroadcast(argumentCaptor.capture());
+        Intent intent = argumentCaptor.getValue();
+        assertEquals(ChangeSettingsActionReceiver.class.getCanonicalName(), intent.getComponent().getClassName());
+        assertEquals(12, intent.getIntExtra("key_small_screen_pivot_x", 0));
+        assertEquals(34, intent.getIntExtra("key_small_screen_size", 0));
+    }
+
+//    @Test
+//    public void it_should_use_0_or_100_as_pivotX_in_resize(){
+//        SharedPreferences prefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
+//        prefs.edit().putInt("key_small_screen_pivot_x", 12).apply();
+//        spyHelper.resize(true);
+//        assertEquals(0, prefs.getInt("key_small_screen_pivot_x", 12));
+//        prefs.edit().putInt("key_small_screen_pivot_x", 78).apply();
+//        spyHelper.resize(true);
+//        assertEquals(0, prefs.getInt("key_small_screen_pivot_x", 100));
+//    }
+//
+//    @Test
+//    public void it_should_moveToInitialPosition_before_resize() throws Exception {
+//        FrameLayout mockView = mock(FrameLayout.class);
+//        when(mockView.getWidth()).thenReturn(100);
+//        when(mockView.getHeight()).thenReturn(100);
+//        when(mockView.getContext()).thenReturn(RuntimeEnvironment.application);
+//        Whitebox.setInternalState(spyHelper, "mView", mockView);
+//
+//        SharedPreferences prefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
+//        prefs.edit().putInt("key_small_screen_pivot_x", 12).apply();
+//        spyHelper.resize(true);
+//        verify(spyHelper).moveWithoutSpeed(FlyingHelper.SMALL_SCREEN_MARGIN, 0, true);
+//
+//        prefs.edit().putInt("key_small_screen_pivot_x", 78).apply();
+//        spyHelper.resize(true);
+//        verify(spyHelper).moveWithoutSpeed(-FlyingHelper.SMALL_SCREEN_MARGIN, 0, true);
+//    }
 }
