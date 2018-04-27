@@ -261,7 +261,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     private void pinOrReset() {
-        if (staysHome()) {
+        if (staysHome() || (isResized()&&staysHomeWithMargin())) {
             forcePinOrReset();
         } else {
             if (isResized()) {
@@ -335,7 +335,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (pin && pos.getXp() == 0 && pos.getYp() == 0) {
             // default position for pin
             pos.setXp(0); // 0%
-            pos.setYp(50); // 50%
+            pos.setYp(Math.round(50*getScale())); // 50%
         }
         final int x = pos.getX(getAttachedView());
         final int y = pos.getY(getAttachedView());
