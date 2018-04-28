@@ -159,6 +159,8 @@ public class FlyingLayout extends FrameLayout {
 
         public void onShrink(ViewGroup v);
         public void onEnlarge(ViewGroup v);
+        public void onFlingUp(ViewGroup v);
+        public void onFlingDown(ViewGroup v);
     }
 
     public static class Helper {
@@ -264,7 +266,7 @@ public class FlyingLayout extends FrameLayout {
             mView = view;
             mTouchSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
             mGestureDetector = new GestureDetector(mView.getContext(), new GestureDetector.SimpleOnGestureListener() {
-                private static final int FLING_MIN_DISTANCE = 20;
+                private static final float FLING_MIN_DISTANCE = 0.04f;
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     if (!insideOfContents(e)) {
@@ -290,23 +292,20 @@ public class FlyingLayout extends FrameLayout {
                     return false;
                 }
 
-                private float mLastY = 0;
+                private float mLastX = 0;
                 @Override
                 public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
                     if (e1 == null) {
                         return false;
                     }
-                    Log.e("Ben", "onScroll: e1 " + e1.getX());
                     if (!insideOfContents(e1)) {
-                        if (mLastY - e2.getY() > FLING_MIN_DISTANCE) {
-//                            Log.e("Ben", "swipe left");
-                            mOnFlyingEventListener.onEnlarge(mView);
-                            mLastY = e2.getY();
-                            return true;
-                        } else if (e2.getY() - mLastY > FLING_MIN_DISTANCE) {
-//                            Log.e("Ben", "swipe right");
+                        if (mLastX - e2.getX() > mView.getWidth()*FLING_MIN_DISTANCE) {
                             mOnFlyingEventListener.onShrink(mView);
-                            mLastY = e2.getY();
+                            mLastX = e2.getX();
+                            return true;
+                        } else if (e2.getX() - mLastX > mView.getWidth()*FLING_MIN_DISTANCE) {
+                            mOnFlyingEventListener.onEnlarge(mView);
+                            mLastX = e2.getX();
                             return true;
                         }
                     }
@@ -315,9 +314,27 @@ public class FlyingLayout extends FrameLayout {
 
                 @Override
                 public boolean onDown(MotionEvent e){
-                    Log.e("Ben", "onDown");
-                    mLastY = e.getY();
+                    mLastX = e.getX();
                     return false;
+                }
+
+                @Override
+                public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                    if (e1 == null) {
+                        return false;
+                    }
+                    if (Math.abs(e1.getY()-e2.getY()) < FLING_MIN_DISTANCE*mView.getHeight()){
+                        return false;
+                    }
+                    if (velocityY > 0) {
+                        Log.e("Ben", "onFlingDown");
+                        mOnFlyingEventListener.onFlingDown(mView);
+                    }
+                    else {
+                        mOnFlyingEventListener.onFlingUp(mView);
+                        Log.e("Ben", "onFlingUp");
+                    }
+                    return true;
                 }
             });
 
@@ -908,7 +925,6 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public void moveWithoutSpeed(int deltaX, int deltaY, boolean animation) {
-            Log.e("Ben", "deltaX: " + deltaX + ", deltaY: " + deltaY);
             final int hLimit = mView.getWidth() - getHorizontalPadding();
             final int vLimit = mView.getHeight() - getVerticalPadding();
             final int newX = clamp(mOffsetX + deltaX, hLimit);
@@ -1180,5 +1196,11 @@ public class FlyingLayout extends FrameLayout {
         public void onShrink(ViewGroup v){}
         @Override
         public void onEnlarge(ViewGroup v){}
+
+        @Override
+        public void onFlingUp(ViewGroup v){}
+
+        @Override
+        public void onFlingDown(ViewGroup v){}
     }
 }

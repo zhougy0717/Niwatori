@@ -65,26 +65,24 @@ public class MySimpleOnFlyingEventListenerTest {
         FrameLayout v = new FrameLayout(RuntimeEnvironment.application);
         listener.onShrink(v);
 
-        InOrder inOrder = Mockito.inOrder(helper);
-        inOrder.verify(helper).onSettingsLoaded();
-        inOrder.verify(helper).moveWithoutSpeed(anyInt(), anyInt(), anyBoolean());
+        verify(helper).onSettingsLoaded();
     }
 
     @Test
     public void it_should_load_local_prefs_for_smallScreenSize_while_onScroll() throws Exception {
         FlyingHelper helper = mock(FlyingHelper.class);
         localPrefs = RuntimeEnvironment.application.getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
-        localPrefs.edit().putInt("key_small_screen_size", 45).apply();
+        localPrefs.edit().putInt("key_small_screen_size", 60).apply();
         when(helper.getSettings()).thenReturn(new Settings(localPrefs));
         FrameLayout v = new FrameLayout(RuntimeEnvironment.application);
         FlyingLayout.OnFlyingEventListener listener = new MySimpleOnFlyingEventListener(helper);
         listener.onShrink(v);
-        assertEquals(Math.round(45 - 100*FlyingHelper.SMALL_SCREEN_SIZE_DELTA), localPrefs.getInt("key_small_screen_size",0));
+        assertEquals(Math.round(60 - 100*FlyingHelper.SMALL_SCREEN_SIZE_DELTA), localPrefs.getInt("key_small_screen_size",0));
     }
 
     @Test
     public void it_should_load_global_prefs_if_no_local_one() throws Exception {
-        globalPrefs.edit().putInt("key_small_screen_size", 42).apply();
+        globalPrefs.edit().putInt("key_small_screen_size", 60).apply();
 
         FlyingHelper helper = mock(FlyingHelper.class);
         when(helper.getSettings()).thenReturn(new Settings(globalPrefs));
@@ -94,20 +92,20 @@ public class MySimpleOnFlyingEventListenerTest {
 
         FlyingLayout.OnFlyingEventListener listener = new MySimpleOnFlyingEventListener(helper);
         listener.onShrink(v);
-        assertEquals(Math.round(42 - 100*FlyingHelper.SMALL_SCREEN_SIZE_DELTA), localPrefs.getInt("key_small_screen_size", 0));
+        assertEquals(Math.round(60 - 100*FlyingHelper.SMALL_SCREEN_SIZE_DELTA), localPrefs.getInt("key_small_screen_size", 0));
     }
 
     @Test
     public void it_should_save_smallScreenSize_to_local_SharedPreference() throws Exception {
         localPrefs = RuntimeEnvironment.application.getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
-        localPrefs.edit().putInt("key_small_screen_size", 45).apply();
+        localPrefs.edit().putInt("key_small_screen_size", 60).apply();
 
         FlyingHelper helper = mock(FlyingHelper.class);
         when(helper.getSettings()).thenReturn(new Settings(globalPrefs));
         FlyingLayout.OnFlyingEventListener listener = new MySimpleOnFlyingEventListener(helper);
         FrameLayout v = new FrameLayout(RuntimeEnvironment.application);
         listener.onShrink(v);
-        assertEquals(Math.round(45 - 100*FlyingHelper.SMALL_SCREEN_SIZE_DELTA), localPrefs.getInt("key_small_screen_size", 0));
+        assertEquals(Math.round(60 - 100*FlyingHelper.SMALL_SCREEN_SIZE_DELTA), localPrefs.getInt("key_small_screen_size", 0));
     }
 
 

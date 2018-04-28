@@ -17,7 +17,6 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
         if (mHelper.getSettings().autoPin) {
             mHelper.pin();
         }
-        Log.e("Ben", "on Drag Finished");
     }
 
     @Override
@@ -52,16 +51,11 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
     }
 
     private void changeSize(ViewGroup v, float delta){
-        int w = v.getWidth();
-        int h = v.getHeight();
-
+        Log.e("Ben", "size is changed: " + delta);
         SharedPreferences prefs = v.getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
         mHelper.getSettings().update(prefs);
-        float smallScreenPivotX = mHelper.getSettings().getSmallScreenPivotX();
-        float smallScreenPivotY = mHelper.getSettings().getSmallScreenPivotY();
         float smallScreenSize = mHelper.getSettings().getSmallScreenSize();
 
-        float oldSize = smallScreenSize;
         smallScreenSize += delta;
         if (smallScreenSize < FlyingHelper.SMALLEST_SMALL_SCREEN_SIZE) {
             smallScreenSize = FlyingHelper.SMALLEST_SMALL_SCREEN_SIZE;
@@ -69,16 +63,8 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
         else if(smallScreenSize > FlyingHelper.BIGGEST_SMALL_SCREEN_SIZE){
             smallScreenSize = FlyingHelper.BIGGEST_SMALL_SCREEN_SIZE;
         }
-        float realDelta = smallScreenSize - oldSize;
         prefs.edit().putInt("key_small_screen_size",Math.round(100*smallScreenSize)).apply();
-        Log.e("Ben", "small screen size in local pref " + prefs.getInt("key_small_screen_size", 0));
         mHelper.onSettingsLoaded();
-//        if (smallScreenPivotX < 0.5f) {
-//            mHelper.moveWithoutSpeed(Math.round(w*realDelta*smallScreenPivotX),Math.round(-h*realDelta*(1-smallScreenPivotY)),false);
-//        }
-//        else {
-//            mHelper.moveWithoutSpeed(Math.round(-w*realDelta*(1-smallScreenPivotX)),Math.round(-h*realDelta*(1-smallScreenPivotY)),false);
-//        }
     }
 
     @Override
@@ -89,5 +75,19 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
     @Override
     public void onEnlarge(ViewGroup v){
         changeSize(v, FlyingHelper.SMALL_SCREEN_SIZE_DELTA);
+    }
+
+    @Override
+    public void onFlingUp(ViewGroup v){
+        if (!mHelper.isMovable()) {
+            mHelper.performAction(NFW.ACTION_SOFT_RESET);
+        }
+    }
+
+    @Override
+    public void onFlingDown(ViewGroup v) {
+        if (!mHelper.isMovable()) {
+            mHelper.performAction(NFW.ACTION_PIN_OR_RESET);
+        }
     }
 }

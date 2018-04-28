@@ -26,8 +26,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public static final String TEMP_SCREEN_INFO_PREF_FILENAME = "temp_screen_info";
     public static final float SMALLEST_SMALL_SCREEN_SIZE = 0.4f;
     public static final float BIGGEST_SMALL_SCREEN_SIZE = 0.9f;
-    public static final float SMALL_SCREEN_SIZE_DELTA = 0.02f;
-    public static final int SMALL_SCREEN_MARGIN = 15;
+    public static final float SMALL_SCREEN_SIZE_DELTA = 0.04f;
+    public static final int SMALL_SCREEN_MARGIN = 10;
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
@@ -68,16 +68,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void onSettingsLoaded() {
-        //        mSettings = settings;
         setSpeed(getSettings().speed);
-//        if (!getAttachedView().getContext().getPackageName().equals("android")) {
-//            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-//            getSettings().update(prefs);
-//        }
         float smallScreenPivotX = getSettings().getSmallScreenPivotX();
         float smallScreenPivotY = getSettings().getSmallScreenPivotY();
         float smallScreenSize = getSettings().getSmallScreenSize();
-        Log.e("Ben", getAttachedView() + "onSettingsLoaded: smallScreenPivotX/Y " + smallScreenPivotX + "," + smallScreenPivotY);
         setPivot(smallScreenPivotX, smallScreenPivotY);
         if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
             setResizeMode(FlyingLayout.RESIZE_MODE_PADDING);
@@ -85,7 +79,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
             setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
         }
         if (isResized() && !isMovable()) {
-            Log.e("Ben", "onSettingsLoaded smallScreenSize: " + smallScreenSize);
             setScale(smallScreenSize);
         }
         updateBoundary();
@@ -172,6 +165,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (getSettings().logActions) {
             XposedBridge.log(action);
         }
+        Log.e("Ben", "action: " + action);
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);
         } else if (action.equals(NFW.ACTION_SOFT_RESET)) {
@@ -261,6 +255,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     private void pinOrReset() {
+        Log.e("Ben", "isResized: " + isResized() + ", staysHomeWithMargin:" + staysHomeWithMargin() + ", OffsetX" + getOffsetX());
         if (staysHome() || (isResized()&&staysHomeWithMargin())) {
             forcePinOrReset();
         } else {
@@ -348,33 +343,29 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     private boolean staysHomeWithMargin(){
-        return getOffsetX()== SMALL_SCREEN_MARGIN*getAttachedView().getWidth()/100 && getOffsetY()==0;
+        boolean left = (getSettings().getSmallScreenPivotX() < 0.5);
+        Log.e("Ben", "left:" + left + ", offsetX:"+(left?1:-1)*SMALL_SCREEN_MARGIN*getAttachedView().getWidth()/100);
+        return getOffsetX()== (left?1:-1)*SMALL_SCREEN_MARGIN*getAttachedView().getWidth()/100 && getOffsetY()==0;
     }
 
     private void goHomeWithMargin(boolean animation){
-        Log.e("Ben", "goHomeWithMargin: " + getAttachedView().getWidth());
-        if (getSettings().getSmallScreenPivotX() < 0.5) {
-            moveWithoutSpeed(-getOffsetX() + SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), animation);
-        }
-        else {
-            moveWithoutSpeed(-getOffsetX() - SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), animation);
-        }
+        boolean left = (getSettings().getSmallScreenPivotX() < 0.5);
+        moveWithoutSpeed(-getOffsetX() + (left?1:-1)*SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), animation);
     }
 
     public void resetState(boolean force) {
         boolean handled = false;
-        if (isMovable() || !staysHome()) {
+        if (isMovable()) {
             disableMovable();
             // goHome must be placed after pin() for "Reset when collapsed"
             // option.
-            if (isResized() && !staysHomeWithMargin()) {
-                goHomeWithMargin(getSettings().animation);
+            if (isResized()){
+                if(!staysHomeWithMargin()) {
+                    goHomeWithMargin(getSettings().animation);
+                }
                 handled = true;
             }
-            else if(isResized() && staysHomeWithMargin()) {
-                handled = false;
-            }
-            else {
+            else if (!staysHome()) {
                 goHome(getSettings().animation);
                 handled = true;
             }

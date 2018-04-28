@@ -154,9 +154,6 @@ public class NFW {
 //    }
 
     public static void setResizedGlobal(Context context, boolean resized) {
-//        context.sendBroadcast(new Intent(resized ?
-//                PersistentService.ACTION_SET_RESIZED : PersistentService.ACTION_UNSET_RESIZED));
-//        Log.e("Ben", "setResizedGlobal:" + context + ", resized:" + resized);
         Intent intent = new Intent(NFW.getNiwatoriContext(context), ChangeSettingsActionReceiver.class);
         intent.putExtra("screen_resized", resized);
         context.sendBroadcast(intent);
