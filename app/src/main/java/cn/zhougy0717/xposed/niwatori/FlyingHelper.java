@@ -96,8 +96,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public Settings getSettings() {
 //        return mSettings;
-        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-        return WorldReadablePreference.getSettings().update(prefs);
+        try {
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+            return WorldReadablePreference.getSettings().update(prefs);
+        }
+        catch (Throwable t) {
+            return WorldReadablePreference.getSettings();
+        }
     }
 
     private void updateBoundaryOnUnresize() {
