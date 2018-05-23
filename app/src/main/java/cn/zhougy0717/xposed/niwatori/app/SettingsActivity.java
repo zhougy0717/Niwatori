@@ -13,6 +13,7 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.widget.Toast;
@@ -26,6 +27,8 @@ import cn.zhougy0717.xposed.niwatori.BuildConfig;
 import cn.zhougy0717.xposed.niwatori.NFW;
 import cn.zhougy0717.xposed.niwatori.R;
 import cn.zhougy0717.xposed.niwatori.app.util.InAppBillingActivity;
+
+import static cn.zhougy0717.xposed.niwatori.app.MyIntroActivity.REQUEST_CODE_INTRO;
 
 /**
  * Created by tkgktyk on 2015/02/13.
@@ -78,6 +81,16 @@ public class SettingsActivity extends InAppBillingActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = NFW.getSharedPreferences(this);
+        if (prefs.getBoolean("key_first_launch", true)){
+            Intent intent = new Intent(this, MyIntroActivity.class);
+            startActivityForResult(intent, MyIntroActivity.REQUEST_CODE_INTRO);
+//            finish();
+//            return;
+        }
+
+
         setContentView(R.layout.activity_fragment);
 
         if (BuildConfig.DEBUG) {

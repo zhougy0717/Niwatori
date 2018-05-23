@@ -88,6 +88,8 @@
             android:name=".app.SmallScreenActivity"
             android:label="@string/small_screen_activity_name"
             android:theme="@style/AppTheme"/>
+        <activity android:name=".app.MyIntroActivity"
+            android:theme="@style/Theme.Intro"/>
 
         <receiver android:name=".app.ChangeSettingsActionReceiver"
             android:enabled="true"
