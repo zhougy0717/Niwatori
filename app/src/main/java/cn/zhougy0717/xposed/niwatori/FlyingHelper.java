@@ -27,7 +27,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public static final float SMALLEST_SMALL_SCREEN_SIZE = 0.4f;
     public static final float BIGGEST_SMALL_SCREEN_SIZE = 0.9f;
     public static final float SMALL_SCREEN_SIZE_DELTA = 0.04f;
-    public static final int SMALL_SCREEN_MARGIN = 10;
+    public static final int SMALL_SCREEN_MARGIN = 4;
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;

@@ -85,9 +85,7 @@ public class SettingsActivity extends InAppBillingActivity {
         SharedPreferences prefs = NFW.getSharedPreferences(this);
         if (prefs.getBoolean("key_first_launch", true)){
             Intent intent = new Intent(this, MyIntroActivity.class);
-            startActivityForResult(intent, MyIntroActivity.REQUEST_CODE_INTRO);
-//            finish();
-//            return;
+            startActivity(intent);
         }
 
 
