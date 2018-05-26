@@ -27,7 +27,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public static final float SMALLEST_SMALL_SCREEN_SIZE = 0.4f;
     public static final float BIGGEST_SMALL_SCREEN_SIZE = 0.9f;
     public static final float SMALL_SCREEN_SIZE_DELTA = 0.04f;
-    public static final int SMALL_SCREEN_MARGIN = 4;
+    public static final int SMALL_SCREEN_MARGIN_X = 4;
+    public static final int SMALL_SCREEN_MARGIN_Y = 10;
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
@@ -63,10 +64,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         onSettingsLoaded(settings);
     }
 
-    public void setSettings(Settings settings) {
-//        mSettings = settings;
-    }
-
     public void onSettingsLoaded() {
         setSpeed(getSettings().speed);
         float smallScreenPivotX = getSettings().getSmallScreenPivotX();
@@ -78,7 +75,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else {
             setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
         }
-        if (isResized() && !isMovable()) {
+        if (isResized()/* && !isMovable()*/) {
             setScale(smallScreenSize);
         }
         updateBoundary();
@@ -170,7 +167,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (getSettings().logActions) {
             XposedBridge.log(action);
         }
-        Log.e("Ben", "action: " + action);
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);
         } else if (action.equals(NFW.ACTION_SOFT_RESET)) {
@@ -196,13 +192,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
 //            if (getSettings().getSmallScreenPivotX() < 0.5) {
 //                prefs.edit()
 //                        .putInt("key_small_screen_pivot_x", 0)
-//                        .putInt("key_initial_x_percent", FlyingHelper.SMALL_SCREEN_MARGIN)
+//                        .putInt("key_initial_x_percent", FlyingHelper.SMALL_SCREEN_MARGIN_X)
 //                        .apply();
 //            }
 //            else {
 //                prefs.edit()
 //                        .putInt("key_small_screen_pivot_x", 100)
-//                        .putInt("key_initial_x_percent", -FlyingHelper.SMALL_SCREEN_MARGIN)
+//                        .putInt("key_initial_x_percent", -FlyingHelper.SMALL_SCREEN_MARGIN_X)
 //                        .apply();
 //            }
 //            moveToInitialPosition(false);
@@ -212,12 +208,15 @@ public class FlyingHelper extends FlyingLayout.Helper {
             Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
             intent.putExtra("key_small_screen_pivot_x", 100-pivotX);
             getAttachedView().getContext().sendBroadcast(intent);
-            if (pivotX < 0.5) {
-                moveWithoutSpeed(-2* SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), false);
+            int deltaY = -getOffsetY() - SMALL_SCREEN_MARGIN_Y * getAttachedView().getHeight() / 100;
+            int deltaX;
+            if (pivotX < 50) {
+                deltaX = -2* SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100;
             }
             else {
-                moveWithoutSpeed(2* SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), false);
+                deltaX = 2* SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100;
             }
+            moveWithoutSpeed(deltaX, deltaY, false);
             onSettingsLoaded();
         }
     }
@@ -260,7 +259,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     private void pinOrReset() {
-        Log.e("Ben", "isResized: " + isResized() + ", staysHomeWithMargin:" + staysHomeWithMargin() + ", OffsetX" + getOffsetX());
         if (staysHome() || (isResized()&&staysHomeWithMargin())) {
             forcePinOrReset();
         } else {
@@ -294,13 +292,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
 //        if (getSettings().getSmallScreenPivotX() < 0.5) {
 //            prefs.edit()
 //                    .putInt("key_small_screen_pivot_x", 0)
-//                    .putInt("key_initial_x_percent", -2*FlyingHelper.SMALL_SCREEN_MARGIN)
+//                    .putInt("key_initial_x_percent", -2*FlyingHelper.SMALL_SCREEN_MARGIN_X)
 //                    .apply();
 //        }
 //        else {
 //            prefs.edit()
 //                    .putInt("key_small_screen_pivot_x", 100)
-//                    .putInt("key_initial_x_percent", 2*FlyingHelper.SMALL_SCREEN_MARGIN)
+//                    .putInt("key_initial_x_percent", 2*FlyingHelper.SMALL_SCREEN_MARGIN_X)
 //                    .apply();
 //        }
 //        if (force) {
@@ -349,13 +347,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     private boolean staysHomeWithMargin(){
         boolean left = (getSettings().getSmallScreenPivotX() < 0.5);
-        Log.e("Ben", "left:" + left + ", offsetX:"+(left?1:-1)*SMALL_SCREEN_MARGIN*getAttachedView().getWidth()/100);
-        return getOffsetX()== (left?1:-1)*SMALL_SCREEN_MARGIN*getAttachedView().getWidth()/100 && getOffsetY()==0;
+        return getOffsetX()== (left?1:-1)* SMALL_SCREEN_MARGIN_X *getAttachedView().getWidth()/100 &&
+                getOffsetY() == -SMALL_SCREEN_MARGIN_Y *getAttachedView().getHeight()/100;
     }
 
     private void goHomeWithMargin(boolean animation){
         boolean left = (getSettings().getSmallScreenPivotX() < 0.5);
-        moveWithoutSpeed(-getOffsetX() + (left?1:-1)*SMALL_SCREEN_MARGIN * getAttachedView().getWidth() / 100, -getOffsetY(), animation);
+        moveWithoutSpeed(-getOffsetX() + (left?1:-1)* SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100,
+                -getOffsetY() - SMALL_SCREEN_MARGIN_Y * getAttachedView().getHeight() / 100, animation);
     }
 
     public void resetState(boolean force) {
@@ -376,8 +375,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
             }
         }
         if ((force || !handled) && isResized()) {
-            goHome(getSettings().animation);
-            resize(false);
+            if (!staysHomeWithMargin()){
+                goHomeWithMargin(getSettings().animation);
+            }
+            else {
+                goHome(getSettings().animation);
+                resize(false);
+            }
         }
     }
 

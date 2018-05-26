@@ -327,12 +327,10 @@ public class FlyingLayout extends FrameLayout {
                         return false;
                     }
                     if (velocityY > 0) {
-                        Log.e("Ben", "onFlingDown");
                         mOnFlyingEventListener.onFlingDown(mView);
                     }
                     else {
                         mOnFlyingEventListener.onFlingUp(mView);
-                        Log.e("Ben", "onFlingUp");
                     }
                     return true;
                 }

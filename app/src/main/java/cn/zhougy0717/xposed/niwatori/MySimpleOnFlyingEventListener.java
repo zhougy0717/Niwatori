@@ -51,7 +51,6 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
     }
 
     private void changeSize(ViewGroup v, float delta){
-        Log.e("Ben", "size is changed: " + delta);
         SharedPreferences prefs = v.getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
         mHelper.getSettings().update(prefs);
         float smallScreenSize = mHelper.getSettings().getSmallScreenSize();

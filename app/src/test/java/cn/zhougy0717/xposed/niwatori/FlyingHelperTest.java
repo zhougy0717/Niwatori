@@ -276,10 +276,10 @@ public class FlyingHelperTest {
 //        SharedPreferences prefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
 //        prefs.edit().putInt("key_small_screen_pivot_x", 12).apply();
 //        spyHelper.resize(true);
-//        verify(spyHelper).moveWithoutSpeed(FlyingHelper.SMALL_SCREEN_MARGIN, 0, true);
+//        verify(spyHelper).moveWithoutSpeed(FlyingHelper.SMALL_SCREEN_MARGIN_X, 0, true);
 //
 //        prefs.edit().putInt("key_small_screen_pivot_x", 78).apply();
 //        spyHelper.resize(true);
-//        verify(spyHelper).moveWithoutSpeed(-FlyingHelper.SMALL_SCREEN_MARGIN, 0, true);
+//        verify(spyHelper).moveWithoutSpeed(-FlyingHelper.SMALL_SCREEN_MARGIN_X, 0, true);
 //    }
 }
