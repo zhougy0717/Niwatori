@@ -9,4 +9,11 @@
   <color name="secondary_text">#727272</color>
   <color name="icons">#FFFFFF</color>
   <color name="divider">#B6B6B6</color>
+    <color name="blue">#1c7ec4</color>
+    <color name="blue_dark">#1768a2</color>
+    <color name="green">#82b64b</color>
+    <color name="green_dark">#6c963e</color>
+    <color name="orange">#f3b339</color>
+    <color name="orange_dark">#d69e32</color>
+    <color name="pink_dark">#e2b5ba</color>
 </resources>
