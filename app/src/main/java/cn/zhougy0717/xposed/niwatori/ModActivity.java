@@ -305,6 +305,10 @@ public class ModActivity extends XposedModule {
                 public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                     boolean changed = (left!=oldLeft) || (right!=oldRight) || (bottom!=oldBottom) || (top!=oldTop);
                     h.onLayout(changed, left, top, right, bottom);
+                    while(!h.mLayoutCallbacks.isEmpty()) {
+                        Runnable r = h.mLayoutCallbacks.poll();
+                        r.run();
+                    }
                 }
             });
         }

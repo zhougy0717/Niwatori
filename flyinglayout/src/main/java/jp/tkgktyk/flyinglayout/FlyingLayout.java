@@ -158,8 +158,11 @@ public class FlyingLayout extends FrameLayout {
         public void onLongPressOutside(ViewGroup v);
 
         public void onShrink(ViewGroup v);
+
         public void onEnlarge(ViewGroup v);
+
         public void onFlingUp(ViewGroup v);
+
         public void onFlingDown(ViewGroup v);
     }
 
@@ -210,7 +213,7 @@ public class FlyingLayout extends FrameLayout {
                 mView.requestLayout();
             }
         };
-//        private final ValueAnimator.AnimatorUpdateListener mChangePivotAnimatorUpdateListener
+        //        private final ValueAnimator.AnimatorUpdateListener mChangePivotAnimatorUpdateListener
 //                = new ValueAnimator.AnimatorUpdateListener() {
 //            @Override
 //            public void onAnimationUpdate(ValueAnimator animation) {
@@ -267,6 +270,7 @@ public class FlyingLayout extends FrameLayout {
             mTouchSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
             mGestureDetector = new GestureDetector(mView.getContext(), new GestureDetector.SimpleOnGestureListener() {
                 private static final float FLING_MIN_DISTANCE = 0.04f;
+
                 @Override
                 public boolean onDoubleTap(MotionEvent e) {
                     if (!insideOfContents(e)) {
@@ -293,17 +297,18 @@ public class FlyingLayout extends FrameLayout {
                 }
 
                 private float mLastX = 0;
+
                 @Override
-                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY){
+                public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                     if (e1 == null) {
                         return false;
                     }
                     if (!insideOfContents(e1)) {
-                        if (mLastX - e2.getX() > mView.getWidth()*FLING_MIN_DISTANCE) {
+                        if (mLastX - e2.getX() > mView.getWidth() * FLING_MIN_DISTANCE) {
                             mOnFlyingEventListener.onShrink(mView);
                             mLastX = e2.getX();
                             return true;
-                        } else if (e2.getX() - mLastX > mView.getWidth()*FLING_MIN_DISTANCE) {
+                        } else if (e2.getX() - mLastX > mView.getWidth() * FLING_MIN_DISTANCE) {
                             mOnFlyingEventListener.onEnlarge(mView);
                             mLastX = e2.getX();
                             return true;
@@ -313,7 +318,7 @@ public class FlyingLayout extends FrameLayout {
                 }
 
                 @Override
-                public boolean onDown(MotionEvent e){
+                public boolean onDown(MotionEvent e) {
                     mLastX = e.getX();
                     return false;
                 }
@@ -323,13 +328,12 @@ public class FlyingLayout extends FrameLayout {
                     if (e1 == null) {
                         return false;
                     }
-                    if (Math.abs(e1.getY()-e2.getY()) < FLING_MIN_DISTANCE*mView.getHeight()){
+                    if (Math.abs(e1.getY() - e2.getY()) < FLING_MIN_DISTANCE * mView.getHeight()) {
                         return false;
                     }
                     if (velocityY > 0) {
                         mOnFlyingEventListener.onFlingDown(mView);
-                    }
-                    else {
+                    } else {
                         mOnFlyingEventListener.onFlingUp(mView);
                     }
                     return true;
@@ -537,10 +541,10 @@ public class FlyingLayout extends FrameLayout {
 
         public void setScale(float scale) {
             // Also called from resize
-            if (mUpdatePivotOnTime) {
-                performLayoutAdjustment();
-                mUpdatePivotOnTime = false;
-            }
+//            if (mUpdatePivotOnTime) {
+//                performLayoutAdjustment();
+//                mUpdatePivotOnTime = false;
+//            }
             switch (mResizeMode) {
                 case RESIZE_MODE_SCALE: {
                     mScale = scale;
@@ -570,6 +574,7 @@ public class FlyingLayout extends FrameLayout {
             mPivotX = x;
             mPivotY = y;
             mUpdatePivotOnTime = true;
+            performLayoutAdjustment();
         }
 
         public void setPivotX(float x) {
@@ -617,7 +622,7 @@ public class FlyingLayout extends FrameLayout {
 //                animator.setDuration(100);
 //                animator.start();
 //            } else {
-                setChildrenPivot(pivotX, pivotY);
+            setChildrenPivot(pivotX, pivotY);
 //            }
         }
 
@@ -945,7 +950,7 @@ public class FlyingLayout extends FrameLayout {
         }
 
         public boolean staysHome() {
-            return mOffsetX ==0 && mOffsetY == 0;
+            return mOffsetX == 0 && mOffsetY == 0;
         }
 
         public void rotate() {
@@ -990,7 +995,7 @@ public class FlyingLayout extends FrameLayout {
                 }
                 case RESIZE_MODE_PADDING: {
                     if (mChildrenPaddingBackup == null ||
-                            mChildrenPaddingBackup.size() != mView.getChildCount()){
+                            mChildrenPaddingBackup.size() != mView.getChildCount()) {
                         backupChildrenPadding();
                     }
                     final int count = getUseContainer() ? 1 : mView.getChildCount();
@@ -1028,7 +1033,7 @@ public class FlyingLayout extends FrameLayout {
                         return false;
                     }
                     if (mChildrenPaddingBackup == null ||
-                            mChildrenPaddingBackup.size() != mView.getChildCount()){
+                            mChildrenPaddingBackup.size() != mView.getChildCount()) {
                         backupChildrenPadding();
                     }
                     Rect paddings = mChildrenPaddingBackup.get(0);
@@ -1133,9 +1138,9 @@ public class FlyingLayout extends FrameLayout {
 
                     if (lp.width == LayoutParams.MATCH_PARENT) {
                         childWidthMeasureSpec = MeasureSpec.makeMeasureSpec(Math.round(
-                                        (mView.getMeasuredWidth() -
-                                                getPaddingLeftWithForeground() - getPaddingRightWithForeground() -
-                                                lp.leftMargin - lp.rightMargin) * scale),
+                                (mView.getMeasuredWidth() -
+                                        getPaddingLeftWithForeground() - getPaddingRightWithForeground() -
+                                        lp.leftMargin - lp.rightMargin) * scale),
                                 MeasureSpec.EXACTLY);
                     } else {
                         childWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
@@ -1146,9 +1151,9 @@ public class FlyingLayout extends FrameLayout {
 
                     if (lp.height == LayoutParams.MATCH_PARENT) {
                         childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(Math.round(
-                                        (mView.getMeasuredHeight() -
-                                                getPaddingTopWithForeground() - getPaddingBottomWithForeground() -
-                                                lp.topMargin - lp.bottomMargin) * scale),
+                                (mView.getMeasuredHeight() -
+                                        getPaddingTopWithForeground() - getPaddingBottomWithForeground() -
+                                        lp.topMargin - lp.bottomMargin) * scale),
                                 MeasureSpec.EXACTLY);
                     } else {
                         childHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
@@ -1191,14 +1196,19 @@ public class FlyingLayout extends FrameLayout {
         }
 
         @Override
-        public void onShrink(ViewGroup v){}
-        @Override
-        public void onEnlarge(ViewGroup v){}
+        public void onShrink(ViewGroup v) {
+        }
 
         @Override
-        public void onFlingUp(ViewGroup v){}
+        public void onEnlarge(ViewGroup v) {
+        }
 
         @Override
-        public void onFlingDown(ViewGroup v){}
+        public void onFlingUp(ViewGroup v) {
+        }
+
+        @Override
+        public void onFlingDown(ViewGroup v) {
+        }
     }
 }

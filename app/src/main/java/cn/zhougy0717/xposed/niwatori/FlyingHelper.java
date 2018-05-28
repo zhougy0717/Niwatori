@@ -8,10 +8,16 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import cn.zhougy0717.xposed.niwatori.app.ChangeSettingsActionReceiver;
 import de.robv.android.xposed.XposedBridge;
@@ -32,6 +38,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
+    public Queue<Runnable> mLayoutCallbacks;
 
     private final GradientDrawable mBoundaryDrawable = NFW.makeBoundaryDrawable(0, 0);
     private int mBoundaryWidth;
@@ -45,6 +52,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
         Settings settings = WorldReadablePreference.getSettings();
         initialize(useContainer, settings);
+
+        mLayoutCallbacks = new LinkedList<Runnable>();
     }
 
     private void initialize(boolean useContainer, Settings settings) {
@@ -75,7 +84,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else {
             setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
         }
-        if (isResized()/* && !isMovable()*/) {
+        if (isResized() && !isMovable()) {
             setScale(smallScreenSize);
         }
         updateBoundary();
@@ -225,7 +234,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (isMovable()) {
             disableMovable();
             if (isResized()){
-                goHomeWithMargin(getSettings().animation);
+                goHomeWithMargin();
             }
             else {
                 goHome(getSettings().animation);
@@ -263,7 +272,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             forcePinOrReset();
         } else {
             if (isResized()) {
-                goHomeWithMargin(getSettings().animation);
+                goHomeWithMargin();
             }
             else {
                 goHome(getSettings().animation);
@@ -309,7 +318,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 //            prefs.edit().remove("key_initial_x_percent").apply();
 //        }
         if (force) {
-            goHomeWithMargin(getSettings().animation);
+            goHomeWithMargin();
             forceResize();
             updateBoundaryOnResize();
         } else {
@@ -351,10 +360,26 @@ public class FlyingHelper extends FlyingLayout.Helper {
                 getOffsetY() == -SMALL_SCREEN_MARGIN_Y *getAttachedView().getHeight()/100;
     }
 
-    private void goHomeWithMargin(boolean animation){
+    private void goHomeWithMarginWithLayoutInfo() {
         boolean left = (getSettings().getSmallScreenPivotX() < 0.5);
-        moveWithoutSpeed(-getOffsetX() + (left?1:-1)* SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100,
-                -getOffsetY() - SMALL_SCREEN_MARGIN_Y * getAttachedView().getHeight() / 100, animation);
+        boolean animation = getSettings().animation;
+        int marginX = (left ? 1 : -1) * SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100;
+        int marginY = -SMALL_SCREEN_MARGIN_Y * getAttachedView().getHeight() / 100;
+        moveWithoutSpeed(-getOffsetX() + marginX, -getOffsetY() + marginY, animation);
+    }
+
+    private void goHomeWithMargin(){
+        if (getAttachedView().getWidth() == 0 && getAttachedView().getHeight() == 0) {
+            mLayoutCallbacks.add(new Runnable() {
+                @Override
+                public void run() {
+                    goHomeWithMarginWithLayoutInfo();
+                }
+            });
+        }
+        else {
+            goHomeWithMarginWithLayoutInfo();
+        }
     }
 
     public void resetState(boolean force) {
@@ -365,7 +390,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             // option.
             if (isResized()){
                 if(!staysHomeWithMargin()) {
-                    goHomeWithMargin(getSettings().animation);
+                    goHomeWithMargin();
                 }
                 handled = true;
             }
@@ -376,7 +401,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         }
         if ((force || !handled) && isResized()) {
             if (!staysHomeWithMargin()){
-                goHomeWithMargin(getSettings().animation);
+                goHomeWithMargin();
             }
             else {
                 goHome(getSettings().animation);
