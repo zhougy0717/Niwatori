@@ -574,7 +574,13 @@ public class FlyingLayout extends FrameLayout {
             mPivotX = x;
             mPivotY = y;
             mUpdatePivotOnTime = true;
-            performLayoutAdjustment();
+            try {
+                performLayoutAdjustment();
+            }
+            catch(Throwable t){
+                // Do nothing
+                Log.e(TAG, t.getLocalizedMessage());
+            }
         }
 
         public void setPivotX(float x) {
