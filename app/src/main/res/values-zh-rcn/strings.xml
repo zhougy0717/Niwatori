@@ -1,0 +1,39 @@
+<resources>
+    <!-- Displayed in Xposed framework -->
+    <string name="app_name">Niwatori - 单手模式</string>
+    <string name="xposed_description" translatable="false">屏幕下滑，移动，缩小</string>
+
+    <string name="billing_is_not_supported">不支持支付</string>
+
+    <!-- Shortcut name -->
+    <string name="shortcut_activity_name">单手模式</string>
+    <string name="action_none">无</string>
+    <string name="action_movable_screen">移动屏幕</string>
+    <string name="action_pin">锁定</string>
+    <string name="action_pin_or_reset">半屏下滑</string>
+    <string name="action_small_screen">缩小屏幕</string>
+    <string name="action_extra_action">附加操作</string>
+    <string name="action_cs_swap_left_right">左右交换</string>
+    <string name="action_reset">强制复位</string>
+    <string name="action_soft_reset">单步复位</string>
+    <string name="action_sb_expand_notifications">下拉通知栏同时进行附加操作</string>
+    <string name="action_sb_expand_quick_settings">下拉快速设定同时进行附加操作</string>
+
+    <!-- App Selector -->
+    <string name="app_select_activity_name">选择应用</string>
+    <string name="only_selected">Only selected</string>
+    <string name="blacklist_activity_name">黑名单</string>
+    <string name="another_resize_method_targets_activity_name">Another Resize Method Targets</string>
+
+    <!-- Initial Position -->
+    <string name="initial_position_activity_name">初始位置</string>
+
+    <!-- Small Screen -->
+    <string name="small_screen_activity_name">缩小屏幕</string>
+
+    <!-- About -->
+    <string name="about_activity_name">关于Niwatori</string>
+
+    <!-- Persistent Service -->
+    <string name="state_persistent_small_screen">持久缩小屏幕模式</string>
+</resources>

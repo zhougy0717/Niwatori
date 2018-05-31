@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Displayed in launcher -->
+    <string name="settings_activity_name">@string/app_name</string>
+
+    <!-- Instructions -->
+    <string name="title_instructions">使用说明</string>
+    <string name="summary_instructions">本Xposed模块以系统快捷方式的模式提供了以下几种单手模式:\n- 可移动屏幕模式\n- 半屏下滑模式\n- 屏幕缩小模式\n您可以通过调用快捷方式来使用它们。</string>
+    <!-- Shortcuts -->
+    <string name="title_shortcuts">快捷方式 [单手模式]</string>
+    <string name="summary_shortcuts">- 可移动屏幕: 使屏幕内容可以移动到任意需要的位置。\n- 半屏下滑: 将屏幕上半部分移动到屏幕下半部分\n- 屏幕缩小: 缩小屏幕以方便您单手操作。\n您可以将快捷方式绑定到实体按钮，也可以绑定到任意支持调用快捷方式的第三方app。</string>
+    <!-- Note -->
+    <string name="title_notes">注意事项</string>
+    <string name="summary_notes">没有需要注意的。</string>
+
+    <!-- Settings -->
+    <string name="title_settings">设置</string>
+    <string name="current_s1">当前: %1$s</string>
+
+    <!-- General -->
+    <string name="category_general">通用</string>
+    <!-- Blacklist -->
+    <string name="title_blacklist">@string/blacklist_activity_name</string>
+    <!-- Animation -->
+    <string name="title_animation">平滑动画</string>
+    <string name="summary_animation_on">Smooth movement</string>
+    <string name="summary_animation_off">Move immediately</string>
+    <!-- Auto Reset -->
+    <string name="title_auto_reset">切换窗口时自动恢复</string>
+    <string name="summary_auto_reset">如果您在使用输入法时，遇到了问题，请关闭该选项(需要重启)</string>
+    <!-- Extra Action -->
+    <string name="title_extra_action">附加操作</string>
+    <!-- Actions -->
+    <string name="title_action_when_tap_outside">单击外部区域</string>
+    <string name="title_action_when_double_tap_outside">双击外部区域</string>
+
+    <!-- Movable Screen -->
+    <string name="category_movable_screen">可移动屏幕</string>
+    <!-- Speed -->
+    <string name="title_speed">移动速度</string>
+    <string name="note_speed">建议:\n  - 建议你设置为2或附近的值。</string>
+    <!-- Auto Pin -->
+    <string name="title_auto_pin">自动锁定</string>
+    <string name="summary_auto_pin">在第一次移动后锁定</string>
+    <!-- Boundary Color -->
+    <string name="title_boundary_color">边框颜色</string>
+    <string name="none">无边框</string>
+    <string name="red">红色</string>
+    <string name="pink">粉红</string>
+    <string name="purple">紫色</string>
+    <string name="deep_purple">深紫色</string>
+    <string name="indigo">靛蓝色</string>
+    <string name="blue">蓝色</string>
+    <string name="light_blue">浅蓝色</string>
+    <string name="cyan">青色</string>
+    <string name="teal">水鸭色</string>
+    <string name="green">绿色</string>
+    <string name="light_green">浅绿色</string>
+    <string name="lime">石灰色</string>
+    <string name="yellow">黄色</string>
+    <string name="amber">琥珀色</string>
+    <string name="orange">橙色</string>
+    <string name="deep_orange">橘红色</string>
+    <string name="brown">棕色</string>
+    <string name="grey">灰色</string>
+    <string name="blue_grey">蓝灰色</string>
+    <!-- Initial position -->
+    <string name="title_initial_position">初始位置*</string>
+    <string name="summary_initial_position">半屏下拉的屏幕位置</string>
+    <string name="usage_of_initial_position">您可以拖动边框设置初始位置</string>
+    <string name="init_x_d1">X = %1$d%%</string>
+    <string name="init_y_d1">Y = %1$d%%</string>
+    <string name="init_x">X</string>
+    <string name="init_y">Y</string>
+    <string name="unit_percent">%</string>
+
+    <!-- Small Screen -->
+    <string name="category_small_screen">屏幕缩小模式</string>
+    <!-- Small Screen Size -->
+    <string name="title_small_screen">屏幕尺寸*</string>
+    <string name="summary_small_screen">设置屏幕尺寸和缩放的基准点</string>
+    <string name="pivot_x_d1">横向基准点 = %1$d%%</string>
+    <string name="pivot_y_d1">纵向基准点 = %1$d%%</string>
+    <string name="size_d1">屏幕尺寸 = %1$d%%</string>
+    <string name="pivot_x">横向基准点</string>
+    <string name="pivot_y">横向基准点</string>
+    <string name="size">屏幕尺寸</string>
+    <!-- Another Resize Method -->
+    <string name="title_another_resize_method">备用缩放模式</string>
+    <string name="summary_another_resize_method">如果某些应用在使用缩放模式有问题时，您可以尝试这个选项。</string>
+    <!-- Persistent -->
+    <string name="title_small_screen_persistent">持久缩小屏幕模式</string>
+
+    <!-- Other -->
+    <string name="category_other">其他</string>
+    <!-- Log Actions -->
+    <string name="title_log_actions">日志(用于调试)</string>
+    <string name="summary_log_actions">历史日志</string>
+
+    <!-- Purchases -->
+    <!-- Premium Settings -->
+    <string name="title_purchase_premium_settings">高级设置</string>
+    <string name="summary_purchase_premium_settings">捐赠后可以使用进行高阶设置(带*标记)</string>
+    <string name="summary_unavailable_premium_settings">\"应用内支付\" 在您的手机上不可使用</string>
+    <string name="title_premium_settings">高级设置</string>
+    <string name="note_premium_settings">请考虑捐赠以使用高级设置!</string>
+    <string name="already_donated">已捐赠</string>
+    <string name="thank_you_very_much">感谢捐赠!</string>
+    <string name="back">返回</string>
+
+    <!-- Links -->
+    <string name="title_google_play">获取Google Play版本</string>
+    <string name="summary_google_play">点击访问Google Play</string>
+
+    <!-- Extra Action on Recents -->
+    <string name="title_extra_action_on_recents">设置多任务按钮的附加操作</string>
+    <string name="tap_on_recens">单击</string>
+    <string name="double_tap_on_recens">双击</string>
+    <string name="long_press_on_recens">长按</string>
+
+    <!-- About -->
+    <string name="title_about">@string/about_activity_name</string>
+</resources>
