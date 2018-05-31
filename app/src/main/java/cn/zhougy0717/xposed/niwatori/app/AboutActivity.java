@@ -18,12 +18,12 @@ public class AboutActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        boolean donated = false;
-        if (getIntent() != null) {
-            donated = getIntent().getBooleanExtra(EXTRA_DONATED, false);
-        }
-        if (donated) {
-            findViewById(R.id.thank_you_for_donation).setVisibility(View.VISIBLE);
-        }
+//        boolean donated = false;
+//        if (getIntent() != null) {
+//            donated = getIntent().getBooleanExtra(EXTRA_DONATED, false);
+//        }
+//        if (donated) {
+//            findViewById(R.id.thank_you_for_donation).setVisibility(View.VISIBLE);
+//        }
     }
 }

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/about_text_margin"
         android:layout_marginTop="@dimen/about_text_margin"
-        android:text="Niwatori is developed by tkgktyk.\nThis is a module of Xposed framework made by rovo89. This mod doesn\'t exist without them."
+        android:text="@string/about_content_text"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <!-- Translation -->
@@ -31,31 +31,37 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Translation support:"/>
+            android:text="@string/about_translation_label"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/about_text_margin"
             android:layout_marginRight="@dimen/about_text_margin"
-            android:text="- Japanese by tkgktyk"/>
+            android:text="@string/japanese_translater"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/about_text_margin"
             android:layout_marginRight="@dimen/about_text_margin"
-            android:text="- Russian by bonny_k-9"/>
+            android:text="@string/russian_translater"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/about_text_margin"
+            android:layout_marginRight="@dimen/about_text_margin"
+            android:text="@string/chinese_simplified_translater"/>
     </LinearLayout>
 
-    <TextView
+    <!--TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/about_text_margin"
         android:layout_marginTop="@dimen/about_text_margin"
-        android:text="And thank you for supports via donations and discussions."/>
+        android:text="And thank you for supports via donations and discussions."/-->
 
-    <TextView
+    <!--TextView
         android:id="@+id/thank_you_for_donation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,5 +70,5 @@
         android:text="Thank you for your donation!"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@android:color/holo_red_dark"
-        android:visibility="invisible"/>
+        android:visibility="invisible"/-->
 </LinearLayout>

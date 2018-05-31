@@ -33,50 +33,50 @@ import static cn.zhougy0717.xposed.niwatori.app.MyIntroActivity.REQUEST_CODE_INT
 /**
  * Created by tkgktyk on 2015/02/13.
  */
-public class SettingsActivity extends InAppBillingActivity {
+public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
     private static final String TAG = SettingsActivity.class.getSimpleName();
     private static final boolean PURCHASED = BuildConfig.DEBUG && true;
 
-    private static final String SKU_PREMIUM_SETTINGS = "premium_settings";
+//    private static final String SKU_PREMIUM_SETTINGS = "premium_settings";
     private boolean mHasPremiumSettings;
     private SettingsFragment mSettingsFragment;
 
-    @Override
-    protected String getBase64EncodedPublicKey() {
-        return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtbZkkt7/GU/XBfnnQKPUPeub74NKsOi7TTdQLeFigeVwx2oLbTDoi094/AGF+yD3qKYn+fAtJrVKvZ7ebbESgR5EMub4VDunbhjYq+liAnVnEDr2AWWf7WiOzYaYElpA6xi02Aa1Sslw+iE62ThUA1c6454+rI/g6X7n4URFJSzVd+ZkqT6itEvnr0/apLIs05xhZBLRQTF15c6zDOTejVdqNaZdwFHVDCD2w71uuoFgRhdO3GqFmjwFWyaBkdj3V+8ZZ+dOd+6WX5GysE6uans2zBrmGR+ujUQPNymjXAj1H3o+XTHUIBo4gnlFqGeM9ncQOSSdpfX5w3aISxDwMwIDAQAB";
-    }
+//    @Override
+//    protected String getBase64EncodedPublicKey() {
+//        return "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAtbZkkt7/GU/XBfnnQKPUPeub74NKsOi7TTdQLeFigeVwx2oLbTDoi094/AGF+yD3qKYn+fAtJrVKvZ7ebbESgR5EMub4VDunbhjYq+liAnVnEDr2AWWf7WiOzYaYElpA6xi02Aa1Sslw+iE62ThUA1c6454+rI/g6X7n4URFJSzVd+ZkqT6itEvnr0/apLIs05xhZBLRQTF15c6zDOTejVdqNaZdwFHVDCD2w71uuoFgRhdO3GqFmjwFWyaBkdj3V+8ZZ+dOd+6WX5GysE6uans2zBrmGR+ujUQPNymjXAj1H3o+XTHUIBo4gnlFqGeM9ncQOSSdpfX5w3aISxDwMwIDAQAB";
+//    }
 
-    @Override
-    protected void initBilling() {
-        addSku(SKU_PREMIUM_SETTINGS);
-        setOnBillingEventListener(new OnBillingEventListener() {
-            @Override
-            public void onUpdatePurchase(String sku, boolean purchased) {
-                if (Objects.equal(sku, SKU_PREMIUM_SETTINGS)) {
-                    mHasPremiumSettings = purchased || PURCHASED;
-                    NFW.getSharedPreferences(SettingsActivity.this)
-                            .edit()
-                            .putBoolean(getString(R.string.key_purchase_premium_settings), purchased)
-                            .apply();
-                    if (mSettingsFragment != null && mSettingsFragment.isVisible()) {
-                        mSettingsFragment.updatePremiumSettings(mHasPremiumSettings);
-                    }
-                }
-            }
-
-            @Override
-            public void onBillingIsUnavailable() {
-                mHasPremiumSettings = false;
-                NFW.getSharedPreferences(SettingsActivity.this)
-                        .edit()
-                        .putBoolean(getString(R.string.key_purchase_premium_settings), false)
-                        .apply();
-                if (mSettingsFragment != null && mSettingsFragment.isVisible()) {
-                    mSettingsFragment.disablePremiumSettings();
-                }
-            }
-        });
-    }
+//    @Override
+//    protected void initBilling() {
+//        addSku(SKU_PREMIUM_SETTINGS);
+//        setOnBillingEventListener(new OnBillingEventListener() {
+//            @Override
+//            public void onUpdatePurchase(String sku, boolean purchased) {
+//                if (Objects.equal(sku, SKU_PREMIUM_SETTINGS)) {
+//                    mHasPremiumSettings = purchased || PURCHASED;
+//                    NFW.getSharedPreferences(SettingsActivity.this)
+//                            .edit()
+//                            .putBoolean(getString(R.string.key_purchase_premium_settings), purchased)
+//                            .apply();
+//                    if (mSettingsFragment != null && mSettingsFragment.isVisible()) {
+//                        mSettingsFragment.updatePremiumSettings(mHasPremiumSettings);
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onBillingIsUnavailable() {
+//                mHasPremiumSettings = false;
+//                NFW.getSharedPreferences(SettingsActivity.this)
+//                        .edit()
+//                        .putBoolean(getString(R.string.key_purchase_premium_settings), false)
+//                        .apply();
+//                if (mSettingsFragment != null && mSettingsFragment.isVisible()) {
+//                    mSettingsFragment.disablePremiumSettings();
+//                }
+//            }
+//        });
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,9 +95,11 @@ public class SettingsActivity extends InAppBillingActivity {
             setTitle("[DEBUG] " + getTitle());
         }
 
-        mHasPremiumSettings =
-                NFW.getSharedPreferences(SettingsActivity.this)
-                        .getBoolean(getString(R.string.key_purchase_premium_settings), false);
+
+//        mHasPremiumSettings =
+//                NFW.getSharedPreferences(SettingsActivity.this)
+//                        .getBoolean(getString(R.string.key_purchase_premium_settings), false);
+        mHasPremiumSettings = true;
 
         mSettingsFragment = SettingsFragment.newInstance(mHasPremiumSettings);
         getFragmentManager()
@@ -278,26 +280,26 @@ public class SettingsActivity extends InAppBillingActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_settings);
 
-            updatePremiumSettings(getArguments().getBoolean(ARG_HAS_PREMIUM_SETTINGS, false));
+//            updatePremiumSettings(getArguments().getBoolean(ARG_HAS_PREMIUM_SETTINGS, false));
 
             updatePreferences();
         }
 
         private void updatePreferences() {
-            if (mSettingsActivity != null && !mSettingsActivity.isBillingSupported()) {
-                disablePremiumSettings();
-            }
+//            if (mSettingsActivity != null && !mSettingsActivity.isBillingSupported()) {
+//                disablePremiumSettings();
+//            }
 
-            findPreference(R.string.key_purchase_premium_settings)
-                    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                        @Override
-                        public boolean onPreferenceClick(Preference preference) {
-                            if (mSettingsActivity != null) {
-                                mSettingsActivity.purchase(SKU_PREMIUM_SETTINGS);
-                            }
-                            return true;
-                        }
-                    });
+//            findPreference(R.string.key_purchase_premium_settings)
+//                    .setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//                        @Override
+//                        public boolean onPreferenceClick(Preference preference) {
+//                            if (mSettingsActivity != null) {
+//                                mSettingsActivity.purchase(SKU_PREMIUM_SETTINGS);
+//                            }
+//                            return true;
+//                        }
+//                    });
 
             // Settings
             openActivity(R.string.key_blacklist, AppSelectActivity.class, new ExtendsPutter() {
@@ -392,7 +394,7 @@ public class SettingsActivity extends InAppBillingActivity {
                 }
             });
             // Other
-            showListSummary(R.string.key_extra_action_on_recents);
+//            showListSummary(R.string.key_extra_action_on_recents);
             // About
             Preference about = findPreference(R.string.key_about);
             about.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
@@ -407,15 +409,15 @@ public class SettingsActivity extends InAppBillingActivity {
             about.setSummary(getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME);
         }
 
-        private void updatePremiumSettings(boolean purchased) {
-            findPreference(mPurchasePremiumSettings).setEnabled(!purchased);
-        }
+//        private void updatePremiumSettings(boolean purchased) {
+//            findPreference(mPurchasePremiumSettings).setEnabled(!purchased);
+//        }
 
-        private void disablePremiumSettings() {
-            Preference pref = findPreference(mPurchasePremiumSettings);
-            pref.setEnabled(false);
-            pref.setSummary(R.string.summary_unavailable_premium_settings);
-        }
+//        private void disablePremiumSettings() {
+//            Preference pref = findPreference(mPurchasePremiumSettings);
+//            pref.setEnabled(false);
+//            pref.setSummary(R.string.summary_unavailable_premium_settings);
+//        }
 
         private void openActivity(Class<?> cls) {
             Intent activity = new Intent(getActivity(), cls);

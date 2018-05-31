@@ -22,9 +22,9 @@
     <!-- Blacklist -->
     <string name="title_blacklist">@string/blacklist_activity_name</string>
     <!-- Animation -->
-    <string name="title_animation">平滑动画</string>
-    <string name="summary_animation_on">Smooth movement</string>
-    <string name="summary_animation_off">Move immediately</string>
+    <string name="title_animation">动画效果</string>
+    <string name="summary_animation_on">平滑移动</string>
+    <string name="summary_animation_off">画面重绘</string>
     <!-- Auto Reset -->
     <string name="title_auto_reset">切换窗口时自动恢复</string>
     <string name="summary_auto_reset">如果您在使用输入法时，遇到了问题，请关闭该选项(需要重启)</string>

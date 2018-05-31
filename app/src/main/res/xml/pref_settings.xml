@@ -11,10 +11,10 @@
         android:summary="@string/summary_shortcuts"
         android:title="@string/title_shortcuts"/>
     <!-- Notes -->
-    <Preference
+    <!--Preference
         android:icon="@null"
         android:summary="@string/summary_notes"
-        android:title="@string/title_notes"/>
+        android:title="@string/title_notes"/-->
 
     <PreferenceScreen
         android:icon="@android:drawable/ic_menu_manage"
@@ -145,13 +145,13 @@
                 android:title="@string/title_log_actions"/>
 
             <!-- Purchases -->
-            <Preference
+            <!--Preference
                 android:icon="@null"
                 android:key="@string/key_purchase_premium_settings"
                 android:summary="@string/summary_purchase_premium_settings"
-                android:title="@string/title_purchase_premium_settings"/>
+                android:title="@string/title_purchase_premium_settings"/-->
             <!-- Links -->
-            <Preference
+            <!--Preference
                 android:icon="@null"
                 android:key="@string/key_google_play"
                 android:summary="@string/summary_google_play"
@@ -159,15 +159,15 @@
                 <intent
                     android:action="android.intent.action.VIEW"
                     android:data="market://details?id=cn.zhougy0717.xposed.niwatori"/>
-            </Preference>
+            </Preference-->
             <!-- Extra Action on Recents -->
-            <ListPreference
+            <!--ListPreference
                 android:defaultValue="@string/default_event_on_recents"
                 android:entries="@array/events_on_recents"
                 android:entryValues="@array/event_values_on_recents"
                 android:icon="@null"
                 android:key="@string/key_extra_action_on_recents"
-                android:title="@string/title_extra_action_on_recents"/>
+                android:title="@string/title_extra_action_on_recents"/-->
         </PreferenceCategory>
     </PreferenceScreen>
 
