@@ -192,40 +192,23 @@ public class FlyingHelper extends FlyingLayout.Helper {
             if (!isResized()) {
                 resize(true);
             }
+            else {
+                goHomeWithMargin();
+                onSettingsLoaded();
+                Log.e("Ben", "now position: " + getOffsetX() + ", " + getOffsetY());
+            }
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
             SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            int pivotX = (int)(100*getSettings().getSmallScreenPivotX());
-
-//            if (getSettings().getSmallScreenPivotX() < 0.5) {
-//                prefs.edit()
-//                        .putInt("key_small_screen_pivot_x", 0)
-//                        .putInt("key_initial_x_percent", FlyingHelper.SMALL_SCREEN_MARGIN_X)
-//                        .apply();
-//            }
-//            else {
-//                prefs.edit()
-//                        .putInt("key_small_screen_pivot_x", 100)
-//                        .putInt("key_initial_x_percent", -FlyingHelper.SMALL_SCREEN_MARGIN_X)
-//                        .apply();
-//            }
-//            moveToInitialPosition(false);
+            int pivotX = 100 - (int)(100*getSettings().getSmallScreenPivotX());
             prefs.edit()
-                    .putInt("key_small_screen_pivot_x", 100-pivotX)
+                    .putInt("key_small_screen_pivot_x", pivotX)
                     .apply();
             Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
-            intent.putExtra("key_small_screen_pivot_x", 100-pivotX);
+            intent.putExtra("key_small_screen_pivot_x", pivotX);
             getAttachedView().getContext().sendBroadcast(intent);
-            int deltaY = -getOffsetY() - SMALL_SCREEN_MARGIN_Y * getAttachedView().getHeight() / 100;
-            int deltaX;
-            if (pivotX < 50) {
-                deltaX = -2* SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100;
-            }
-            else {
-                deltaX = 2* SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100;
-            }
-            moveWithoutSpeed(deltaX, deltaY, false);
+            goHomeWithMargin();
             onSettingsLoaded();
         }
     }
@@ -365,7 +348,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
         boolean animation = getSettings().animation;
         int marginX = (left ? 1 : -1) * SMALL_SCREEN_MARGIN_X * getAttachedView().getWidth() / 100;
         int marginY = -SMALL_SCREEN_MARGIN_Y * getAttachedView().getHeight() / 100;
-        moveWithoutSpeed(-getOffsetX() + marginX, -getOffsetY() + marginY, animation);
+        goTo(marginX, marginY);
+    }
+
+    private void goTo(int x, int y) {
+        int deltaX = x - getOffsetX();
+        int deltaY = y - getOffsetY();
+        Log.e("Ben", "goto " + deltaX + ", " + deltaY);
+        moveWithoutSpeed(deltaX, deltaY, getSettings().animation);
     }
 
     private void goHomeWithMargin(){
