@@ -45,7 +45,7 @@ public class FlyingLayout extends FrameLayout {
     public static final boolean DEFAULT_USE_CONTAINER = false;
     public static final float DEFAULT_SCALE = 1.0f;
     public static final float DEFAULT_PIVOT_X = 0.0f;
-    public static final float DEFAULT_PIVOT_Y = 0.0f;
+    public static final float DEFAULT_PIVOT_Y = 1.0f;
     public static final int DEFAULT_RESIZE_MODE = RESIZE_MODE_SCALE;
 
     private static final String TAG = FlyingLayout.class.getSimpleName();

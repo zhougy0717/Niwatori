@@ -1,7 +1,7 @@
 <resources>
     <!-- Displayed in Xposed framework -->
     <string name="app_name">Niwatori - 单手模式</string>
-    <string name="xposed_description" translatable="false">屏幕下滑，移动，缩小</string>
+    <!--<string name="xposed_description" translatable="false">屏幕下滑，移动，缩小</string>-->
 
     <string name="billing_is_not_supported">不支持支付</string>
 
@@ -14,16 +14,16 @@
     <string name="action_small_screen">缩小屏幕</string>
     <string name="action_extra_action">附加操作</string>
     <string name="action_cs_swap_left_right">左右交换</string>
-    <string name="action_reset">强制复位</string>
-    <string name="action_soft_reset">单步复位</string>
+    <string name="action_reset">完全复位</string>
+    <string name="action_soft_reset">分步复位</string>
     <string name="action_sb_expand_notifications">下拉通知栏同时进行附加操作</string>
     <string name="action_sb_expand_quick_settings">下拉快速设定同时进行附加操作</string>
 
     <!-- App Selector -->
     <string name="app_select_activity_name">选择应用</string>
-    <string name="only_selected">Only selected</string>
+    <string name="only_selected">只选择</string>
     <string name="blacklist_activity_name">黑名单</string>
-    <string name="another_resize_method_targets_activity_name">Another Resize Method Targets</string>
+    <string name="another_resize_method_targets_activity_name">备用缩放模式</string>
 
     <!-- Initial Position -->
     <string name="initial_position_activity_name">初始位置</string>
@@ -34,7 +34,7 @@
     <!-- About -->
     <string name="about_activity_name">关于Niwatori</string>
     <string name="about_content_text">Niwatori由tkgktyk创立,并由zhougy0717继续维护。\n这是一个Xposed框架下的模块，它必须基于Xposed框架才能工作。</string>
-    <string name="about_translation_label"></string>
+    <string name="about_translation_label">翻译</string>
     <string name="japanese_translater">- 日语翻译: tkgktyk</string>
     <string name="russian_translater">- 俄语翻译: bonny_k-9</string>
     <string name="chinese_simplified_translater">- 简体中文翻译: zhougy0717</string>

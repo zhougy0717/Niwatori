@@ -32,6 +32,11 @@
 
     <!-- About -->
     <string name="about_activity_name">О приложении</string>
+    <string name="about_content_text">Niwatori is developed by tkgktyk and maintained by zhougy0717.\nThis is a module of Xposed framework made by rovo89. This mod doesn\'t exist without them.</string>
+    <string name="about_translation_label">Translation support</string>
+    <string name="japanese_translater">- Japanese by tkgktyk</string>
+    <string name="russian_translater">- Russian by bonny_k-9</string>
+    <string name="chinese_simplified_translater">- Chinese Simplified by zhougy0717</string>
 	
 	<!-- Persistent Service -->
     <string name="state_persistent_small_screen">Быстрый доступ к уменьшенному экрану</string>
