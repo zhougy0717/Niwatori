@@ -37,10 +37,25 @@ To enable each mode, you have several choices:
 
 ## Known Issues
 
-1. Because some ROM's, for example Oxygen OS, have their own auto boot control. Niwatori need to be in the white list to provide swap left/right function with auto boot permission.
-2. Shared preference .xml is not created at the very first time after installation. You may need to open Niwatori to have it create it.
+1. Because some ROM's, for example Oxygen OS, have their own auto boot control. Niwatori need to be in the white list to provide swap left/right function with auto boot permission. 
+2. Shared preference .xml is not created at the very first time after installation. You need to open Niwatori to have it create it.
+3. In Oneplus Oxygen 5 (Oreo), you need to put Niwatori in Battery optimization "Not optimized" list. Otherwise, the persistent small screen mode won't work. Other functionalities work well. I don't see this happen on Pixel stock image.
 
 # Release Note
+
+##v0.6.0
+
+There are bunch of new features in this version. So I bump it up to a big version change.
+
+1. The content view in small screen mode is moved away from the edge with margins in both X and Y axis.
+2. You can use gestures in those margins, including:
+   - slide down to slide the upper half of the shrunk content down to bottom half.
+   - slide up to reset to original shrunk screen position
+   - scroll left to zoom out
+   - scroll right to zoom in
+3. Add a tutorial guide in the first app launch.
+4. Translate into Chinese simplified.
+5. Remove all the donation limitation. You can use every premium feature free.
 
 ## v0.5.4
 
