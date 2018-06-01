@@ -118,6 +118,8 @@
     <string name="double_tap_on_recens">Double Tap</string>
     <string name="long_press_on_recens">Long Press</string>
 
+    <!-- Help -->
+    <string name="title_help">Show Tutorial Guide</string>
     <!-- About -->
     <string name="title_about">@string/about_activity_name</string>
 </resources>

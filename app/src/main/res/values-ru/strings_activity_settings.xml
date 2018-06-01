@@ -118,6 +118,8 @@
     <string name="double_tap_on_recens">Двойное нажатие</string>
     <string name="long_press_on_recens">Долгое нажатие</string>
 
+    <!-- Help -->
+    <string name="title_help">Show Tutorial Guide</string>
     <!-- About -->
     <string name="title_about">О приложении</string>
 </resources>

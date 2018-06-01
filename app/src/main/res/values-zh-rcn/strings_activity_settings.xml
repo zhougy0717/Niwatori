@@ -38,7 +38,7 @@
     <string name="category_movable_screen">可移动屏幕</string>
     <!-- Speed -->
     <string name="title_speed">移动速度</string>
-    <string name="note_speed">建议:\n  - 建议你设置为2或附近的值。</string>
+    <string name="note_speed">建议:\n  - 如果是手机建议您设置为2或附近的值。</string>
     <!-- Auto Pin -->
     <string name="title_auto_pin">自动锁定</string>
     <string name="summary_auto_pin">在第一次移动后锁定</string>
@@ -65,7 +65,7 @@
     <string name="grey">灰色</string>
     <string name="blue_grey">蓝灰色</string>
     <!-- Initial position -->
-    <string name="title_initial_position">初始位置*</string>
+    <string name="title_initial_position">初始位置</string>
     <string name="summary_initial_position">半屏下拉的屏幕位置</string>
     <string name="usage_of_initial_position">您可以拖动边框设置初始位置</string>
     <string name="init_x_d1">X = %1$d%%</string>
@@ -77,7 +77,7 @@
     <!-- Small Screen -->
     <string name="category_small_screen">屏幕缩小模式</string>
     <!-- Small Screen Size -->
-    <string name="title_small_screen">屏幕尺寸*</string>
+    <string name="title_small_screen">屏幕尺寸</string>
     <string name="summary_small_screen">设置屏幕尺寸和缩放的基准点</string>
     <string name="pivot_x_d1">横向基准点 = %1$d%%</string>
     <string name="pivot_y_d1">纵向基准点 = %1$d%%</string>
@@ -118,6 +118,8 @@
     <string name="double_tap_on_recens">双击</string>
     <string name="long_press_on_recens">长按</string>
 
+    <!-- Help -->
+    <string name="title_help">查看教程</string>
     <!-- About -->
     <string name="title_about">@string/about_activity_name</string>
 </resources>

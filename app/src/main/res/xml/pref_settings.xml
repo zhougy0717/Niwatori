@@ -16,6 +16,7 @@
         android:summary="@string/summary_notes"
         android:title="@string/title_notes"/-->
 
+
     <PreferenceScreen
         android:icon="@android:drawable/ic_menu_manage"
         android:title="@string/title_settings">
@@ -170,6 +171,12 @@
                 android:title="@string/title_extra_action_on_recents"/-->
         </PreferenceCategory>
     </PreferenceScreen>
+
+
+    <Preference
+        android:icon="@android:drawable/ic_menu_help"
+        android:title="@string/title_help"
+        android:key="show_guide"/>
 
     <!-- About -->
     <Preference

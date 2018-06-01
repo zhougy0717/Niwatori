@@ -283,6 +283,16 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
 //            updatePremiumSettings(getArguments().getBoolean(ARG_HAS_PREMIUM_SETTINGS, false));
 
             updatePreferences();
+
+            Preference myPref = (Preference) findPreference("show_guide");
+            myPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                public boolean onPreferenceClick(Preference preference) {
+                    //open browser or intent here
+                    Intent intent = new Intent(getActivity(), MyIntroActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+            });
         }
 
         private void updatePreferences() {

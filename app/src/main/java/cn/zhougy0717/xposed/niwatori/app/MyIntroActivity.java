@@ -21,26 +21,24 @@ public class MyIntroActivity extends IntroActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addSlide(new SimpleSlide.Builder()
-                .title("A Xposed Module")
-                .description("You have to flash in Xposed Framework. Without it, Niwatori can do nothing.")
+                .title(R.string.slide1_title)
+                .description(R.string.slide1_description)
                 .image(R.drawable.xposed)
                 .background(R.color.blue)
                 .backgroundDark(R.color.blue_dark)
                 .scrollable(false)
                 .build());
         addSlide(new SimpleSlide.Builder()
-                .title("3 Modes to Try")
-                .description("Hook with your favourite shortcut launcher, e.g. fooview, GravityBox and etc.")
+                .title(R.string.slide2_title)
+                .description(R.string.slide2_description)
                 .image(R.drawable.guide_3modes)
                 .background(R.color.green)
                 .backgroundDark(R.color.green_dark)
                 .scrollable(false)
                 .build());
         addSlide(new SimpleSlide.Builder()
-                .title("Fancy Small Screen Mode")
-                .description("The content view can be shrinked. " +
-                        "You can also use gestures outside the content to manipulate the view. " +
-                        "You can double tap, fling up and down or scroll left and right.")
+                .title(R.string.slide3_title)
+                .description(R.string.slide3_description)
                 .image(R.drawable.small_screen_modes)
                 .background(R.color.orange)
                 .backgroundDark(R.color.orange_dark)
@@ -54,16 +52,16 @@ public class MyIntroActivity extends IntroActivity {
                 })
                 .build());
         addSlide(new SimpleSlide.Builder()
-                .title("Notification Panel Applicable")
-                .description("Double tap in the shadow. Play fun with shrinked notification panel.")
+                .title(R.string.slide4_title)
+                .description(R.string.slide4_description)
                 .image(R.drawable.notification_panel)
                 .background(R.color.primary_light)
                 .backgroundDark(R.color.pink_dark)
                 .scrollable(false)
                 .build());
         addSlide(new SimpleSlide.Builder()
-                .title("Explor for more")
-                .description("There are bunch of configurations in Settings. Play with it and you will have a better Niwatori.")
+                .title(R.string.slide5_title)
+                .description(R.string.slide5_description)
                 .image(R.drawable.ic_launcher_web)
                 .background(R.color.primary)
                 .backgroundDark(R.color.primary_dark)
