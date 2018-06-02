@@ -66,12 +66,15 @@ public class Settings implements Serializable {
         if (keySet.contains("key_small_screen_size")) {
             smallScreenSize = prefs.getInt("key_small_screen_size", 70)/100f;
         }
-        if (keySet.contains("key_initial_x_percent")) {
-            initialXp = prefs.getInt("key_initial_x_percent", 0);
+        if (keySet.contains("screen_resized")) {
+            screenResized = prefs.getBoolean("screen_resized", false);
         }
-        if (keySet.contains("key_initial_y_percent")) {
-            initialYp = prefs.getInt("key_initial_y_percent", 0);
-        }
+//        if (keySet.contains("key_initial_x_percent")) {
+//            initialXp = prefs.getInt("key_initial_x_percent", 0);
+//        }
+//        if (keySet.contains("key_initial_y_percent")) {
+//            initialYp = prefs.getInt("key_initial_y_percent", 0);
+//        }
         return this;
     }
     public void load(SharedPreferences prefs) {

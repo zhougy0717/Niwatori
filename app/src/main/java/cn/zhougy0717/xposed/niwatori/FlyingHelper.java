@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -100,6 +101,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
         onSettingsLoaded();
     }
 
+    public Settings getRemoteSettings() {
+        return WorldReadablePreference.getSettings();
+    }
     public Settings getSettings() {
 //        return mSettings;
         try {
@@ -174,7 +178,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public void performAction(String action) {
         if (getSettings().logActions) {
-            XposedBridge.log(action);
+            XposedBridge.log(getAttachedView().getContext().getPackageName() + " do action: " + action);
         }
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);
@@ -195,7 +199,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
             else {
                 goHomeWithMargin();
                 onSettingsLoaded();
-                Log.e("Ben", "now position: " + getOffsetX() + ", " + getOffsetY());
             }
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
@@ -205,9 +208,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
             prefs.edit()
                     .putInt("key_small_screen_pivot_x", pivotX)
                     .apply();
-            Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
-            intent.putExtra("key_small_screen_pivot_x", pivotX);
-            getAttachedView().getContext().sendBroadcast(intent);
             goHomeWithMargin();
             onSettingsLoaded();
         }
@@ -278,7 +278,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void resize(boolean force) {
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
         if (WorldReadablePreference.getSettings().smallScreenPersistent) {
-            NFW.setResizedGlobal(getAttachedView().getContext(), force);
+//            NFW.setResizedGlobal(getAttachedView().getContext(), force);
+            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
+            prefs.edit().putBoolean("screen_resized", force).apply();
         }
 //        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
 //        if (getSettings().getSmallScreenPivotX() < 0.5) {
@@ -354,7 +356,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
     private void goTo(int x, int y) {
         int deltaX = x - getOffsetX();
         int deltaY = y - getOffsetY();
-        Log.e("Ben", "goto " + deltaX + ", " + deltaY);
         moveWithoutSpeed(deltaX, deltaY, getSettings().animation);
     }
 
@@ -405,10 +406,35 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
         SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
 //        getSettings().update(prefs);
-        intent.putExtra("key_small_screen_size", Math.round(100*getSettings().getSmallScreenSize()));
-        intent.putExtra("key_small_screen_pivot_x", Math.round(100*getSettings().getSmallScreenPivotX()));
-        intent.putExtra("key_small_screen_pivot_y", Math.round(100*getSettings().getSmallScreenPivotY()));
-        getAttachedView().getContext().sendBroadcast(intent);
+        int size = Math.round(100*getSettings().getSmallScreenSize());
+        int pivotX = Math.round(100*getSettings().getSmallScreenPivotX());
+        int pivotY = Math.round(100*getSettings().getSmallScreenPivotY());
+        boolean resized = getSettings().screenResized;
+        boolean save =  false;
+        if (size != Math.round(100*getRemoteSettings().getSmallScreenSize())) {
+            intent.putExtra("key_small_screen_size", size);
+            save = true;
+        }
+        if (pivotX != Math.round(100*getRemoteSettings().getSmallScreenPivotX())) {
+            intent.putExtra("key_small_screen_pivot_x", pivotX);
+            save = true;
+        }
+        if (pivotY != Math.round(100*getRemoteSettings().getSmallScreenPivotY())) {
+            intent.putExtra("key_small_screen_pivot_y", pivotY);
+            save = true;
+        }
+        if (resized != getRemoteSettings().screenResized){
+            intent.putExtra("screen_resized", resized);
+            save = true;
+        }
+        if (save) {
+            Log.e("Ben", "send out intent to save ");
+            getAttachedView().getContext().sendBroadcast(intent);
+        }
+//        intent.putExtra("key_small_screen_size", Math.round(100*getSettings().getSmallScreenSize()));
+//        intent.putExtra("key_small_screen_pivot_x", Math.round(100*getSettings().getSmallScreenPivotX()));
+//        intent.putExtra("key_small_screen_pivot_y", Math.round(100*getSettings().getSmallScreenPivotY()));
+//        getAttachedView().getContext().sendBroadcast(intent);
         prefs.edit().clear().apply();
     }
 
