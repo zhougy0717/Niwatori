@@ -83,7 +83,7 @@ public class Settings implements Serializable {
         autoReset = prefs.getBoolean("key_auto_reset", false);
         extraAction = prefs.getString("key_extra_action", NFW.ACTION_MOVABLE_SCREEN);
         actionWhenTapOutside = prefs.getString("key_action_when_tap_outside", NFW.ACTION_SOFT_RESET);
-        actionWhenDoubleTapOutside = prefs.getString("key_action_when_double_tap_outside", NFW.ACTION_PIN);
+        actionWhenDoubleTapOutside = prefs.getString("key_action_when_double_tap_outside", NFW.ACTION_SMALL_SCREEN);
 
         speed = Float.parseFloat(prefs.getString("key_speed", Float.toString(FlyingLayout.DEFAULT_SPEED)));
         autoPin = prefs.getBoolean("key_auto_pin", false);

@@ -179,6 +179,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void performAction(String action) {
         if (getSettings().logActions) {
             XposedBridge.log(getAttachedView().getContext().getPackageName() + " do action: " + action);
+            Log.e(TAG, getAttachedView().getContext().getPackageName() + " do action: " + action);
         }
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);

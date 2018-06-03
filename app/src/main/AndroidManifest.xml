@@ -94,9 +94,9 @@
         <receiver android:name=".app.ChangeSettingsActionReceiver"
             android:enabled="true"
             android:exported="true">
-            <intent-filter>
-                <action android:name="cn.zhougy0717.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="cn.zhougy0717.xposed.niwatori.intent.action.CS_SWAP_LEFT_RIGHT"/>-->
+            <!--</intent-filter>-->
         </receiver>
 
         <receiver android:name=".app.BootCompletedReceiver">

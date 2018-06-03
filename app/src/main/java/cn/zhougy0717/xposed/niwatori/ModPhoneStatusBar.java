@@ -58,7 +58,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 mHelper.performAction(NFW.ACTION_SMALL_SCREEN);
-                mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
+//                mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
                 return true;
             }
         });
