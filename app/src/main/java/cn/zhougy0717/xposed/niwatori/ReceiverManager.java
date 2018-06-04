@@ -31,7 +31,7 @@ public class ReceiverManager {
             if (mHelper.getSettings().screenResized) {
                 mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
             }
-            else {
+            else if (mHelper.isResized()){
                 mHelper.performAction(NFW.ACTION_RESET);
             }
         }
