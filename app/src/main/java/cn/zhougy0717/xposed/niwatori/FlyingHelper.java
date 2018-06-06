@@ -94,7 +94,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             resize(true);
         }
         else if (getSettings().smallScreenPersistent && !getSettings().screenResized
-                && !isResized() && !isMovable()){
+                && isResized() && !isMovable()){
             goHome(getSettings().animation);
             resize(false);
         }

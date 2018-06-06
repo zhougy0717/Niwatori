@@ -65,7 +65,7 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
         // need to reload on each package?
         final FlyingHelper helper = getHelper(mDecorView);
         if (helper != null) {
-            getHelper(mDecorView).onSettingsLoaded(settings);
+            helper.onSettingsLoaded(settings);
         }
     }
 }
