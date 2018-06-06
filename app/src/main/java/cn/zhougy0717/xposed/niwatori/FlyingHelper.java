@@ -88,6 +88,16 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (isResized() && !isMovable()) {
             setScale(smallScreenSize);
         }
+        else if (getSettings().smallScreenPersistent && getSettings().screenResized
+                && !isResized() && !isMovable()){
+            goHomeWithMargin();
+            resize(true);
+        }
+        else if (getSettings().smallScreenPersistent && !getSettings().screenResized
+                && !isResized() && !isMovable()){
+            goHome(getSettings().animation);
+            resize(false);
+        }
         updateBoundary();
         getAttachedView().post(new Runnable() {
             @Override
@@ -406,7 +416,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
 
         SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
-//        getSettings().update(prefs);
         int size = Math.round(100*getSettings().getSmallScreenSize());
         int pivotX = Math.round(100*getSettings().getSmallScreenPivotX());
         int pivotY = Math.round(100*getSettings().getSmallScreenPivotY());
@@ -429,7 +438,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
             save = true;
         }
         if (save) {
-            Log.e("Ben", "send out intent to save ");
             getAttachedView().getContext().sendBroadcast(intent);
         }
 //        intent.putExtra("key_small_screen_size", Math.round(100*getSettings().getSmallScreenSize()));

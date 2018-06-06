@@ -1,7 +1,9 @@
 package cn.zhougy0717.xposed.niwatori;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.ShareActionProvider;
 
 public class ReceiverManager {
     private FrameLayout mDecorView;

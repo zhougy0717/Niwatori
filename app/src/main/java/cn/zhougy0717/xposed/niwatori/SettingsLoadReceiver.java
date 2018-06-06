@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -44,7 +45,8 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
 
     public void unregister(){
         if(mRegistered) {
-            mDecorView.getContext().registerReceiver(mReceiver, mFilter);
+            mDecorView.getContext().unregisterReceiver(mReceiver);
+            mRegistered = false;
         }
     }
     public final BroadcastReceiver create() {

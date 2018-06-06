@@ -195,48 +195,48 @@ public class ModActivity extends XposedModule {
                         }
                     });
 
-            XposedHelpers.findAndHookMethod(classDecorView, "onAttachedToWindow", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        final FrameLayout decorView = (FrameLayout) param.thisObject;
-                        final BroadcastReceiver settingsLoadedReceiver = new BroadcastReceiver() {
-                            @Override
-                            public void onReceive(Context context, Intent intent) {
-                                logD(decorView.getContext().getPackageName() + ": reload settings");
-                                // need to reload on each package?
-                                final FlyingHelper helper = getHelper(decorView);
-                                if (helper != null) {
-                                    Settings settings = (Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
-                                    getHelper(decorView).onSettingsLoaded(settings);
-                                }
-                            }
-                        };
-                        XposedHelpers.setAdditionalInstanceField(decorView,
-                                FIELD_SETTINGS_CHANGED_RECEIVER, settingsLoadedReceiver);
-                        decorView.getContext().registerReceiver(settingsLoadedReceiver,
-                                NFW.SETTINGS_CHANGED_FILTER);
-                    } catch (Throwable t) {
-                        logE(t);
-                    }
-                }
-            });
-            XposedHelpers.findAndHookMethod(classDecorView, "onDetachedFromWindow", new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        final FrameLayout decorView = (FrameLayout) param.thisObject;
-                        final BroadcastReceiver settingsLoadedReceiver =
-                                (BroadcastReceiver) XposedHelpers.getAdditionalInstanceField(decorView,
-                                        FIELD_SETTINGS_CHANGED_RECEIVER);
-                        if (settingsLoadedReceiver != null) {
-                            decorView.getContext().unregisterReceiver(settingsLoadedReceiver);
-                        }
-                    } catch (Throwable t) {
-                        logE(t);
-                    }
-                }
-            });
+//            XposedHelpers.findAndHookMethod(classDecorView, "onAttachedToWindow", new XC_MethodHook() {
+//                @Override
+//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                    try {
+//                        final FrameLayout decorView = (FrameLayout) param.thisObject;
+//                        final BroadcastReceiver settingsLoadedReceiver = new BroadcastReceiver() {
+//                            @Override
+//                            public void onReceive(Context context, Intent intent) {
+//                                logD(decorView.getContext().getPackageName() + ": reload settings");
+//                                // need to reload on each package?
+//                                final FlyingHelper helper = getHelper(decorView);
+//                                if (helper != null) {
+//                                    Settings settings = (Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
+//                                    getHelper(decorView).onSettingsLoaded(settings);
+//                                }
+//                            }
+//                        };
+//                        XposedHelpers.setAdditionalInstanceField(decorView,
+//                                FIELD_SETTINGS_CHANGED_RECEIVER, settingsLoadedReceiver);
+//                        decorView.getContext().registerReceiver(settingsLoadedReceiver,
+//                                NFW.SETTINGS_CHANGED_FILTER);
+//                    } catch (Throwable t) {
+//                        logE(t);
+//                    }
+//                }
+//            });
+//            XposedHelpers.findAndHookMethod(classDecorView, "onDetachedFromWindow", new XC_MethodHook() {
+//                @Override
+//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                    try {
+//                        final FrameLayout decorView = (FrameLayout) param.thisObject;
+//                        final BroadcastReceiver settingsLoadedReceiver =
+//                                (BroadcastReceiver) XposedHelpers.getAdditionalInstanceField(decorView,
+//                                        FIELD_SETTINGS_CHANGED_RECEIVER);
+//                        if (settingsLoadedReceiver != null) {
+//                            decorView.getContext().unregisterReceiver(settingsLoadedReceiver);
+//                        }
+//                    } catch (Throwable t) {
+//                        logE(t);
+//                    }
+//                }
+//            });
         } catch (Throwable t) {
             logE(t);
         }
