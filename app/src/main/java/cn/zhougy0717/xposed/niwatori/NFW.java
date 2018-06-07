@@ -106,7 +106,7 @@ public class NFW {
     }
 
     public static void sendSettingsChanged(Context context, SharedPreferences prefs) {
-        XposedModule.logD(context.getPackageName() + "send settings changed");
+//        XposedModule.logD(context.getPackageName() + "send settings changed");
         Settings settings = new Settings(prefs);
         Intent intent = new Intent(NFW.ACTION_SETTINGS_CHANGED);
         intent.putExtra(NFW.EXTRA_SETTINGS, settings);

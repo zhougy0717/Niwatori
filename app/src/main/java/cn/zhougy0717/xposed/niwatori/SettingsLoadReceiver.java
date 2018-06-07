@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.util.Log;
 import android.widget.FrameLayout;
 
+import android.os.Handler;
+
 import de.robv.android.xposed.XposedHelpers;
 
 /**
@@ -60,12 +62,31 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
         return mReceiver;
     }
 
-    private void handler(Settings settings){
+    private void handler(final Settings settings){
         logD(mDecorView.getContext().getPackageName() + ": reload settings");
+//        Log.e("Ben", mDecorView.getContext().getPackageName() + ": reload settings");
         // need to reload on each package?
         final FlyingHelper helper = getHelper(mDecorView);
         if (helper != null) {
-            helper.onSettingsLoaded(settings);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    /**
+                     * Because onResume and onPause are running in parallel,
+                     * the order of registerReceiver and sendBroadcast is not promised.
+                     * There is 10's ms (hard coded to 50ms) latency between write finish and read consistently.
+                     * Delay 50ms to read from global preference consistently.
+                     */
+                    helper.onSettingsLoaded();
+                    if (settings.screenResized && !helper.isResized()) {
+                        helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+                    }
+                    else if (!settings.screenResized && helper.isResized()){
+                        helper.performAction(NFW.ACTION_RESET);
+                    }
+                }
+            }, 50);
         }
     }
 }

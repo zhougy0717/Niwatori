@@ -75,28 +75,22 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public void onSettingsLoaded() {
-        setSpeed(getSettings().speed);
-        float smallScreenPivotX = getSettings().getSmallScreenPivotX();
-        float smallScreenPivotY = getSettings().getSmallScreenPivotY();
-        float smallScreenSize = getSettings().getSmallScreenSize();
+        onSettingsLoaded(getSettings());
+    }
+
+    public void onSettingsLoaded(Settings settings) {
+        setSpeed(settings.speed);
+        float smallScreenPivotX = settings.getSmallScreenPivotX();
+        float smallScreenPivotY = settings.getSmallScreenPivotY();
+        float smallScreenSize = settings.getSmallScreenSize();
         setPivot(smallScreenPivotX, smallScreenPivotY);
-        if (getSettings().anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
+        if (settings.anotherResizeMethodTargets.contains(getAttachedView().getContext().getPackageName())) {
             setResizeMode(FlyingLayout.RESIZE_MODE_PADDING);
         } else {
             setResizeMode(FlyingLayout.RESIZE_MODE_SCALE);
         }
         if (isResized() && !isMovable()) {
             setScale(smallScreenSize);
-        }
-        else if (getSettings().smallScreenPersistent && getSettings().screenResized
-                && !isResized() && !isMovable()){
-            goHomeWithMargin();
-            resize(true);
-        }
-        else if (getSettings().smallScreenPersistent && !getSettings().screenResized
-                && isResized() && !isMovable()){
-            goHome(getSettings().animation);
-            resize(false);
         }
         updateBoundary();
         getAttachedView().post(new Runnable() {
@@ -107,15 +101,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
         });
     }
 
-    public void onSettingsLoaded(Settings settings) {
-        onSettingsLoaded();
-    }
-
     public Settings getRemoteSettings() {
         return WorldReadablePreference.getSettings();
     }
     public Settings getSettings() {
-//        return mSettings;
         try {
             SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
             return WorldReadablePreference.getSettings().update(prefs);
@@ -206,10 +195,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else if (action.equals(NFW.ACTION_FORCE_SMALL_SCREEN)) {
             if (!isResized()) {
                 resize(true);
-            }
-            else {
-                goHomeWithMargin();
-                onSettingsLoaded();
             }
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
@@ -440,10 +425,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (save) {
             getAttachedView().getContext().sendBroadcast(intent);
         }
-//        intent.putExtra("key_small_screen_size", Math.round(100*getSettings().getSmallScreenSize()));
-//        intent.putExtra("key_small_screen_pivot_x", Math.round(100*getSettings().getSmallScreenPivotX()));
-//        intent.putExtra("key_small_screen_pivot_y", Math.round(100*getSettings().getSmallScreenPivotY()));
-//        getAttachedView().getContext().sendBroadcast(intent);
         prefs.edit().clear().apply();
     }
 
