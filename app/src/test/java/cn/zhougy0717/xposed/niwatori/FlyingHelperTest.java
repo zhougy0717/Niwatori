@@ -32,6 +32,11 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.List;
+
+import static org.powermock.api.mockito.PowerMockito.doReturn;
+import static org.robolectric.Shadows.shadowOf;
+
 import cn.zhougy0717.xposed.niwatori.app.ChangeSettingsActionReceiver;
 import de.robv.android.xposed.XposedBridge;
 import jp.tkgktyk.flyinglayout.FlyingLayout;
@@ -50,6 +55,7 @@ import static org.powermock.api.mockito.PowerMockito.spy;
 import static org.powermock.api.mockito.PowerMockito.verifyPrivate;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.robolectric.RuntimeEnvironment.application;
 
 /**
  * Created by zhougua on 4/18/2018.
@@ -72,8 +78,8 @@ public class FlyingHelperTest {
 
     @Before
     public void setUp() throws Exception {
-        globalPrefs = PreferenceManager.getDefaultSharedPreferences(RuntimeEnvironment.application);
-        FrameLayout decorView = new FrameLayout(RuntimeEnvironment.application);
+        globalPrefs = PreferenceManager.getDefaultSharedPreferences(application);
+        FrameLayout decorView = new FrameLayout(application);
         PowerMockito.mockStatic(WorldReadablePreference.class);
         when(WorldReadablePreference.class, "getSettings").thenReturn(new Settings(globalPrefs));
 
@@ -119,7 +125,6 @@ public class FlyingHelperTest {
         verify(spyHelper).setPivot(0.12f, 0.56f);
     }
 
-    @Ignore
     @Test
     public void it_should_load_pivotX_secondly_from_global_XSharedPreference() throws Exception {
         doNothing().when(spyHelper).setScale(anyFloat());
@@ -131,28 +136,8 @@ public class FlyingHelperTest {
         when(WorldReadablePreference.class, "getSettings").thenReturn(new Settings(globalPrefs));
         spyHelper.onSettingsLoaded();
 
-        verify(spyHelper).setPivot(0.34f,0.5f);
+        verify(spyHelper).setPivot(0.34f,1.0f);
     }
-//
-//    @Test
-//    public void it_should_notify_Niwatori_to_save_pivotX() throws Exception {
-//        doNothing().when(spyHelper).onSettingsLoaded();
-//
-//        Context mockContext = mock(Context.class);
-//        ViewGroup mockView = mock(ViewGroup.class);
-//        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(globalPrefs);
-//        when(spyHelper.getAttachedView()).thenReturn(mockView);
-//        when(mockView.getContext()).thenReturn(mockContext);
-//        PowerMockito.mockStatic(NFW.class);
-//        when(NFW.class, "getNiwatoriContext", any(Context.class)).thenReturn(mockContext);
-//        spyHelper.performAction(NFW.ACTION_CS_SWAP_LEFT_RIGHT);
-//
-//        ArgumentCaptor<Intent> argmentCaptor = ArgumentCaptor.forClass(Intent.class);
-//        verify(mockContext).sendBroadcast(argmentCaptor.capture());
-//        Intent intent = argmentCaptor.getValue();
-//        assertEquals(ChangeSettingsActionReceiver.class.getCanonicalName(), intent.getComponent().getClassName());
-//        assertEquals(100, intent.getIntExtra("key_small_screen_pivot_x", 0));
-//    }
 
     @Test
     public void it_should_see_local_prefs_for_pivotX_firstly_by_performAction() throws Exception {
@@ -227,7 +212,6 @@ public class FlyingHelperTest {
         verify(spyHelper).setScale(0.34f);
     }
 
-    @Ignore
     @Test
     public void it_should_clear_localPrefs_and_sendBroadcast_to_update_globalPrefs() throws Exception {
         localPrefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0);
@@ -235,26 +219,18 @@ public class FlyingHelperTest {
                 .putInt("key_small_screen_pivot_x", 12)
                 .putInt("key_small_screen_size", 34)
                 .apply();
-
-        FrameLayout mockView = mock(FrameLayout.class);
-        Context mockContext = mock(Context.class);
-        when(mockContext.getSharedPreferences(anyString(), anyInt())).thenReturn(localPrefs);
-        when(spyHelper.getAttachedView()).thenReturn(mockView);
-        when(mockView.getContext()).thenReturn(mockContext);
-
-        PowerMockito.mockStatic(NFW.class);
-        when(NFW.class, "getNiwatoriContext", any(Context.class)).thenReturn(mockContext);
+        Settings globalSettings = new Settings(globalPrefs);
+        doReturn(globalSettings).when(spyHelper).getRemoteSettings();
 
         spyHelper.onExit();
 
-        assertEquals(0, localPrefs.getAll().keySet().size());
-
-        ArgumentCaptor<Intent> argumentCaptor = ArgumentCaptor.forClass(Intent.class);
-        verify(mockContext).sendBroadcast(argumentCaptor.capture());
-        Intent intent = argumentCaptor.getValue();
-        assertEquals(ChangeSettingsActionReceiver.class.getCanonicalName(), intent.getComponent().getClassName());
+        List<Intent> broadcastIntents = shadowOf(RuntimeEnvironment.application).getBroadcastIntents();
+        assertEquals(1, broadcastIntents.size());
+        Intent intent = broadcastIntents.get(0);
         assertEquals(12, intent.getIntExtra("key_small_screen_pivot_x", 0));
         assertEquals(34, intent.getIntExtra("key_small_screen_size", 0));
+
+        assertEquals(0, localPrefs.getAll().keySet().size());
     }
 
 //    @Test

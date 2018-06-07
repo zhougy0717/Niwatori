@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Point;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -28,6 +29,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
+import static org.robolectric.RuntimeEnvironment.application;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
@@ -55,6 +57,7 @@ public class MyActivityLifecyckeCallbacksTest {
         FlyingHelper mockHelper = mock(FlyingHelper.class);
         PowerMockito.mockStatic(ModActivity.class);
         when(ModActivity.class, "getHelper", any(FrameLayout.class)).thenReturn(mockHelper);
+        when(mockHelper.getSettings()).thenReturn(new Settings(PreferenceManager.getDefaultSharedPreferences(application)));
         callbacks.onActivityPaused(activity);
         verify(mockHelper).onExit();
     }

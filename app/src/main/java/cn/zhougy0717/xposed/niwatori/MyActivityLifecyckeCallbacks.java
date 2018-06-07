@@ -77,7 +77,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
                 helper.resetState(true);
             }
             PopupWindowHandler.onPause(activity.getClass().getName());
-            ModActivity.getHelper(decorView).onExit();
+            helper.onExit();
         } catch (Throwable t) {
             XposedModule.logE(t);
         }
