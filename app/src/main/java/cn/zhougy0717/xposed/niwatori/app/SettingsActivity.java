@@ -1,6 +1,9 @@
 package cn.zhougy0717.xposed.niwatori.app;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
 import com.google.common.base.Objects;
@@ -111,9 +115,42 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
     public static class BaseFragment extends PreferenceFragment {
         private final SharedPreferences.OnSharedPreferenceChangeListener mChangeListener
                 = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            private int mID = 0;
+
+            @SuppressWarnings("deprecation")
+            private void showHeadsUp(){
+                final String CHANNEL_ID = "channel_id_1";
+                final String CHANNEL_NAME = "channel_name_1";
+
+                NotificationManager mNotificationManager = (NotificationManager)
+                        getActivity().getSystemService(Context.NOTIFICATION_SERVICE);
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    //只在Android O之上需要渠道
+                    NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID,
+                            CHANNEL_NAME, NotificationManager.IMPORTANCE_HIGH);
+                    //如果这里用IMPORTANCE_NOENE就需要在系统的设置里面开启渠道，
+                    //通知才能正常弹出
+                    mNotificationManager.createNotificationChannel(notificationChannel);
+                }
+                NotificationCompat.Builder builder= new NotificationCompat.Builder(getActivity(),CHANNEL_ID);
+
+
+                builder.setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("通知标题" + (++mID))
+                        .setContentText("通知内容")
+                        .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setDefaults(Notification.DEFAULT_SOUND
+                                | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_LIGHTS);
+
+                mNotificationManager.notify(mID, builder.build());
+            }
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
                 NFW.sendSettingsChanged(getActivity(), sharedPreferences);
+
+//                showHeadsUp();
             }
         };
 

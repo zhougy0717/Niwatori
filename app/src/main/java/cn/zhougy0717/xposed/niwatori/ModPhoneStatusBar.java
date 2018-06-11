@@ -126,11 +126,24 @@ public abstract class ModPhoneStatusBar extends XposedModule {
     private void handleNotificationGesture(ClassLoader classLoader){
         final Class<?> classPanelView = XposedHelpers.findClass("com.android.systemui.statusbar.phone.NotificationPanelView", classLoader);
         final Class<?> classStatusBar = XposedHelpers.findClass(CLASS_PHONE_STATUS_BAR, classLoader);
+        XposedBridge.hookAllMethods(classPanelView, "onHeadsUpStateChanged", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                boolean show = (boolean)param.args[1];
+                if (show) {
+                    mHelper.getAttachedView().getContext().unregisterReceiver(mGlobalReceiver);
+                }
+                else {
+                    mHelper.getAttachedView().getContext().registerReceiver(mGlobalReceiver, NFW.STATUS_BAR_FILTER);
+                }
+            }
+        });
+
         XposedBridge.hookAllMethods(classStatusBar, "onScreenTurnedOff", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 mHelper.resetState(true);
-                mHelper.onExit();
+//                mHelper.onExit();
             }
         });
         XposedBridge.hookAllConstructors(classPanelView, new XC_MethodHook() {

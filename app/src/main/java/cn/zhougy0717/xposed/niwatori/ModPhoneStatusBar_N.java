@@ -88,6 +88,11 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
                     XposedHelpers.setAdditionalInstanceField(panelHolder,
                             FIELD_FLYING_HELPER, mHelper);
 
+                    /**
+                     * TODO:
+                     *  1. We can try using onPanelPeeked to register the receivers and unregister them in onPanelCollapsed
+                     *  2. We can try merge the mGlobalReceiver with ActionReceiver class.
+                     */
                     panelHolder.getContext().registerReceiver(mGlobalReceiver, NFW.STATUS_BAR_FILTER);
                     panelHolder.getContext().registerReceiver(new BroadcastReceiver() {
                         @Override

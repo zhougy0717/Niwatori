@@ -29,7 +29,6 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
             PopupWindowHandler.onResume(activity.getClass().getName());
 
             final FlyingHelper helper = ModActivity.getHelper(decorView);
-            Log.e("Ben", helper.getAttachedView().getContext().getPackageName() + " smallScreenPersistent: " + helper.getSettings().smallScreenPersistent + ", screenResized " + helper.getSettings().screenResized + ", resized: " + helper.isResized());
             if (helper != null) {
                 /**
                  * Because onResume and onPause are running in parallel,
