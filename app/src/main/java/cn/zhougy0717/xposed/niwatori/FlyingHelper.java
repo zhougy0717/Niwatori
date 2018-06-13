@@ -60,7 +60,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
     private void initialize(boolean useContainer, Settings settings) {
         final Context niwatoriContext = NFW.getNiwatoriContext(getAttachedView().getContext());
         if (niwatoriContext != null) {
-            mBoundaryWidth = Math.round(niwatoriContext.getResources().getDimension(R.dimen.boundary_width));
+            try {
+                mBoundaryWidth = Math.round(niwatoriContext.getResources().getDimension(R.dimen.boundary_width));
+            }
+            catch (Throwable t) {
+                mBoundaryWidth = 0;
+            }
             // flying padding
             final int padding = Math.round(niwatoriContext.getResources()
                     .getDimension(R.dimen.flying_view_padding));

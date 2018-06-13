@@ -804,8 +804,7 @@ public class FlyingLayout extends FrameLayout {
 
             final boolean consume = consumeTouchEvent();
             if (consume) {
-                mGestureDetector.onTouchEvent(ev);
-                return true;
+                return mGestureDetector.onTouchEvent(ev);
             }
             return false;
         }
