@@ -3,6 +3,7 @@ package cn.zhougy0717.xposed.niwatori;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -27,9 +28,9 @@ public class PopupWindowHandler extends XposedModule{
 
     private static Handler mActiveHandler = null;
     private static String mCurrentActivityClassName = null;
+    private static Activity mCurrentActivity = null;
     private static HashMap<String, Handler> mActivityHandlerDictionary = new HashMap<String, Handler>();
 
-    private List<IReceiver> mActiveReceivers = new ArrayList<IReceiver>();
     private class Handler{
         private PopupWindow mPopupWindow;
         private FrameLayout mDecorView;
@@ -55,6 +56,39 @@ public class PopupWindowHandler extends XposedModule{
         public void unregisterReceiver(){
             mActionReceiver.unregister();
             mSettingsLoadedReceiver.unregister();
+        }
+
+        public void dealWithPersistentIn(){
+            (new android.os.Handler()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (mHelper.getSettings().smallScreenPersistent) {
+                        if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
+                            mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+                        } else if (!mHelper.getSettings().screenResized && mHelper.isResized()) {
+                            mHelper.performAction(NFW.ACTION_RESET);
+                        }
+                    }
+                }
+            }, 50);
+        }
+        
+        public void dealWithPersistentOut() {
+            mHelper.onExit();
+            if (mHelper!=null && !mHelper.getSettings().smallScreenPersistent) {
+                // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
+                // because through an Activity. So shouldn't reset automatically.
+                mHelper.resetState(true);
+                ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView()).resetState(true);
+            }
+            FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
+            if (helper.getSettings().smallScreenPersistent) {
+                if (helper.getSettings().screenResized && !helper.isResized()) {
+                    helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+                } else if (!helper.getSettings().screenResized && helper.isResized()) {
+                    helper.performAction(NFW.ACTION_RESET);
+                }
+            }
         }
     }
 
@@ -84,12 +118,14 @@ public class PopupWindowHandler extends XposedModule{
                             mActiveHandler = new PopupWindowHandler.Handler(pw);
                             mActiveHandler.registerReceiver();
                             mActivityHandlerDictionary.put(mCurrentActivityClassName, mActiveHandler);
+                            mActiveHandler.dealWithPersistentIn();
                             final PopupWindow.OnDismissListener dismissListener =
                                     (PopupWindow.OnDismissListener) XposedHelpers.getObjectField(pw, "mOnDismissListener");
                             pw.setOnDismissListener(new PopupWindow.OnDismissListener() {
                                 @Override
                                 public void onDismiss() {
                                     if (mActiveHandler != null) {
+                                        mActiveHandler.dealWithPersistentOut();
                                         mActiveHandler.unregisterReceiver();
                                         mActiveHandler = null;
                                         mActivityHandlerDictionary.put(mCurrentActivityClassName, null);
@@ -142,20 +178,23 @@ public class PopupWindowHandler extends XposedModule{
 //                decorView, FIELD_FLYING_HELPER);
 //    }
 
-    public static void onPause(String className){
+    public static void onPause(Activity activity){
         // TODO: save the handler under the activity's name
         if(mActiveHandler != null){
             mActiveHandler.unregisterReceiver();
-            mActivityHandlerDictionary.put(className, mActiveHandler);
+            mActivityHandlerDictionary.put(activity.getClass().getName(), mActiveHandler);
+            mActiveHandler.dealWithPersistentOut();
         }
     }
 
-    public static void onResume(String className){
+    public static void onResume(Activity activity){
         // TODO: check the existing handler using the activity's class name
-        Handler handler = mActivityHandlerDictionary.get(className);
+        Handler handler = mActivityHandlerDictionary.get(activity.getClass().getName());
         if (handler != null){
             handler.registerReceiver();
+            handler.dealWithPersistentIn();
         }
-        mCurrentActivityClassName = className;
+        mCurrentActivityClassName = activity.getClass().getName();
+        mCurrentActivity = activity;
     }
 }

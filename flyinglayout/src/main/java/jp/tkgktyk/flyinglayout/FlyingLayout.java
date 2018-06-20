@@ -797,6 +797,9 @@ public class FlyingLayout extends FrameLayout {
                 }
                 case MotionEvent.ACTION_POINTER_UP:
                     onSecondaryPointerUp(ev);
+                    if (mActivePointerId == INVALID_POINTER) {
+                        break;
+                    }
                     mLastMotionX = (int) ev.getX(ev.findPointerIndex(mActivePointerId));
                     mLastMotionY = (int) ev.getY(ev.findPointerIndex(mActivePointerId));
                     break;

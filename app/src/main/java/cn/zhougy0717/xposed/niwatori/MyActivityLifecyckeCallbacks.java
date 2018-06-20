@@ -2,10 +2,8 @@ package cn.zhougy0717.xposed.niwatori;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XposedHelpers;
@@ -26,7 +24,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
         try {
             FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
             (new ReceiverManager(decorView)).registerReceiver();
-            PopupWindowHandler.onResume(activity.getClass().getName());
+            PopupWindowHandler.onResume(activity);
 
             final FlyingHelper helper = ModActivity.getHelper(decorView);
             if (helper != null) {
@@ -75,7 +73,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
                 // because through an Activity. So shouldn't reset automatically.
                 helper.resetState(true);
             }
-            PopupWindowHandler.onPause(activity.getClass().getName());
+            PopupWindowHandler.onPause(activity);
             helper.onExit();
         } catch (Throwable t) {
             XposedModule.logE(t);

@@ -64,7 +64,6 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
 
     private void handler(final Settings settings){
         logD(mDecorView.getContext().getPackageName() + ": reload settings");
-//        Log.e("Ben", mDecorView.getContext().getPackageName() + ": reload settings");
         // need to reload on each package?
         final FlyingHelper helper = getHelper(mDecorView);
         if (helper != null) {
