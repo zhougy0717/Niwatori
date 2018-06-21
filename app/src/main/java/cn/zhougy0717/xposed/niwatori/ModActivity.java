@@ -51,6 +51,25 @@ public class ModActivity extends XposedModule {
                 helper = new FlyingHelper(decorView, 1, false);
                 XposedHelpers.setAdditionalInstanceField(decorView, FIELD_FLYING_HELPER, helper);
             }
+
+            final FlyingHelper h = helper;
+            decorView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return h.onTouchEvent(event);
+                }
+            });
+            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    boolean changed = (left!=oldLeft) || (right!=oldRight) || (bottom!=oldBottom) || (top!=oldTop);
+                    h.onLayout(changed, left, top, right, bottom);
+                    while(!h.mLayoutCallbacks.isEmpty()) {
+                        Runnable r = h.mLayoutCallbacks.poll();
+                        r.run();
+                    }
+                }
+            });
             return helper;
         } catch (Throwable t) {
             logE(t);
@@ -196,48 +215,6 @@ public class ModActivity extends XposedModule {
                         }
                     });
 
-//            XposedHelpers.findAndHookMethod(classDecorView, "onAttachedToWindow", new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    try {
-//                        final FrameLayout decorView = (FrameLayout) param.thisObject;
-//                        final BroadcastReceiver settingsLoadedReceiver = new BroadcastReceiver() {
-//                            @Override
-//                            public void onReceive(Context context, Intent intent) {
-//                                logD(decorView.getContext().getPackageName() + ": reload settings");
-//                                // need to reload on each package?
-//                                final FlyingHelper helper = getHelper(decorView);
-//                                if (helper != null) {
-//                                    Settings settings = (Settings) intent.getSerializableExtra(NFW.EXTRA_SETTINGS);
-//                                    getHelper(decorView).onSettingsLoaded(settings);
-//                                }
-//                            }
-//                        };
-//                        XposedHelpers.setAdditionalInstanceField(decorView,
-//                                FIELD_SETTINGS_CHANGED_RECEIVER, settingsLoadedReceiver);
-//                        decorView.getContext().registerReceiver(settingsLoadedReceiver,
-//                                NFW.SETTINGS_CHANGED_FILTER);
-//                    } catch (Throwable t) {
-//                        logE(t);
-//                    }
-//                }
-//            });
-//            XposedHelpers.findAndHookMethod(classDecorView, "onDetachedFromWindow", new XC_MethodHook() {
-//                @Override
-//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                    try {
-//                        final FrameLayout decorView = (FrameLayout) param.thisObject;
-//                        final BroadcastReceiver settingsLoadedReceiver =
-//                                (BroadcastReceiver) XposedHelpers.getAdditionalInstanceField(decorView,
-//                                        FIELD_SETTINGS_CHANGED_RECEIVER);
-//                        if (settingsLoadedReceiver != null) {
-//                            decorView.getContext().unregisterReceiver(settingsLoadedReceiver);
-//                        }
-//                    } catch (Throwable t) {
-//                        logE(t);
-//                    }
-//                }
-//            });
         } catch (Throwable t) {
             logE(t);
         }
@@ -293,26 +270,27 @@ public class ModActivity extends XposedModule {
             logE(t);
 //            Log.e("Ben", Log.getStackTraceString(t));
         }
-        if (helper != null) {
-            final FlyingHelper h = helper;
-            decorView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    return h.onTouchEvent(event);
-                }
-            });
-            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                @Override
-                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                    boolean changed = (left!=oldLeft) || (right!=oldRight) || (bottom!=oldBottom) || (top!=oldTop);
-                    h.onLayout(changed, left, top, right, bottom);
-                    while(!h.mLayoutCallbacks.isEmpty()) {
-                        Runnable r = h.mLayoutCallbacks.poll();
-                        r.run();
-                    }
-                }
-            });
-        }
+//        if (helper != null) {
+//            final FlyingHelper h = helper;
+//            decorView.setOnTouchListener(new View.OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    return h.onTouchEvent(event);
+//                }
+//            });
+//            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+//                @Override
+//                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//                    boolean changed = (left!=oldLeft) || (right!=oldRight) || (bottom!=oldBottom) || (top!=oldTop);
+//                    h.onLayout(changed, left, top, right, bottom);
+//                    Log.e("Ben", h.getAttachedView() + " layout: " + h.mLayoutCallbacks.size());
+//                    while(!h.mLayoutCallbacks.isEmpty()) {
+//                        Runnable r = h.mLayoutCallbacks.poll();
+//                        r.run();
+//                    }
+//                }
+//            });
+//        }
         return helper;
     }
 }

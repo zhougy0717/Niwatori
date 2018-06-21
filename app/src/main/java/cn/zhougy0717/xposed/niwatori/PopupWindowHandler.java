@@ -59,33 +59,29 @@ public class PopupWindowHandler extends XposedModule{
         }
 
         public void dealWithPersistentIn(){
-            (new android.os.Handler()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (mHelper.getSettings().smallScreenPersistent) {
-                        if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
-                            mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                        } else if (!mHelper.getSettings().screenResized && mHelper.isResized()) {
-                            mHelper.performAction(NFW.ACTION_RESET);
-                        }
-                    }
+            FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
+            if (mHelper.getSettings().smallScreenPersistent) {
+                // In persistent small screen mode, sync up with parent activity and the popup window.
+                if (helper.isResized() && !mHelper.isResized()) {
+                    mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+                } else if (!helper.isResized() && mHelper.isResized()) {
+                    mHelper.performAction(NFW.ACTION_RESET);
                 }
-            }, 50);
+            }
         }
         
         public void dealWithPersistentOut() {
-            mHelper.onExit();
             if (mHelper!=null && !mHelper.getSettings().smallScreenPersistent) {
                 // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
                 // because through an Activity. So shouldn't reset automatically.
                 mHelper.resetState(true);
-                ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView()).resetState(true);
             }
             FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
             if (helper.getSettings().smallScreenPersistent) {
-                if (helper.getSettings().screenResized && !helper.isResized()) {
+                // In persistent small screen mode, sync up with parent activity and the popup window.
+                if (mHelper.isResized() && !helper.isResized()) {
                     helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                } else if (!helper.getSettings().screenResized && helper.isResized()) {
+                } else if (!mHelper.isResized() && helper.isResized()) {
                     helper.performAction(NFW.ACTION_RESET);
                 }
             }
@@ -114,6 +110,9 @@ public class PopupWindowHandler extends XposedModule{
                             return;
                         }
 
+                        if (mActiveHandler != null){
+                            return;
+                        }
                         try {
                             mActiveHandler = new PopupWindowHandler.Handler(pw);
                             mActiveHandler.registerReceiver();
