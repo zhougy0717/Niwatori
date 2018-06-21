@@ -43,17 +43,17 @@ To enable each mode, you have several choices:
 
 # Release Note
 
-##v0.6.0
+## v0.6.0
 
 There are bunch of new features in this version. So I bump it up to a big version change.
 
 1. The content view in small screen mode is moved away from the edge with margins in both X and Y axis.
-2. You can use gestures in those margins, including:
+2. You can use gestures in those margins. Be noted that this gesture still doesn't work with Notification panel. I will work on this soon. The gestures include:
    - slide down to slide the upper half of the shrunk content down to bottom half.
    - slide up to reset to original shrunk screen position
    - scroll left to zoom out
    - scroll right to zoom in
-3. Add a tutorial guide in the first app launch.
+3. Add a tutorial guide in the first app launch. You can also open it up with a menu item.
 4. Translate into Chinese simplified.
 5. Remove all the donation limitation. You can use every premium feature free.
 
