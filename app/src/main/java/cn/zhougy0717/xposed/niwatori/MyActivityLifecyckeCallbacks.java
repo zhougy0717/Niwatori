@@ -44,6 +44,8 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
                         if (helper.getSettings().smallScreenPersistent) {
                             if (helper.getSettings().screenResized && !helper.isResized()) {
                                 helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+                            } else if (helper.getSettings().screenResized && helper.isResized()) {
+                                helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
                             } else if (!helper.getSettings().screenResized && helper.isResized()) {
                                 helper.performAction(NFW.ACTION_RESET);
                             }

@@ -81,6 +81,8 @@ public class PopupWindowHandler extends XposedModule{
                 // In persistent small screen mode, sync up with parent activity and the popup window.
                 if (mHelper.isResized() && !helper.isResized()) {
                     helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+                } else if (mHelper.isResized() && helper.isResized()) {
+                    helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
                 } else if (!mHelper.isResized() && helper.isResized()) {
                     helper.performAction(NFW.ACTION_RESET);
                 }

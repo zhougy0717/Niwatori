@@ -36,6 +36,7 @@ public class NFW {
     public static final String ACTION_EXTRA_ACTION = PREFIX_ACTION + "EXTRA_ACTION";
     public static final String ACTION_RESET = PREFIX_ACTION + "RESET";
     public static final String ACTION_SOFT_RESET = PREFIX_ACTION + "SOFT_RESET";
+    public static final String ACTION_REFRESH_SMALL_SCREEN = PREFIX_ACTION + "REFRESH_SMALL_SCREEN";
 
     public static final String PREFIX_ACTION_SB = PREFIX_ACTION + "SB_";
     public static final String ACTION_SB_EXPAND_NOTIFICATIONS = PREFIX_ACTION_SB + "EXPAND_NOTIFICATIONS";

@@ -81,6 +81,9 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
                     if (settings.screenResized && !helper.isResized()) {
                         helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
                     }
+                    else if (settings.screenResized && helper.isResized()) {
+                        helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
+                    }
                     else if (!settings.screenResized && helper.isResized()){
                         helper.performAction(NFW.ACTION_RESET);
                     }

@@ -201,6 +201,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
             if (!isResized()) {
                 resize(true);
             }
+        } else if (action.equals(NFW.ACTION_REFRESH_SMALL_SCREEN)) {
+            onSettingsLoaded();
+            goHomeWithMargin();
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
