@@ -181,23 +181,23 @@ public class ModActivity extends XposedModule {
                             return invokeOriginalMethod(methodHookParam);
                         }
                     });
-            XposedHelpers.findAndHookMethod(classDecorView, "onTouchEvent", MotionEvent.class,
-                    new XC_MethodReplacement() {
-                        @Override
-                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                            try {
-                                final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
-                                final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-                                final FlyingHelper helper = getHelper(decorView);
-                                if (helper != null && helper.onTouchEvent(event)) {
-                                    return true;
-                                }
-                            } catch (Throwable t) {
-                                logE(t);
-                            }
-                            return invokeOriginalMethod(methodHookParam);
-                        }
-                    });
+//            XposedHelpers.findAndHookMethod(classDecorView, "onTouchEvent", MotionEvent.class,
+//                    new XC_MethodReplacement() {
+//                        @Override
+//                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+//                            try {
+//                                final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
+//                                final MotionEvent event = (MotionEvent) methodHookParam.args[0];
+//                                final FlyingHelper helper = getHelper(decorView);
+//                                if (helper != null && helper.onTouchEvent(event)) {
+//                                    return true;
+//                                }
+//                            } catch (Throwable t) {
+//                                logE(t);
+//                            }
+//                            return invokeOriginalMethod(methodHookParam);
+//                        }
+//                    });
             XposedHelpers.findAndHookMethod(classDecorView, "draw", Canvas.class,
                     new XC_MethodHook() {
                         @Override

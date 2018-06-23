@@ -319,8 +319,11 @@ public class FlyingLayout extends FrameLayout {
 
                 @Override
                 public boolean onDown(MotionEvent e) {
+                    if (insideOfContents(e)) {
+                        return false;
+                    }
                     mLastX = e.getX();
-                    return false;
+                    return true;
                 }
 
                 @Override
@@ -329,6 +332,9 @@ public class FlyingLayout extends FrameLayout {
                         return false;
                     }
                     if (Math.abs(e1.getY() - e2.getY()) < FLING_MIN_DISTANCE * mView.getHeight()) {
+                        return false;
+                    }
+                    if (insideOfContents(e1)) {
                         return false;
                     }
                     if (velocityY > 0) {
@@ -807,6 +813,10 @@ public class FlyingLayout extends FrameLayout {
 
             final boolean consume = consumeTouchEvent();
             if (consume) {
+                /**
+                 * Without arbitrariliy returning true, we have to acknoledge the ACTION_DOWN event.
+                 * That makes the gesture detection work.
+                 */
                 return mGestureDetector.onTouchEvent(ev);
             }
             return false;

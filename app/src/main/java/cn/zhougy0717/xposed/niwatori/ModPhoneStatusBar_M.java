@@ -23,22 +23,22 @@ public class ModPhoneStatusBar_M extends ModPhoneStatusBar {
     }
 
     protected void hookPanelHolderOnTouch(ClassLoader classLoader){
-        final Class<?> classPanelHolder = XposedHelpers.findClass(getPanelHolderName(), classLoader);
-        XposedHelpers.findAndHookMethod(classPanelHolder, "onTouchEvent", MotionEvent.class,
-                new XC_MethodReplacement() {
-                    @Override
-                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                        try {
-                            final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-                            if (mHelper.onTouchEvent(event)) {
-                                return true;
-                            }
-                        } catch (Throwable t) {
-                            logE(t);
-                        }
-                        return invokeOriginalMethod(methodHookParam);
-                    }
-                });
+//        final Class<?> classPanelHolder = XposedHelpers.findClass(getPanelHolderName(), classLoader);
+//        XposedHelpers.findAndHookMethod(classPanelHolder, "onTouchEvent", MotionEvent.class,
+//                new XC_MethodReplacement() {
+//                    @Override
+//                    protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+//                        try {
+//                            final MotionEvent event = (MotionEvent) methodHookParam.args[0];
+//                            if (mHelper.onTouchEvent(event)) {
+//                                return true;
+//                            }
+//                        } catch (Throwable t) {
+//                            logE(t);
+//                        }
+//                        return invokeOriginalMethod(methodHookParam);
+//                    }
+//                });
     }
 
     protected String getPanelCollapsedName() {

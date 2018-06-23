@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Canvas;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -58,7 +59,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             @Override
             public boolean onDoubleTap(MotionEvent e) {
                 mHelper.performAction(NFW.ACTION_SMALL_SCREEN);
-                mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
+//                mHelper.performAction(NFW.ACTION_MOVABLE_SCREEN);
                 return true;
             }
         });
@@ -153,39 +154,56 @@ public abstract class ModPhoneStatusBar extends XposedModule {
                 final GestureDetector gestureDetector = createShadowGesture(v.getContext());
                 XposedHelpers.setAdditionalInstanceField(v, "CUSTOM_GESTURE_DETECTOR", gestureDetector);
                 XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", false);
-            }
-        });
-        XposedBridge.hookAllMethods(classPanelView, "onTouchEvent", new XC_MethodReplacement() {
-            @Override
-            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
-                View v = (View) param.thisObject;
-                MotionEvent e = (MotionEvent) param.args[0];
-                GestureDetector gestureDetector = (GestureDetector) XposedHelpers.getAdditionalInstanceField(v, "CUSTOM_GESTURE_DETECTOR");
-                boolean result = false;
-                KeyguardManager mKeyguardManager = (KeyguardManager) v.getContext().getSystemService(KEYGUARD_SERVICE);
-                if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
-                    return invokeOriginalMethod(param);
-                }
+                v.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        GestureDetector gestureDetector = (GestureDetector) XposedHelpers.getAdditionalInstanceField(v, "CUSTOM_GESTURE_DETECTOR");
+                        boolean result = false;
+                        KeyguardManager mKeyguardManager = (KeyguardManager) v.getContext().getSystemService(KEYGUARD_SERVICE);
+                        if (mKeyguardManager.inKeyguardRestrictedInputMode()) {
+                            return false;
+                        }
 
-                if (!mHelper.isResized() && mHelper.staysHome()) {
-                    if (gestureDetector.onTouchEvent(e)) {
+                        if (!mHelper.isResized() && mHelper.staysHome()) {
+                            if (gestureDetector.onTouchEvent(event)) {
+                                /**
+                                 *  Why do we need to ignore next ACTION_UP?
+                                 *  Double tap takes effect in the next ACTION_DOWN event.
+                                 *  If we don't ignore the coming ACTION_UP, systemui will respond to it and collapse the notification panel.
+                                 *  That's not what I want.
+                                 */
+                                XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", true);
+                                return true;
+                            }
+                        }
+
+
+
+                        // ------------------------------------
+                        try {
+                            if (mHelper.onTouchEvent(event)) {
+                                XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", true);
+                                return true;
+                            }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+
                         /**
-                         *  Why do we need to ignore next ACTION_UP?
-                         *  Double tap takes effect in the next ACTION_DOWN event.
-                         *  If we don't ignore the coming ACTION_UP, systemui will respond to it and collapse the notification panel.
-                         *  That's not what I want.
+                         * We want to block till the up event comes.
                          */
-                        XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", true);
-                        return true;
+                        boolean ignoreUp = (boolean)XposedHelpers.getAdditionalInstanceField(v,"IGNORE_NEXT_UP");
+                        if (ignoreUp && event.getAction()!=MotionEvent.ACTION_UP) {
+                            return true;
+                        }
+                        if(ignoreUp && event.getAction()==MotionEvent.ACTION_UP){
+                            XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", false);
+                            ignoreUp = (boolean)XposedHelpers.getAdditionalInstanceField(v,"IGNORE_NEXT_UP");
+                            return true;
+                        }
+                        return false;
                     }
-                }
-
-                boolean ignoreUp = (boolean)XposedHelpers.getAdditionalInstanceField(v,"IGNORE_NEXT_UP");
-                if(ignoreUp && e.getAction()==MotionEvent.ACTION_UP){
-                    XposedHelpers.setAdditionalInstanceField(v, "IGNORE_NEXT_UP", false);
-                    return true;
-                }
-                return invokeOriginalMethod(param);
+                });
             }
         });
     }

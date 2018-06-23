@@ -143,7 +143,7 @@ public class PopupWindowHandler extends XposedModule{
         });
 
         final Class<?> classPopupDecorView = XposedHelpers.findClass("android.widget.PopupWindow$PopupDecorView", null);
-        XposedHelpers.findAndHookMethod(classPopupDecorView, "dispatchTouchEvent", MotionEvent.class,
+        XposedHelpers.findAndHookMethod(classPopupDecorView, "onTouchEvent", MotionEvent.class,
                 new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {

@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,27 +49,30 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
         }
     }
     protected void hookPanelHolderOnTouch(ClassLoader classLoader){
-        XposedHelpers.findAndHookMethod(View.class, "onTouchEvent", MotionEvent.class,
-            new XC_MethodReplacement() {
-                @Override
-                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                    if (!methodHookParam.thisObject
-                            .getClass()
-                            .getName()
-                            .equals(getPanelHolderName())) {
-                        return invokeOriginalMethod(methodHookParam);
-                    }
-                    try {
-                        final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-                        if (mHelper.onTouchEvent(event)) {
-                            return true;
-                        }
-                    } catch (Throwable t) {
-                        logE(t);
-                    }
-                    return invokeOriginalMethod(methodHookParam);
-                }
-            });
+//        XposedHelpers.findAndHookMethod(View.class, "onTouchEvent", MotionEvent.class,
+//            new XC_MethodReplacement() {
+//                @Override
+//                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+//                    if (!methodHookParam.thisObject
+//                            .getClass()
+//                            .getName()
+//                            .equals(getPanelHolderName())) {
+//                        return invokeOriginalMethod(methodHookParam);
+//                    }
+//                    try {
+//                        boolean handled = (boolean)invokeOriginalMethod(methodHookParam);
+//                        Log.e("Ben", "NotificationQuickSettingsContainer onTouchEvent: " + handled);
+//                        final MotionEvent event = (MotionEvent) methodHookParam.args[0];
+//                        if (mHelper.onTouchEvent(event)) {
+//                            return true;
+//                        }
+//                        return handled;
+//                    } catch (Throwable t) {
+//                        logE(t);
+//                        return false;
+//                    }
+//                }
+//            });
     }
 
     protected String getPanelCollapsedName() {
@@ -91,7 +95,7 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
                     /**
                      * TODO:
                      *  1. We can try using onPanelPeeked to register the receivers and unregister them in onPanelCollapsed
-                     *  2. We can try merge the mGlobalReceiver with ActionReceiver class.
+                     *  2. We can try merging the mGlobalReceiver with ActionReceiver class.
                      */
                     panelHolder.getContext().registerReceiver(mGlobalReceiver, NFW.STATUS_BAR_FILTER);
                     panelHolder.getContext().registerReceiver(new BroadcastReceiver() {
