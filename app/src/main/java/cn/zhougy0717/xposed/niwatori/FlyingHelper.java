@@ -395,7 +395,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
             }
         }
         if ((force || !handled) && isResized()) {
-            if (!staysHomeWithMargin()){
+            if (!force && !staysHomeWithMargin()){
                 goHomeWithMargin();
             }
             else {

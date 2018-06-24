@@ -115,8 +115,11 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
         });
     }
 
-    @Override
-    protected void hookPanelHolderDraw(ClassLoader classLoader){
+    /**
+     * REVISIT: It looks like not that useful.
+     */
+//    @Override
+//    protected void hookPanelHolderDraw(ClassLoader classLoader){
 //        XposedHelpers.findAndHookMethod(View.class, "draw", Canvas.class,
 //                new XC_MethodHook() {
 //                    @Override
@@ -132,7 +135,7 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
 //                        }
 //                    }
 //                });
-    }
+//    }
 }
 
 

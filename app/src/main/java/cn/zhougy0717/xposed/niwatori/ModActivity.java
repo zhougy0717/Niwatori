@@ -149,6 +149,9 @@ public class ModActivity extends XposedModule {
                 }
             });
 
+            /**
+             * REVISIT: It looks like not that useful.
+             */
 //            XposedHelpers.findAndHookMethod(View.class, "setBackground", Drawable.class,
 //                    new XC_MethodHook() {
 //                        @Override
