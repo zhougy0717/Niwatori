@@ -149,21 +149,21 @@ public class ModActivity extends XposedModule {
                 }
             });
 
-            XposedHelpers.findAndHookMethod(View.class, "setBackground", Drawable.class,
-                    new XC_MethodHook() {
-                        @Override
-                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            if (!param.thisObject
-                                    .getClass()
-                                    .getName()
-                                    .equals(CLASS_DECOR_VIEW)) {
-                                return;
-                            }
-                            final FrameLayout decorView = (FrameLayout) param.thisObject;
-                            final Drawable drawable = (Drawable) param.args[0];
-                            param.args[0] = censorDrawable(decorView, drawable);
-                        }
-                    });
+//            XposedHelpers.findAndHookMethod(View.class, "setBackground", Drawable.class,
+//                    new XC_MethodHook() {
+//                        @Override
+//                        protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+//                            if (!param.thisObject
+//                                    .getClass()
+//                                    .getName()
+//                                    .equals(CLASS_DECOR_VIEW)) {
+//                                return;
+//                            }
+//                            final FrameLayout decorView = (FrameLayout) param.thisObject;
+//                            final Drawable drawable = (Drawable) param.args[0];
+//                            param.args[0] = censorDrawable(decorView, drawable);
+//                        }
+//                    });
             XposedHelpers.findAndHookMethod(classDecorView, "onInterceptTouchEvent", MotionEvent.class,
                     new XC_MethodReplacement() {
                         @Override
