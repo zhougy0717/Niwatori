@@ -38,7 +38,7 @@ public abstract class ModPhoneStatusBar extends XposedModule {
     protected static FlyingHelper mHelper;
 
     protected static Object mPhoneStatusBar;
-    private static View mPhoneStatusBarView;
+//    private static View mPhoneStatusBarView;
 
     abstract protected String getPanelHolderName();
     abstract protected String getPanelCollapsedName();
@@ -70,7 +70,8 @@ public abstract class ModPhoneStatusBar extends XposedModule {
             try {
                 final String action = intent.getAction();
                 logD("global broadcast receiver: " + action);
-                final int mState = XposedHelpers.getIntField(mPhoneStatusBarView, "mState");
+                View statusBarView = (View)XposedHelpers.callMethod(mPhoneStatusBar, "getStatusBarView");
+                final int mState = XposedHelpers.getIntField(statusBarView, "mState");
                 if (action.startsWith(NFW.PREFIX_ACTION_SB)) {
                     consumeMyAction(action);
                     return;
@@ -290,12 +291,12 @@ public abstract class ModPhoneStatusBar extends XposedModule {
         });
         final Class<?> classPhoneStatusBarView = XposedHelpers.findClass(
                 CLASS_PHONE_STATUS_BAR_VIEW, classLoader);
-        XposedBridge.hookAllConstructors(classPhoneStatusBarView, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                mPhoneStatusBarView = (View) param.thisObject;
-            }
-        });
+//        XposedBridge.hookAllConstructors(classPhoneStatusBarView, new XC_MethodHook() {
+//            @Override
+//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                mPhoneStatusBarView = (View) param.thisObject;
+//            }
+//        });
         //
         // Reset state when status bar collapsed
         //

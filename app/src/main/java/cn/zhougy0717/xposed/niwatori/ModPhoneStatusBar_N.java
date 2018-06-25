@@ -118,24 +118,25 @@ public class ModPhoneStatusBar_N extends ModPhoneStatusBar {
     /**
      * REVISIT: It looks like not that useful.
      */
-//    @Override
-//    protected void hookPanelHolderDraw(ClassLoader classLoader){
-//        XposedHelpers.findAndHookMethod(View.class, "draw", Canvas.class,
-//                new XC_MethodHook() {
-//                    @Override
-//                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                        try {
+    @Override
+    protected void hookPanelHolderDraw(ClassLoader classLoader){
+        final Class<?> classPanelView = XposedHelpers.findClass("com.android.systemui.statusbar.phone.NotificationPanelView", classLoader);
+        XposedHelpers.findAndHookMethod(classPanelView, "dispatchDraw", Canvas.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
 //                            View v = (View) param.thisObject;
 //                            if (v.getClass().getName().endsWith("NotificationPanelView")) {
-//                                final Canvas canvas = (Canvas) param.args[0];
-//                                mHelper.draw(canvas);
+                                final Canvas canvas = (Canvas) param.args[0];
+                                mHelper.draw(canvas);
 //                            }
-//                        } catch (Throwable t) {
-//                            logE(t);
-//                        }
-//                    }
-//                });
-//    }
+                        } catch (Throwable t) {
+                            logE(t);
+                        }
+                    }
+                });
+    }
 }
 
 

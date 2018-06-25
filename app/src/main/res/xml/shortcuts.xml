@@ -1,0 +1,19 @@
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="small_screen"
+        android:enabled="true"
+        android:icon="@drawable/ic_action_small_screen"
+        android:shortcutShortLabel="@string/action_small_screen"
+        android:shortcutLongLabel="@string/action_small_screen"
+        android:shortcutDisabledMessage="@string/action_small_screen">
+        <intent
+            android:action="cn.zhougy0717.xposed.niwatori.intent.action.SMALL_SCREEN"
+            android:targetPackage="cn.zhougy0717.xposed.niwatori"
+            android:targetClass="cn.zhougy0717.xposed.niwatori.app.ActionActivity" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <!--<categories android:name="android.shortcut.conversation" />-->
+    </shortcut>
+    <!-- Specify more shortcuts here. -->
+</shortcuts>
