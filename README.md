@@ -43,6 +43,12 @@ To enable each mode, you have several choices:
 
 # Release Note
 
+## v0.6.1
+
+1. Add global triggering gesture for small screen mode. Now you can swipe on left or right edge to trigger small mode in any Activity window.
+2. Fix the background graphical issue for notification panel.
+3. Other minor bug fixes.
+
 ## v0.6.0
 
 There are bunch of new features in this version. So I bump it up to a big version change.
