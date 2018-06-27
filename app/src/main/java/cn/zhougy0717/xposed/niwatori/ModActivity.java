@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -149,6 +150,24 @@ public class ModActivity extends XposedModule {
                 }
             });
 
+
+            XposedBridge.hookAllMethods(classDecorView, "dispatchTouchEvent", new XC_MethodReplacement() {
+                @Override
+                protected Object replaceHookedMethod (MethodHookParam param) throws Throwable {
+                    final FrameLayout decorView = (FrameLayout)param.thisObject;
+
+                    MotionEvent event = (MotionEvent)param.args[0];
+                    if (!getHelper(decorView).isResized()) {
+                        getHelper(decorView).getTriggerGesture().onTouchEvent((MotionEvent)param.args[0]);
+                    }
+//                    Log.e("Ben", "past gesture: " + event.getAction());
+                    boolean result = (boolean)invokeOriginalMethod(param);
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        return true;
+                    }
+                    return result;
+                }
+            });
             /**
              * REVISIT: It looks like not that useful.
              */

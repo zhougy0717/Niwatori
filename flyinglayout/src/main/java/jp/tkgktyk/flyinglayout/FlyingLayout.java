@@ -814,7 +814,7 @@ public class FlyingLayout extends FrameLayout {
             final boolean consume = consumeTouchEvent();
             if (consume) {
                 /**
-                 * Without arbitrariliy returning true, we have to acknoledge the ACTION_DOWN event.
+                 * Without arbitrariliy returning true, we have to acknowledge the ACTION_DOWN event.
                  * That makes the gesture detection work.
                  */
                 return mGestureDetector.onTouchEvent(ev);

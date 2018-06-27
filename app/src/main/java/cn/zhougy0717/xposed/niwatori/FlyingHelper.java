@@ -10,6 +10,8 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
@@ -43,6 +45,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     private final GradientDrawable mBoundaryDrawable = NFW.makeBoundaryDrawable(0, 0);
     private int mBoundaryWidth;
+    private GestureDetector mTriggerGesture;
 
     public FlyingHelper(FrameLayout view, int frameLayoutHierarchy, boolean useContainer/*,
                         NFW.Settings settings*/) throws NoSuchMethodException {
@@ -55,6 +58,30 @@ public class FlyingHelper extends FlyingLayout.Helper {
         initialize(useContainer, settings);
 
         mLayoutCallbacks = new LinkedList<Runnable>();
+
+        final View decorView = view;
+        mTriggerGesture = new GestureDetector(decorView.getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent event1, MotionEvent event2,float velocityX, float velocityY) {
+                if (velocityY >= 0) {
+                    return false;
+                }
+                int screenWidth = getAttachedView().getWidth();
+                if (Math.abs(event1.getX() - event2.getX()) > 0.1*screenWidth) {
+                    return false;
+                }
+
+                if ((event1.getX() >= 0.02*screenWidth) && (event1.getX() <= 0.98*screenWidth)) {
+                    return false;
+                }
+                NFW.performAction(decorView.getContext(), NFW.ACTION_SMALL_SCREEN);
+                return true;
+            }
+        });
+    }
+
+    public GestureDetector getTriggerGesture(){
+        return mTriggerGesture;
     }
 
     private void initialize(boolean useContainer, Settings settings) {

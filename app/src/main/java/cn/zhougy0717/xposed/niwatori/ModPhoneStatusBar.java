@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -128,14 +129,13 @@ public abstract class ModPhoneStatusBar extends XposedModule {
     private void handleNotificationGesture(ClassLoader classLoader){
         final Class<?> classPanelView = XposedHelpers.findClass("com.android.systemui.statusbar.phone.NotificationPanelView", classLoader);
         final Class<?> classStatusBar = XposedHelpers.findClass(CLASS_PHONE_STATUS_BAR, classLoader);
-//        final Class<?> classStatusBarWindow = XposedHelpers.findClass("com.android.systemui.statusbar.phone.StatusBarWindowView", classLoader);
-//        XposedBridge.hookAllConstructors(classStatusBarWindow, new XC_MethodHook() {
-//            @Override
-//            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                View v = (View) param.thisObject;
-//                v.setBackground(ModActivity.censorDrawable(v, null));
-//            }
-//        });
+        final Class<?> classScrim = XposedHelpers.findClass("com.android.systemui.statusbar.phone.ScrimController", classLoader);
+        XposedBridge.hookAllMethods(classScrim, "setExcludedBackgroundArea", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                param.args[0] = new Rect(0,0,0,0);
+            }
+        });
 
         XposedBridge.hookAllMethods(classPanelView, "onHeadsUpStateChanged", new XC_MethodHook() {
             @Override
