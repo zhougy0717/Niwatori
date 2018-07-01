@@ -2,9 +2,13 @@ package cn.zhougy0717.xposed.niwatori;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.TabActivity;
+import android.databinding.adapters.TabHostBindingAdapter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.TabHost;
 
 import de.robv.android.xposed.XposedHelpers;
 
@@ -21,12 +25,14 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
 
     @Override
     public void onActivityResumed(Activity activity) {
+        if (activity instanceof TabActivity) {
+            return;
+        }
         try {
             FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
+            final FlyingHelper helper = ModActivity.createFlyingHelper(decorView);
             (new ReceiverManager(decorView)).registerReceiver();
             PopupWindowHandler.onResume(activity);
-
-            final FlyingHelper helper = ModActivity.getHelper(decorView);
             if (helper != null) {
                 /**
                  * Because onResume and onPause are running in parallel,
@@ -63,6 +69,9 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
 
     @Override
     public void onActivityPaused(Activity activity) {
+        if (activity instanceof TabActivity) {
+            return;
+        }
         try {
             //                Activity activity = (Activity) param.thisObject;
             XposedModule.logD(activity + "#onPause");

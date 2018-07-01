@@ -136,31 +136,34 @@ public class ModActivity extends XposedModule {
 //                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M?
 //                            CLASS_DECOR_VIEW_M: CLASS_DECOR_VIEW, null);
                     ModActivity.CLASS_DECOR_VIEW, null);
-            XposedBridge.hookAllConstructors(classDecorView, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    try {
-                        final FrameLayout decorView = (FrameLayout) param.thisObject;
-                        // need to reload on each package?
-                        createFlyingHelper(decorView);
-//                        setBackground(decorView);
-                    } catch (Throwable t) {
-                        logE(t);
-                    }
-                }
-            });
+//            XposedBridge.hookAllConstructors(classDecorView, new XC_MethodHook() {
+//                @Override
+//                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+//                    try {
+//                        final FrameLayout decorView = (FrameLayout) param.thisObject;
+//                        // need to reload on each package?
+//                        createFlyingHelper(decorView);
+////                        setBackground(decorView);
+//                    } catch (Throwable t) {
+//                        logE(t);
+//                    }
+//                }
+//            });
 
 
             XposedBridge.hookAllMethods(classDecorView, "dispatchTouchEvent", new XC_MethodReplacement() {
                 @Override
                 protected Object replaceHookedMethod (MethodHookParam param) throws Throwable {
                     final FrameLayout decorView = (FrameLayout)param.thisObject;
+                    final FlyingHelper helper = getHelper(decorView);
+                    if (helper == null){
+                        return invokeOriginalMethod(param);
+                    }
 
                     MotionEvent event = (MotionEvent)param.args[0];
-                    if (!getHelper(decorView).isResized()) {
-                        getHelper(decorView).getTriggerGesture().onTouchEvent((MotionEvent)param.args[0]);
+                    if (!helper.isResized()) {
+                        helper.getTriggerGesture().onTouchEvent((MotionEvent)param.args[0]);
                     }
-//                    Log.e("Ben", "past gesture: " + event.getAction());
                     boolean result = (boolean)invokeOriginalMethod(param);
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         return true;
@@ -203,23 +206,7 @@ public class ModActivity extends XposedModule {
                             return invokeOriginalMethod(methodHookParam);
                         }
                     });
-//            XposedHelpers.findAndHookMethod(classDecorView, "onTouchEvent", MotionEvent.class,
-//                    new XC_MethodReplacement() {
-//                        @Override
-//                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-//                            try {
-//                                final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
-//                                final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-//                                final FlyingHelper helper = getHelper(decorView);
-//                                if (helper != null && helper.onTouchEvent(event)) {
-//                                    return true;
-//                                }
-//                            } catch (Throwable t) {
-//                                logE(t);
-//                            }
-//                            return invokeOriginalMethod(methodHookParam);
-//                        }
-//                    });
+
             XposedHelpers.findAndHookMethod(classDecorView, "draw", Canvas.class,
                     new XC_MethodHook() {
                         @Override
@@ -283,36 +270,6 @@ public class ModActivity extends XposedModule {
     public static FlyingHelper getHelper(@NonNull final FrameLayout decorView) {
         FlyingHelper helper = (FlyingHelper) XposedHelpers.getAdditionalInstanceField(
                 decorView, FIELD_FLYING_HELPER);
-
-        try {
-            if ((helper == null) && (decorView.getClass().getName().equals(CLASS_DECOR_VIEW))) {
-                helper = createFlyingHelper(decorView);
-            }
-        } catch (Throwable t) {
-            logE(t);
-//            Log.e("Ben", Log.getStackTraceString(t));
-        }
-//        if (helper != null) {
-//            final FlyingHelper h = helper;
-//            decorView.setOnTouchListener(new View.OnTouchListener() {
-//                @Override
-//                public boolean onTouch(View v, MotionEvent event) {
-//                    return h.onTouchEvent(event);
-//                }
-//            });
-//            decorView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-//                @Override
-//                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-//                    boolean changed = (left!=oldLeft) || (right!=oldRight) || (bottom!=oldBottom) || (top!=oldTop);
-//                    h.onLayout(changed, left, top, right, bottom);
-//                    Log.e("Ben", h.getAttachedView() + " layout: " + h.mLayoutCallbacks.size());
-//                    while(!h.mLayoutCallbacks.isEmpty()) {
-//                        Runnable r = h.mLayoutCallbacks.poll();
-//                        r.run();
-//                    }
-//                }
-//            });
-//        }
         return helper;
     }
 }

@@ -1,14 +1,18 @@
 package cn.zhougy0717.xposed.niwatori;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import cn.zhougy0717.xposed.niwatori.FlyingHelper;
 import cn.zhougy0717.xposed.niwatori.ModActivity;
@@ -28,6 +32,19 @@ public class DialogHandler extends XposedModule{
         //
         // register receiver
         //
+        XposedBridge.hookAllConstructors(Dialog.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                final Dialog dialog = (Dialog) param.thisObject;
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface di) {
+                        FrameLayout decorView = (FrameLayout) dialog.getWindow().peekDecorView();
+                        ModActivity.createFlyingHelper(decorView);
+                    }
+                });
+            }
+        });
         XposedHelpers.findAndHookMethod(Dialog.class, "onAttachedToWindow", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -153,7 +170,7 @@ public class DialogHandler extends XposedModule{
 
     @Nullable
     private static FlyingHelper getHelper(@NonNull Dialog dialog) {
-        final FrameLayout decorView = getDecorView(dialog);
+        final FrameLayout decorView = (FrameLayout) dialog.getWindow().peekDecorView();
         if (decorView == null) {
             return null;
         }
@@ -165,8 +182,8 @@ public class DialogHandler extends XposedModule{
 //                decorView, FIELD_FLYING_HELPER);
 //    }
 
-    @Nullable
-    private static FrameLayout getDecorView(@NonNull Dialog dialog) {
-        return (FrameLayout) dialog.getWindow().peekDecorView();
-    }
+//    @Nullable
+//    private static FrameLayout getDecorView(@NonNull Dialog dialog) {
+//        return (FrameLayout) dialog.getWindow().peekDecorView();
+//    }
 }
