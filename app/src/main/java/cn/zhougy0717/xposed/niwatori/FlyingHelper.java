@@ -63,15 +63,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         mTriggerGesture = new GestureDetector(decorView.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent event1, MotionEvent event2,float velocityX, float velocityY) {
-                if (velocityY >= 0) {
-                    return false;
-                }
-                int screenWidth = getAttachedView().getWidth();
-                if (Math.abs(event1.getX() - event2.getX()) > 0.1*screenWidth) {
-                    return false;
-                }
-
-                if ((event1.getX() >= 0.02*screenWidth) && (event1.getX() <= 0.98*screenWidth)) {
+                if (!edgeDetected(event1)) {
                     return false;
                 }
                 NFW.performAction(decorView.getContext(), NFW.ACTION_SMALL_SCREEN);
@@ -488,6 +480,11 @@ public class FlyingHelper extends FlyingLayout.Helper {
     @SuppressLint("NewApi")
     public void setForeground(View decorview) {
         decorview.setForeground(mBoundaryDrawable);
+    }
+
+    public boolean edgeDetected(MotionEvent event) {
+        int screenWidth = getAttachedView().getWidth();
+        return (event.getX() < 0.02*screenWidth) || (event.getX() > 0.98*screenWidth);
     }
 
 }

@@ -9,9 +9,15 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import cn.zhougy0717.xposed.niwatori.FlyingHelper;
@@ -40,9 +46,27 @@ public class DialogHandler extends XposedModule{
                     @Override
                     public void onShow(DialogInterface di) {
                         FrameLayout decorView = (FrameLayout) dialog.getWindow().peekDecorView();
-                        ModActivity.createFlyingHelper(decorView);
+                        if (getHelper(dialog) == null) {
+                            ModActivity.createFlyingHelper(decorView);
+                        }
                     }
                 });
+            }
+        });
+        XposedBridge.hookAllMethods(Dialog.class, "onTouchEvent", new XC_MethodReplacement() {
+            @Override
+            protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                Dialog dialog = (Dialog) param.thisObject;
+                FlyingHelper helper = getHelper(dialog);
+                MotionEvent event = (MotionEvent) param.args[0];
+                if (helper != null && helper.getTriggerGesture().onTouchEvent(event)) {
+                    return true;
+                }
+                if ((event.getAction() == MotionEvent.ACTION_DOWN) && helper.edgeDetected(event)) {
+                    // We want to hijack ACTION_DOWN on edge. Beucase ACTION_DOWN will dismiss the dialog.
+                    return false;
+                }
+                return invokeOriginalMethod(param);
             }
         });
         XposedHelpers.findAndHookMethod(Dialog.class, "onAttachedToWindow", new XC_MethodHook() {
@@ -127,6 +151,15 @@ public class DialogHandler extends XposedModule{
                         }
                         return;
                     }
+
+                    // Show Dialog on Bottom Left/Right.
+                    Window win = dialog.getWindow();
+                    WindowManager.LayoutParams params = win.getAttributes();
+                    boolean left = helper.getSettings().getSmallScreenPivotX() < 0.5;
+                    params.gravity = (left?Gravity.LEFT:Gravity.RIGHT )| Gravity.BOTTOM;
+                    win.setAttributes(params);
+                    dialog.show();
+
                     helper.performAction(action);
                     abortBroadcast();
                     if (helper.getSettings().logActions) {

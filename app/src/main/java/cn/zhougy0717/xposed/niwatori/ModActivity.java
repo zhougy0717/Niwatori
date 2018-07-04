@@ -162,10 +162,11 @@ public class ModActivity extends XposedModule {
 
                     MotionEvent event = (MotionEvent)param.args[0];
                     if (!helper.isResized()) {
-                        helper.getTriggerGesture().onTouchEvent((MotionEvent)param.args[0]);
+                        helper.getTriggerGesture().onTouchEvent(event);
                     }
                     boolean result = (boolean)invokeOriginalMethod(param);
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        // We don't want to hijack ACTION_DOWN.
                         return true;
                     }
                     return result;

@@ -28,6 +28,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
         if (activity instanceof TabActivity) {
             return;
         }
+
         try {
             FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
             final FlyingHelper helper = ModActivity.createFlyingHelper(decorView);
