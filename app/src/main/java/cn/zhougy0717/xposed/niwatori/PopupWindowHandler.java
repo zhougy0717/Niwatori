@@ -27,9 +27,8 @@ public class PopupWindowHandler extends XposedModule{
     private static final String FIELD_FLYING_HELPER = NFW.NAME + "_flyingHelper";
 
     private static Handler mActiveHandler = null;
-    private static String mCurrentActivityClassName = null;
     private static Activity mCurrentActivity = null;
-    private static HashMap<String, Handler> mActivityHandlerDictionary = new HashMap<String, Handler>();
+    private final static String FIELD_ACTIVITY_HANDLER = "activity_handler";
 
     private class Handler{
         private PopupWindow mPopupWindow;
@@ -118,7 +117,7 @@ public class PopupWindowHandler extends XposedModule{
                         try {
                             mActiveHandler = new PopupWindowHandler.Handler(pw);
                             mActiveHandler.registerReceiver();
-                            mActivityHandlerDictionary.put(mCurrentActivityClassName, mActiveHandler);
+                            XposedHelpers.setAdditionalInstanceField(mCurrentActivity, FIELD_ACTIVITY_HANDLER, mActiveHandler);
                             mActiveHandler.dealWithPersistentIn();
                             final PopupWindow.OnDismissListener dismissListener =
                                     (PopupWindow.OnDismissListener) XposedHelpers.getObjectField(pw, "mOnDismissListener");
@@ -129,7 +128,6 @@ public class PopupWindowHandler extends XposedModule{
                                         mActiveHandler.dealWithPersistentOut();
                                         mActiveHandler.unregisterReceiver();
                                         mActiveHandler = null;
-                                        mActivityHandlerDictionary.put(mCurrentActivityClassName, null);
                                     }
                                     if (dismissListener != null) {
                                         dismissListener.onDismiss();
@@ -169,7 +167,6 @@ public class PopupWindowHandler extends XposedModule{
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 // TODO: clear the existing handler under this activity's name
                 Activity activity = (Activity) param.thisObject;
-                mActivityHandlerDictionary.put(activity.getClass().getName(), null);
             }
         });
     }
@@ -183,19 +180,17 @@ public class PopupWindowHandler extends XposedModule{
         // TODO: save the handler under the activity's name
         if(mActiveHandler != null){
             mActiveHandler.unregisterReceiver();
-            mActivityHandlerDictionary.put(activity.getClass().getName(), mActiveHandler);
             mActiveHandler.dealWithPersistentOut();
         }
     }
 
     public static void onResume(Activity activity){
         // TODO: check the existing handler using the activity's class name
-        Handler handler = mActivityHandlerDictionary.get(activity.getClass().getName());
+        mCurrentActivity = activity;
+        Handler handler= (Handler) XposedHelpers.getAdditionalInstanceField(mCurrentActivity, FIELD_ACTIVITY_HANDLER);
         if (handler != null){
             handler.registerReceiver();
             handler.dealWithPersistentIn();
         }
-        mCurrentActivityClassName = activity.getClass().getName();
-        mCurrentActivity = activity;
     }
 }
