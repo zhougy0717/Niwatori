@@ -34,6 +34,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
             final FlyingHelper helper = ModActivity.createFlyingHelper(decorView);
             (new ReceiverManager(decorView)).registerReceiver();
             PopupWindowHandler.onResume(activity);
+            DialogHandler.setCurrentActivity(activity);
             if (helper != null) {
                 /**
                  * Because onResume and onPause are running in parallel,

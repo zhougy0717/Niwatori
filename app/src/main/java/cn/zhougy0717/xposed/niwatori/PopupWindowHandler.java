@@ -49,7 +49,7 @@ public class PopupWindowHandler extends XposedModule{
             mActionReceiver.register();
             mSettingsLoadedReceiver.register();
             View v = (View) XposedHelpers.getObjectField(mPopupWindow, "mContentView");
-            mHelper.setForeground(v);
+//            mHelper.setForeground(v);
         }
 
         public void unregisterReceiver(){
