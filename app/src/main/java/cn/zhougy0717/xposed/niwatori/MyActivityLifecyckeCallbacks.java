@@ -3,13 +3,12 @@ package cn.zhougy0717.xposed.niwatori;
 import android.app.Activity;
 import android.app.Application;
 import android.app.TabActivity;
-import android.databinding.adapters.TabHostBindingAdapter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.FrameLayout;
-import android.widget.TabHost;
 
+import cn.zhougy0717.xposed.niwatori.handlers.DialogHandler;
+import cn.zhougy0717.xposed.niwatori.handlers.PopupWindowHandler;
 import de.robv.android.xposed.XposedHelpers;
 
 public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecycleCallbacks{
@@ -33,7 +32,9 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
             FrameLayout decorView = (FrameLayout)activity.getWindow().peekDecorView();
             final FlyingHelper helper = ModActivity.createFlyingHelper(decorView);
             (new ReceiverManager(decorView)).registerReceiver();
+//            PopupWindowHandler.onResume(activity);
             PopupWindowHandler.onResume(activity);
+//            DialogHandler.setCurrentActivity(activity);
             DialogHandler.setCurrentActivity(activity);
             if (helper != null) {
                 /**
@@ -86,6 +87,7 @@ public class MyActivityLifecyckeCallbacks implements Application.ActivityLifecyc
                 // because through an Activity. So shouldn't reset automatically.
                 helper.resetState(true);
             }
+//            PopupWindowHandler.onPause(activity);
             PopupWindowHandler.onPause(activity);
             helper.onExit();
         } catch (Throwable t) {

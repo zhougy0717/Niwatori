@@ -2,7 +2,6 @@ package cn.zhougy0717.xposed.niwatori;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
@@ -13,15 +12,15 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.google.common.base.Strings;
 
+import cn.zhougy0717.xposed.niwatori.handlers.DialogHandler;
+import cn.zhougy0717.xposed.niwatori.handlers.PopupWindowHandler;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
