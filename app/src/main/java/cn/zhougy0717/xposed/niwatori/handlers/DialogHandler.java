@@ -50,11 +50,6 @@ public class DialogHandler extends BaseHandler {
             super(decorView);
         }
 
-        @Override
-        public void setOwner(Object owner) {
-            mDialog = (Dialog)owner;
-        }
-
         private CustomizedHandler(Dialog dialog) {
             this((FrameLayout)dialog.getWindow().peekDecorView());
             mDialog = dialog;

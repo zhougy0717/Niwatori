@@ -47,11 +47,6 @@ public class PopupWindowHandler extends BaseHandler {
         }
 
         @Override
-        public void setOwner(Object owner) {
-            // Do nothing
-        }
-
-        @Override
         public boolean onTouchEvent(MotionEvent event){
             if(mEdgeGesture.onTouchEvent(event)) {
                 return true;

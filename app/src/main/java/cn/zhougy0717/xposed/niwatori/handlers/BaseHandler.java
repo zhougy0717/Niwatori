@@ -2,6 +2,7 @@ package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.graphics.Canvas;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -26,14 +27,18 @@ public abstract class BaseHandler extends XposedModule {
     protected static Activity mCurrentActivity = null;
 
     protected interface IFlyingHandler {
-        public void setOwner(Object owner);
         public void registerReceiver();
         public void unregisterReceiver();
         public void dealWithPersistentIn();
         public void dealWithPersistentOut();
         public boolean edgeDetected(MotionEvent event);
         public boolean onTouchEvent(MotionEvent event);
-    }
+
+        // Below are only used in Activity Handler
+        public boolean onInterceptTouchEvent(MotionEvent event);
+        public void draw(Canvas canvas);
+        public void rotate();
+        }
 
     abstract protected IFlyingHandler allocateHandler(FrameLayout decorView);
     abstract protected IFlyingHandler allocateHandler(Object obj);
@@ -85,6 +90,9 @@ public abstract class BaseHandler extends XposedModule {
                     if (!mHelper.edgeDetected(event1)) {
                         return false;
                     }
+                    if (mHelper.isResized()){
+                        return false;
+                    }
                     actionOnFling();
                     NFW.performAction(mDecorView.getContext(), NFW.ACTION_SMALL_SCREEN);
                     return true;
@@ -100,7 +108,6 @@ public abstract class BaseHandler extends XposedModule {
             });
         }
 
-        public abstract void setOwner(Object owner);
         public void registerReceiver(){
             mActionReceiver.register();
             mSettingsLoadedReceiver.register();
@@ -146,5 +153,14 @@ public abstract class BaseHandler extends XposedModule {
             return mHelper.edgeDetected(event);
         }
 
+        public boolean onInterceptTouchEvent(MotionEvent event) {
+            return false;
+        }
+        public void draw(Canvas canvas) {
+            // Do nothing
+        }
+        public void rotate() {
+            // Do nothing
+        }
     }
 }

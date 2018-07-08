@@ -59,22 +59,25 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
         mLayoutCallbacks = new LinkedList<Runnable>();
 
-        final View decorView = view;
-        mTriggerGesture = new GestureDetector(decorView.getContext(), new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onFling(MotionEvent event1, MotionEvent event2,float velocityX, float velocityY) {
-                if (!edgeDetected(event1)) {
-                    return false;
-                }
-                NFW.performAction(decorView.getContext(), NFW.ACTION_SMALL_SCREEN);
-                return true;
-            }
-        });
+//        final View decorView = view;
+//        mTriggerGesture = new GestureDetector(decorView.getContext(), new GestureDetector.SimpleOnGestureListener() {
+//            @Override
+//            public boolean onFling(MotionEvent event1, MotionEvent event2,float velocityX, float velocityY) {
+//                if (isResized()) {
+//                    return false;
+//                }
+//                if (!edgeDetected(event1)) {
+//                    return false;
+//                }
+//                NFW.performAction(decorView.getContext(), NFW.ACTION_SMALL_SCREEN);
+//                return true;
+//            }
+//        });
     }
 
-    public GestureDetector getTriggerGesture(){
-        return mTriggerGesture;
-    }
+//    public GestureDetector getTriggerGesture(){
+//        return mTriggerGesture;
+//    }
 
     private void initialize(boolean useContainer, Settings settings) {
         final Context niwatoriContext = NFW.getNiwatoriContext(getAttachedView().getContext());
