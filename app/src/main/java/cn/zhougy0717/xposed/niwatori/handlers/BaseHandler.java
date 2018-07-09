@@ -71,8 +71,8 @@ public abstract class BaseHandler extends XposedModule {
     protected static abstract class FlyingHandler implements IFlyingHandler{
         protected FrameLayout mDecorView;
         protected FlyingHelper mHelper;
-        private IReceiver mActionReceiver;
-        private IReceiver mSettingsLoadedReceiver;
+        protected IReceiver mActionReceiver;
+        protected IReceiver mSettingsLoadedReceiver;
         protected GestureDetector mEdgeGesture;
 
         protected abstract void actionOnFling();

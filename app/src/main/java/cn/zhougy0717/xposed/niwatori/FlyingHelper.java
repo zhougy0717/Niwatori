@@ -36,8 +36,8 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public static final float SMALLEST_SMALL_SCREEN_SIZE = 0.4f;
     public static final float BIGGEST_SMALL_SCREEN_SIZE = 0.9f;
     public static final float SMALL_SCREEN_SIZE_DELTA = 0.04f;
-    public static final int SMALL_SCREEN_MARGIN_X = 4;
-    public static final int SMALL_SCREEN_MARGIN_Y = 8;
+    public static final int SMALL_SCREEN_MARGIN_X = 6;
+    public static final int SMALL_SCREEN_MARGIN_Y = 6;
 
     private final InputMethodManager mInputMethodManager;
 //    private NFW.Settings mSettings;
@@ -45,7 +45,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     private final GradientDrawable mBoundaryDrawable = NFW.makeBoundaryDrawable(0, 0);
     private int mBoundaryWidth;
-    private GestureDetector mTriggerGesture;
 
     public FlyingHelper(FrameLayout view, int frameLayoutHierarchy, boolean useContainer/*,
                         NFW.Settings settings*/) throws NoSuchMethodException {
@@ -58,26 +57,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         initialize(useContainer, settings);
 
         mLayoutCallbacks = new LinkedList<Runnable>();
-
-//        final View decorView = view;
-//        mTriggerGesture = new GestureDetector(decorView.getContext(), new GestureDetector.SimpleOnGestureListener() {
-//            @Override
-//            public boolean onFling(MotionEvent event1, MotionEvent event2,float velocityX, float velocityY) {
-//                if (isResized()) {
-//                    return false;
-//                }
-//                if (!edgeDetected(event1)) {
-//                    return false;
-//                }
-//                NFW.performAction(decorView.getContext(), NFW.ACTION_SMALL_SCREEN);
-//                return true;
-//            }
-//        });
     }
-
-//    public GestureDetector getTriggerGesture(){
-//        return mTriggerGesture;
-//    }
 
     private void initialize(boolean useContainer, Settings settings) {
         final Context niwatoriContext = NFW.getNiwatoriContext(getAttachedView().getContext());
@@ -304,30 +284,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void resize(boolean force) {
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
         if (WorldReadablePreference.getSettings().smallScreenPersistent) {
-//            NFW.setResizedGlobal(getAttachedView().getContext(), force);
             SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
             prefs.edit().putBoolean("screen_resized", force).apply();
         }
-//        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-//        if (getSettings().getSmallScreenPivotX() < 0.5) {
-//            prefs.edit()
-//                    .putInt("key_small_screen_pivot_x", 0)
-//                    .putInt("key_initial_x_percent", -2*FlyingHelper.SMALL_SCREEN_MARGIN_X)
-//                    .apply();
-//        }
-//        else {
-//            prefs.edit()
-//                    .putInt("key_small_screen_pivot_x", 100)
-//                    .putInt("key_initial_x_percent", 2*FlyingHelper.SMALL_SCREEN_MARGIN_X)
-//                    .apply();
-//        }
-//        if (force) {
-//            Log.e("Ben", "initial x in resize: " + getSettings().initialXp);
-//            moveToInitialPosition(false);
-//        }
-//        else {
-//            prefs.edit().remove("key_initial_x_percent").apply();
-//        }
         if (force) {
             goHomeWithMargin();
             forceResize();
@@ -340,10 +299,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     private void forceResize() {
-//        if (getPivotX() == getSettings().smallScreenPivotX
-//                && getPivotY() == getSettings().smallScreenPivotY) {
-//            setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
-//        }
         super.resize(getSettings().smallScreenSize, getSettings().animation);
         hideSoftInputMethod();
     }
@@ -487,7 +442,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public boolean edgeDetected(MotionEvent event) {
         int screenWidth = getAttachedView().getWidth();
-        return (event.getX() < 0.02*screenWidth) || (event.getX() > 0.98*screenWidth);
+        return (event.getX() < 0.04*screenWidth) || (event.getX() > 0.96*screenWidth);
     }
 
 }

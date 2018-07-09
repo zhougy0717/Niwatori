@@ -1,6 +1,7 @@
 package cn.zhougy0717.xposed.niwatori;
 
 import android.content.BroadcastReceiver;
+import android.content.IntentFilter;
 import android.widget.FrameLayout;
 
 /**
@@ -11,7 +12,5 @@ public interface IReceiver {
     public BroadcastReceiver create ();
     public void register();
     public void unregister();
-
-//    public void register2();
-//    public void unregister2();
+    public void setFilter(IntentFilter filter);
 }

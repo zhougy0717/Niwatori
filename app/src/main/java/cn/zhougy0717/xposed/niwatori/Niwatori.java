@@ -17,19 +17,13 @@ public class Niwatori implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
         XposedModule.logD("SDK: " + Build.VERSION.SDK_INT);
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            mStatusBar = new ModPhoneStatusBar_N();
-        }
-        else {
-            mStatusBar = new ModPhoneStatusBar_M();
-        }
 
         ModActivity.initZygote();
-        ModInputMethod.initZygote();
+//        ModInputMethod.initZygote();
     }
 
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        mStatusBar.handleLoadPackage(loadPackageParam);
+        (new ModPhoneStatusBar()).handleLoadPackage(loadPackageParam);
     }
 }

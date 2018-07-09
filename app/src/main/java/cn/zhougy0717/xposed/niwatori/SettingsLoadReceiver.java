@@ -15,10 +15,10 @@ import de.robv.android.xposed.XposedHelpers;
  * Created by zhougua on 1/12/2018.
  */
 
-public class SettingsLoadReceiver extends Receiver implements IReceiver {
-    private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
-    private BroadcastReceiver mReceiver;
-    private boolean mRegistered = false;
+public class SettingsLoadReceiver extends Receiver{
+//    private static final String FIELD_SETTINGS_CHANGED_RECEIVER = NFW.NAME + "_settingsChangedReceiver";
+//    private BroadcastReceiver mReceiver;
+//    private boolean mRegistered = false;
 
     public static IReceiver getInstance(FrameLayout decorView, IntentFilter filter) {
         IReceiver recv = (IReceiver) XposedHelpers.getAdditionalInstanceField(decorView, "SETTINGS_LOAD_RECEIVER");
@@ -38,19 +38,19 @@ public class SettingsLoadReceiver extends Receiver implements IReceiver {
         create();
     }
 
-    public void register(){
-        if(!mRegistered){
-            mDecorView.getContext().registerReceiver(mReceiver,mFilter);
-            mRegistered = true;
-        }
-    }
-
-    public void unregister(){
-        if(mRegistered) {
-            mDecorView.getContext().unregisterReceiver(mReceiver);
-            mRegistered = false;
-        }
-    }
+//    public void register(){
+//        if(!mRegistered){
+//            mDecorView.getContext().registerReceiver(mReceiver,mFilter);
+//            mRegistered = true;
+//        }
+//    }
+//
+//    public void unregister(){
+//        if(mRegistered) {
+//            mDecorView.getContext().unregisterReceiver(mReceiver);
+//            mRegistered = false;
+//        }
+//    }
     public final BroadcastReceiver create() {
         mReceiver = new BroadcastReceiver() {
             @Override

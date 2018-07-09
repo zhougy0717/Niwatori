@@ -12,9 +12,8 @@ import de.robv.android.xposed.XposedHelpers;
  * Created by zhougua on 1/12/2018.
  */
 
-public class ActionReceiver extends Receiver implements IReceiver{
+public class ActionReceiver extends Receiver{
     private static final String FIELD_ACTION_RECEIVER = NFW.NAME + "_ActionReceiver";
-    private boolean mRegistered = false;
 
     public static IReceiver getInstance(FrameLayout decorView, IntentFilter filter){
         IReceiver recv = (IReceiver) XposedHelpers.getAdditionalInstanceField(decorView, "ACTION_RECEIVER");
@@ -23,22 +22,6 @@ public class ActionReceiver extends Receiver implements IReceiver{
             XposedHelpers.setAdditionalInstanceField(decorView, "ACTION_RECEIVER", recv);
         }
         return recv;
-    }
-
-    public void register(){
-        if (!mRegistered) {
-            mDecorView.getContext().registerReceiver(mReceiver, mFilter);
-            mRegistered = true;
-        }
-    }
-    public void unregister(){
-        if (mRegistered) {
-            mDecorView.getContext().unregisterReceiver(mReceiver);
-//            getHelper(mDecorView).resetState(true);
-//            ModActivity.getHelper(mDecorView).resetState(true);
-            mRegistered = false;
-        }
-
     }
 
     private ActionReceiver(FrameLayout decorView, IntentFilter filter){
@@ -50,7 +33,7 @@ public class ActionReceiver extends Receiver implements IReceiver{
 //        create();
 //    }
 
-    private BroadcastReceiver mReceiver;
+    @Override
     public final BroadcastReceiver create() {
         mReceiver = new BroadcastReceiver() {
             @Override
