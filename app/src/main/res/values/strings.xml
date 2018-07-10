@@ -47,6 +47,8 @@
     <string name="slide1_description">You have to flash in Xposed Framework. Otherwise, Niwatori can do nothing.</string>
     <string name="slide2_title">3 Modes to Try</string>
     <string name="slide2_description">Hook with your favourite shortcut launcher, e.g. fooview, GravityBox and etc.</string>
+    <string name="triggering_gesture_title">Triggering Gesture</string>
+    <string name="triggering_gesture_description">Besides 3rd party shorcut launchers, you can also trigger one hand mode by swiping up or down on the screen edge. Now it only supports small screen mode.</string>
     <string name="slide3_title">Fancy Small Screen Mode</string>
     <string name="slide3_description">The content view can be shrunk. You can also use gestures outside the content to manipulate the view. You can double tap, fling up and down or scroll left and right.</string>
     <string name="slide4_title">Notification Panel Applicable</string>

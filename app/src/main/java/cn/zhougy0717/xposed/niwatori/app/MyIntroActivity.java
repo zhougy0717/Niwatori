@@ -37,6 +37,14 @@ public class MyIntroActivity extends IntroActivity {
                 .scrollable(false)
                 .build());
         addSlide(new SimpleSlide.Builder()
+                .title(R.string.triggering_gesture_title)
+                .description(R.string.triggering_gesture_description)
+                .image(R.drawable.triggering_gesture)
+                .background(R.color.yellow)
+                .backgroundDark(R.color.yellow_dark)
+                .scrollable(false)
+                .build());
+        addSlide(new SimpleSlide.Builder()
                 .title(R.string.slide3_title)
                 .description(R.string.slide3_description)
                 .image(R.drawable.small_screen_modes)

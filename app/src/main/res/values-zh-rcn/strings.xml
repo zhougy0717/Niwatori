@@ -47,10 +47,12 @@
     <string name="slide1_description">您必须刷入Xposed框架，否则Niwatori不能工作。</string>
     <string name="slide2_title">三种单手模式</string>
     <string name="slide2_description">您可以将Niwatori提供的快捷方式绑定到任意您喜欢的快捷方式启动器，例如:fooview或者GravityBox等等。</string>
+    <string name="triggering_gesture_title">手势启动</string>
+    <string name="triggering_gesture_description">除了使用第三方的快捷方式启动器，您还可以直接使用手势来启动单手模式。在屏幕左右边缘处向上或向下轻扫即可启动。目前仅支持缩小屏幕。</string>
     <string name="slide3_title">丰富的手势功能</string>
     <string name="slide3_description">在屏幕缩小的模式下，您可以使用Niwatori提供的各种手势功能，方便您操作屏幕的各个角落。手势操作包括:上下左右滑动，单击双击等</string>
     <string name="slide4_title">通知面板同样可以单手操作</string>
     <string name="slide4_description">双击通知面板下拉后的阴影处，通知面板会缩小，然后您可以使用各种手势来操作。</string>
     <string name="slide5_title">更多配置项等待您去探索</string>
-    <string name="slide5_description">Niwatori在设置页面提供了更多的配置项。通过适合您的配置，您可以更愉快的单手操作您的手机</string>
+    <string name="slide5_description">Niwatori在设置页面提供了更丰富的配置项。选择适合您的配置，您可以更愉快的单手操作您的手机</string>
 </resources>
