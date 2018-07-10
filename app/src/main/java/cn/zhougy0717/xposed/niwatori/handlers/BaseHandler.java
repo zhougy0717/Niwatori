@@ -3,6 +3,7 @@ package cn.zhougy0717.xposed.niwatori.handlers;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
@@ -93,6 +94,9 @@ public abstract class BaseHandler extends XposedModule {
                     if (mHelper.isResized()){
                         return false;
                     }
+                    if (Math.abs(event1.getY() - event2.getY()) <= mDecorView.getHeight()*0.08) {
+                        return false;
+                    }
                     actionOnFling();
                     NFW.performAction(mDecorView.getContext(), NFW.ACTION_SMALL_SCREEN);
                     return true;
@@ -119,6 +123,9 @@ public abstract class BaseHandler extends XposedModule {
         }
 
         public void dealWithPersistentIn(){
+            if (mCurrentActivity == null) {
+                return;
+            }
             FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
             if (mHelper.getSettings().smallScreenPersistent) {
                 // In persistent small screen mode, sync up with parent activity and the popup window.
@@ -135,6 +142,9 @@ public abstract class BaseHandler extends XposedModule {
                 // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
                 // because through an Activity. So shouldn't reset automatically.
                 mHelper.resetState(true);
+            }
+            if (mCurrentActivity == null) {
+                return;
             }
             FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
             if (helper.getSettings().smallScreenPersistent) {

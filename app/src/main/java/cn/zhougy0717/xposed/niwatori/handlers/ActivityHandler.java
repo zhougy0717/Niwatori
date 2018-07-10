@@ -57,6 +57,8 @@ public class ActivityHandler extends BaseHandler {
     private static class CustomizedHandler extends FlyingHandler {
         protected CustomizedHandler(FrameLayout decorView) {
             super(decorView);
+            mActionReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
+            mSettingsLoadedReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
         }
 
         @Override
@@ -199,20 +201,14 @@ public class ActivityHandler extends BaseHandler {
             XposedBridge.hookAllMethods(classContextImpl, "startActivity", startActivity);
             final Class<?> classDecorView = XposedHelpers.findClass(
                     CLASS_DECOR_VIEW, null);
-            XposedBridge.hookAllMethods(classDecorView, "dispatchTouchEvent", new XC_MethodReplacement() {
+            XposedBridge.hookAllMethods(classDecorView, "dispatchTouchEvent", new XC_MethodHook() {
                 @Override
-                protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     final FrameLayout decorView = (FrameLayout) param.thisObject;
                     IFlyingHandler handler = createFlyingHandler(decorView);
 
                     MotionEvent event = (MotionEvent) param.args[0];
                     handler.onTouchEvent(event);
-                    boolean result = (boolean) invokeOriginalMethod(param);
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        // We don't want to hijack ACTION_DOWN.
-                        return true;
-                    }
-                    return result;
                 }
             });
 

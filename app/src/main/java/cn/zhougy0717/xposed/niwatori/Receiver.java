@@ -68,6 +68,5 @@ public class Receiver extends XposedModule implements IReceiver {
     @Override
     public void setFilter(IntentFilter filter) {
         mFilter = filter;
-        Log.e("Ben", "filter set to: " + filter);
     }
 }

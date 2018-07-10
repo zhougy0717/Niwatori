@@ -168,7 +168,6 @@ public class StatusBarHandler extends BaseHandler {
                     mHandler.registerReceiver();
                     mHandler.dealWithPersistentIn();
                     log("attached to status bar");
-                    Log.e("Ben", "panel holder constructor attached to status bar");
                 } catch (Throwable t) {
                     logE(t);
                 }
