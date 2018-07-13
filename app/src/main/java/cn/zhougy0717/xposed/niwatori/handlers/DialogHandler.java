@@ -22,6 +22,7 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class DialogHandler extends BaseHandler {
     private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
+    private static IFlyingHandler mActiveHandler = null;
 
     @Override
     final protected IFlyingHandler allocateHandler(FrameLayout decorView) {
@@ -108,6 +109,7 @@ public class DialogHandler extends BaseHandler {
                     IFlyingHandler handler = createFlyingHandler(dialog);
                     handler.registerReceiver();
                     handler.dealWithPersistentIn();
+                    mActiveHandler = handler;
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -132,9 +134,11 @@ public class DialogHandler extends BaseHandler {
                     if (hasFocus) {
                         handler.registerReceiver();
                         handler.dealWithPersistentIn();
+                        mActiveHandler = handler;
                     } else {
                         handler.dealWithPersistentOut();
                         handler.unregisterReceiver();
+                        mActiveHandler = null;
                     }
                 } catch (Throwable t) {
                     logE(t);
@@ -157,6 +161,7 @@ public class DialogHandler extends BaseHandler {
                     IFlyingHandler handler = createFlyingHandler(dialog);
                     handler.dealWithPersistentOut();
                     handler.unregisterReceiver();
+                    mActiveHandler = null;
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -168,7 +173,18 @@ public class DialogHandler extends BaseHandler {
         return dialog.getClass().getName().equals(CLASS_SOFT_INPUT_WINDOW);
     }
 
-    public static void setCurrentActivity(Activity activity) {
+    public static void onActivityResume(Activity activity) {
         mCurrentActivity = activity;
+        if(mActiveHandler != null){
+            mActiveHandler.registerReceiver();
+            mActiveHandler.dealWithPersistentIn();
+        }
+    }
+
+    public static void onActivityPause(){
+        if (mActiveHandler != null) {
+            mActiveHandler.registerReceiver();
+            mActiveHandler.dealWithPersistentIn();
+        }
     }
 }

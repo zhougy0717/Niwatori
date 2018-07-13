@@ -1,15 +1,22 @@
 package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Rect;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.PopupWindow;
 
-import cn.zhougy0717.xposed.niwatori.NFW;
+import java.util.LinkedList;
+import java.util.Queue;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XC_MethodReplacement;
 import de.robv.android.xposed.XposedBridge;
@@ -17,6 +24,7 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class PopupWindowHandler extends BaseHandler {
     private static IFlyingHandler mActiveHandler = null;
+    public static Queue<Runnable> mLayoutCallbacks = new LinkedList<Runnable>();;
 
     @Override
     final protected IFlyingHandler allocateHandler(FrameLayout decorView) {
@@ -34,13 +42,22 @@ public class PopupWindowHandler extends BaseHandler {
     }
 
     private static class CustomizedHandler extends FlyingHandler {
+        private PopupWindow mPopupWindow;
         private CustomizedHandler(PopupWindow pw) {
             this((FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView"));
+            mPopupWindow = pw;
         }
 
         @Override
         protected void actionOnFling() {
             // Do nothing
+            WindowManager.LayoutParams p = (WindowManager.LayoutParams) mDecorView.getLayoutParams();
+            boolean left = mHelper.getSettings().getSmallScreenPivotX() < 0.5;
+            int gravity = left ? Gravity.LEFT : Gravity.RIGHT;
+            XposedHelpers.setIntField(mPopupWindow, "mGravity", Gravity.BOTTOM | gravity);
+            p.x = 0;
+            mDecorView.setLayoutParams(p);
+            XposedHelpers.callMethod(mPopupWindow, "update");
         }
 
         private CustomizedHandler(FrameLayout decorView) {
@@ -66,27 +83,29 @@ public class PopupWindowHandler extends BaseHandler {
                 final PopupWindow pw = (PopupWindow) param.thisObject;
                 final FrameLayout decor = (FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView");
 
-                decor.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                mLayoutCallbacks.add(new Runnable() {
                     @Override
-                    public void onGlobalLayout() {
-                        int width = decor.getWidth();
-                        int height = decor.getHeight();
-
-                        Rect r = new Rect();
-                        decor.getWindowVisibleDisplayFrame(r);
-                        if (((double)width/(r.right - r.left) <= 0.5) && ((double)height/(r.bottom - r.top) <= 0.5)) {
+                    public void run() {
+                        DisplayMetrics dm = decor.getContext().getResources().getDisplayMetrics();
+                        if (((double)decor.getWidth()/dm.widthPixels <= 0.4) && ((double)decor.getHeight()/dm.heightPixels <= 0.4)) {
                             return;
                         }
 
-                        if (mActiveHandler != null){
-                            return;
-                        }
                         try {
                             mActiveHandler = createFlyingHandler(pw);
                             mActiveHandler.registerReceiver();
                             mActiveHandler.dealWithPersistentIn();
                         } catch (Throwable t) {
                             logE(t);
+                        }
+                    }
+                });
+                decor.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener(){
+                    @Override
+                    public void onGlobalLayout() {
+                        while(!mLayoutCallbacks.isEmpty()) {
+                            Runnable r = mLayoutCallbacks.poll();
+                            r.run();
                         }
                     }
                 });
@@ -110,11 +129,15 @@ public class PopupWindowHandler extends BaseHandler {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                         try {
-                            final FrameLayout decorView = (FrameLayout) methodHookParam.thisObject;
                             final MotionEvent event = (MotionEvent) methodHookParam.args[0];
-                            IFlyingHandler handler = createFlyingHandler(decorView);
-                            if (handler.onTouchEvent(event)) {
-                                return true;
+                            if (mActiveHandler != null) {
+                                if (mActiveHandler.onTouchEvent(event)) {
+                                    return true;
+                                }
+                                if ((event.getAction() == MotionEvent.ACTION_DOWN) && mActiveHandler.edgeDetected(event)) {
+                                    // We want to hijack ACTION_DOWN on edge. Beucase ACTION_DOWN will dismiss the dialog.
+                                    return false;
+                                }
                             }
                         } catch (Throwable t) {
                             logE(t);
@@ -124,7 +147,7 @@ public class PopupWindowHandler extends BaseHandler {
                 });
     }
 
-    public static void onPause(Activity activity){
+    public static void onActivityPause(){
         // TODO: save the handler under the activity's name
         if(mActiveHandler != null){
             mActiveHandler.unregisterReceiver();
@@ -132,7 +155,7 @@ public class PopupWindowHandler extends BaseHandler {
         }
     }
 
-    public static void onResume(Activity activity){
+    public static void onActivityResume(Activity activity){
         // TODO: check the existing handler using the activity's class name
         mCurrentActivity = activity;
         if(mActiveHandler != null){

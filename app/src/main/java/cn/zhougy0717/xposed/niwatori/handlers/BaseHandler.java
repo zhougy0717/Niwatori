@@ -139,7 +139,7 @@ public abstract class BaseHandler extends XposedModule {
 
         public void dealWithPersistentOut() {
             if (mHelper!=null && !mHelper.getSettings().smallScreenPersistent) {
-                // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
+                // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onActivityResume events
                 // because through an Activity. So shouldn't reset automatically.
                 mHelper.resetState(true);
             }

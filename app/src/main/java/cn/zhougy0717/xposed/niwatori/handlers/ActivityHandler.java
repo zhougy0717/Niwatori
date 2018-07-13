@@ -17,7 +17,6 @@ import android.widget.FrameLayout;
 
 import com.google.common.base.Strings;
 
-import cn.zhougy0717.xposed.niwatori.FlyingHelper;
 import cn.zhougy0717.xposed.niwatori.ModActivity;
 import cn.zhougy0717.xposed.niwatori.NFW;
 import de.robv.android.xposed.XC_MethodHook;
@@ -74,7 +73,7 @@ public class ActivityHandler extends BaseHandler {
         @Override
         public void dealWithPersistentIn() {
             /**
-             * Because onResume and onPause are running in parallel,
+             * Because onActivityResume and onPause are running in parallel,
              * the order of registerReceiver and sendBroadcast is not promised.
              * This handler is handling the case of:
              *      registerReceiver is invoked after sendBroadcast
@@ -106,7 +105,7 @@ public class ActivityHandler extends BaseHandler {
         @Override
         public void dealWithPersistentOut() {
             if (mHelper != null && !mHelper.getSettings().smallScreenPersistent) {
-                // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onResume events
+                // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onActivityResume events
                 // because through an Activity. So shouldn't reset automatically.
                 mHelper.resetState(true);
             }
@@ -271,8 +270,8 @@ public class ActivityHandler extends BaseHandler {
                 FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
                 mHandler = createFlyingHandler(decorView);
                 mHandler.registerReceiver();
-                PopupWindowHandler.onResume(activity);
-                DialogHandler.setCurrentActivity(activity);
+                PopupWindowHandler.onActivityResume(activity);
+                DialogHandler.onActivityResume(activity);
                 mHandler.dealWithPersistentIn();
             } catch (Throwable t) {
                 logE(t);
@@ -288,7 +287,8 @@ public class ActivityHandler extends BaseHandler {
                 logD(activity + "#onPause");
                 mHandler.unregisterReceiver();
                 mHandler.dealWithPersistentOut();
-                PopupWindowHandler.onPause(activity);
+                PopupWindowHandler.onActivityPause();
+                DialogHandler.onActivityPause();
             } catch (Throwable t) {
                 logE(t);
             }

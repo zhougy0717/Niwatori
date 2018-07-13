@@ -442,7 +442,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
 
     public boolean edgeDetected(MotionEvent event) {
         int screenWidth = getAttachedView().getWidth();
-        return (event.getX() < 0.04*screenWidth) || (event.getX() > 0.96*screenWidth);
+        int[] locationOnScreen = new int[2];
+        getAttachedView().getLocationOnScreen(locationOnScreen);
+        float calculatedX = event.getX() + locationOnScreen[0];
+        return (calculatedX < 0.04*screenWidth) || (calculatedX > 0.96*screenWidth);
     }
 
 }
