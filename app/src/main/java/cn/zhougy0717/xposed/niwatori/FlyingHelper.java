@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -441,11 +442,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
 
     public boolean edgeDetected(MotionEvent event) {
-        int screenWidth = getAttachedView().getWidth();
+        DisplayMetrics dm = getAttachedView().getContext().getResources().getDisplayMetrics();
         int[] locationOnScreen = new int[2];
         getAttachedView().getLocationOnScreen(locationOnScreen);
         float calculatedX = event.getX() + locationOnScreen[0];
-        return (calculatedX < 0.04*screenWidth) || (calculatedX > 0.96*screenWidth);
+        Log.e("Ben", "screen:" + dm.widthPixels + ", x:" + event.getX() + ", location:" + locationOnScreen[0] + "," +locationOnScreen[1]);
+        return (calculatedX < 0.04*dm.widthPixels) || (calculatedX > 0.96*dm.widthPixels);
     }
 
 }

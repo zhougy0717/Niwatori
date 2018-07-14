@@ -131,9 +131,7 @@ public class PopupWindowHandler extends BaseHandler {
                         try {
                             final MotionEvent event = (MotionEvent) methodHookParam.args[0];
                             if (mActiveHandler != null) {
-                                if (mActiveHandler.onTouchEvent(event)) {
-                                    return true;
-                                }
+                                mActiveHandler.onTouchEvent(event);
                                 if ((event.getAction() == MotionEvent.ACTION_DOWN) && mActiveHandler.edgeDetected(event)) {
                                     // We want to hijack ACTION_DOWN on edge. Beucase ACTION_DOWN will dismiss the dialog.
                                     return false;
