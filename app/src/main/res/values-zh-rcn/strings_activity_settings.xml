@@ -13,6 +13,9 @@
     <string name="title_notes">注意事项</string>
     <string name="summary_notes">没有需要注意的。</string>
 
+    <string name="summary_triggering_gesture">轻扫左右边缘即可激活缩小屏幕</string>
+    <string name="title_triggering_gesture">手势激活</string>
+
     <!-- Settings -->
     <string name="title_settings">设置</string>
     <string name="current_s1">当前: %1$s</string>

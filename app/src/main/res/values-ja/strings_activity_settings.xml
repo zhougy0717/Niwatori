@@ -13,6 +13,9 @@
     <string name="title_notes">その他</string>
     <string name="summary_notes">自動リセット機能を使わない場合はステータスバー開くのにショートカットを使ってください。</string>
 
+    <string name="summary_triggering_gesture">Swipe on edge for small screen.</string>
+    <string name="title_triggering_gesture">Enable edge triggering gesture</string>
+
     <!-- Settings -->
     <string name="title_settings">設定</string>
     <string name="current_s1">現在値: %1$s</string>

@@ -40,6 +40,7 @@ public class Settings implements Serializable {
     public int extraActionOnRecents;
 
     public boolean screenResized;
+    public boolean triggeringGesture;
 
     public Settings(SharedPreferences prefs) {
         load(prefs);
@@ -107,6 +108,6 @@ public class Settings implements Serializable {
         logActions = prefs.getBoolean("key_log_actions", false) || BuildConfig.DEBUG;
 
         screenResized = prefs.getBoolean("screen_resized", false);
-
+        triggeringGesture = prefs.getBoolean("key_triggering_gesture", true);
     }
 }

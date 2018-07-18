@@ -57,7 +57,7 @@ public class ActivityHandler extends BaseHandler {
         protected CustomizedHandler(FrameLayout decorView) {
             super(decorView);
             mActionReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
-            mSettingsLoadedReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
+//            mSettingsLoadedReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
         }
 
         @Override
@@ -67,7 +67,12 @@ public class ActivityHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            return mEdgeGesture.onTouchEvent(event);
+            if (mHelper.getSettings().triggeringGesture) {
+                return mEdgeGesture.onTouchEvent(event);
+            }
+            else {
+                return false;
+            }
         }
 
         @Override

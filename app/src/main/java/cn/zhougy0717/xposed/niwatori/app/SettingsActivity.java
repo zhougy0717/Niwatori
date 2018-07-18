@@ -356,7 +356,7 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
                     activityIntent.putExtra(AppSelectActivity.EXTRA_TITLE_ID, R.string.blacklist_activity_name);
                 }
             });
-            showListSummary(R.string.key_extra_action);
+//            showListSummary(R.string.key_extra_action);
             showListSummary(R.string.key_action_when_tap_outside);
             showListSummary(R.string.key_action_when_double_tap_outside);
             // movable screen

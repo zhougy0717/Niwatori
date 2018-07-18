@@ -2,6 +2,7 @@
 <resources>
     <string name="key_version_name" translatable="false">key_version_name</string>
 
+    <string name="key_triggering_gesture" translatable="false">key_triggering_gesture</string>
     <!-- Blacklist -->
     <string name="key_blacklist" translatable="false">key_blacklist</string>
     <!-- Animation -->

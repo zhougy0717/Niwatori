@@ -13,6 +13,9 @@
     <string name="title_notes">Notes</string>
     <string name="summary_notes">There are no notes.</string>
 
+    <string name="summary_triggering_gesture">Swipe on edge for small screen.</string>
+    <string name="title_triggering_gesture">Enable edge triggering gesture</string>
+
     <!-- Settings -->
     <string name="title_settings">Settings</string>
     <string name="current_s1">Current: %1$s</string>

@@ -13,6 +13,9 @@
     <string name="title_notes">Примечания</string>
     <string name="summary_notes">Примечания отсутствуют.</string>
 
+    <string name="summary_triggering_gesture">Swipe on edge for small screen.</string>
+    <string name="title_triggering_gesture">Enable edge triggering gesture</string>
+
     <!-- Settings -->
     <string name="title_settings">Настройки</string>
     <string name="current_s1">Состояние: %1$s</string>

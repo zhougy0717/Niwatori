@@ -43,7 +43,7 @@ public class StatusBarHandler extends BaseHandler {
         protected CustomizedHandler(FrameLayout decorView) {
             super(decorView);
             mActionReceiver.setFilter(NFW.STATUS_BAR_FILTER);
-            mSettingsLoadedReceiver.setFilter(NFW.STATUS_BAR_FILTER);
+//            mSettingsLoadedReceiver.setFilter(NFW.STATUS_BAR_FILTER);
 
             XposedHelpers.setAdditionalInstanceField(decorView, "IGNORE_NEXT_UP", false);
             gestureDetector = new GestureDetector(mDecorView.getContext(), new GestureDetector.SimpleOnGestureListener() {

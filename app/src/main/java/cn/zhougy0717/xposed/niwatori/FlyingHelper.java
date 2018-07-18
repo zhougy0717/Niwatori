@@ -355,8 +355,16 @@ public class FlyingHelper extends FlyingLayout.Helper {
         }
     }
 
+    private boolean isPinned(){
+        return (!isMovable() && !staysHome());
+    }
+
     public void resetState(boolean force) {
         boolean handled = false;
+        if (isPinned() && !isResized()) {
+            goHome(getSettings().animation);
+            return;
+        }
         if (isMovable()) {
             disableMovable();
             // goHome must be placed after pin() for "Reset when collapsed"

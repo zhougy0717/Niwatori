@@ -69,7 +69,7 @@ public class MyApp extends Application {
             // add initial value
             final String keyTargets = getString(R.string.key_another_resize_method_targets);
             Set<String> targets = prefs.getStringSet(keyTargets, Sets.<String>newHashSet());
-            targets.add("com.android.chrome");
+//            targets.add("com.android.chrome");
             prefs.edit()
                     .putStringSet(keyTargets, targets)
                     .commit();

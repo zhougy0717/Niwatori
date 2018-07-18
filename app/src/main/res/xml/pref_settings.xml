@@ -15,7 +15,13 @@
         android:icon="@null"
         android:summary="@string/summary_notes"
         android:title="@string/title_notes"/-->
-
+    <cn.zhougy0717.xposed.niwatori.app.SwitchPreference
+        android:defaultValue="true"
+        android:icon="@null"
+        android:key="@string/key_triggering_gesture"
+        android:summaryOn="@string/summary_triggering_gesture"
+        android:summaryOff=" "
+        android:title="@string/title_triggering_gesture"/>
 
     <PreferenceScreen
         android:icon="@android:drawable/ic_menu_manage"
@@ -44,13 +50,13 @@
                 android:summary="@string/summary_auto_reset"
                 android:title="@string/title_auto_reset"/>
             <!-- Extra Action -->
-            <ListPreference
-                android:defaultValue="@string/intent_action_small_screen"
-                android:entries="@array/extra_actions"
-                android:entryValues="@array/extra_action_values"
-                android:icon="@null"
-                android:key="@string/key_extra_action"
-                android:title="@string/title_extra_action"/>
+            <!--<ListPreference-->
+                <!--android:defaultValue="@string/intent_action_small_screen"-->
+                <!--android:entries="@array/extra_actions"-->
+                <!--android:entryValues="@array/extra_action_values"-->
+                <!--android:icon="@null"-->
+                <!--android:key="@string/key_extra_action"-->
+                <!--android:title="@string/title_extra_action"/>-->
             <!-- Actions at Outside -->
             <ListPreference
                 android:defaultValue="@string/intent_action_soft_reset"
