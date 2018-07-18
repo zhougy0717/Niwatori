@@ -43,6 +43,13 @@ To enable each mode, you have several choices:
 
 # Release Note
 
+## v0.6.2
+
+1. Re-arch all one-hand-mode handlers. Now they inherited from one base class.
+2. Remove support for extra actions. This once was designed for manipulating notification panels. Now you can use notification panel gesture to do that.
+3. Add switch for enabling/disabling triggering gesture.
+4. Bug fix.
+
 ## v0.6.1
 
 1. Add global triggering gesture for small screen mode. Now you can swipe on left or right edge to trigger small mode in any Activity window.
