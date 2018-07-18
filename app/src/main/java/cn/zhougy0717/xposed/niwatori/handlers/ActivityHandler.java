@@ -261,12 +261,12 @@ public class ActivityHandler extends BaseHandler {
         }
 
         @Override
-        public void onActivityStarted(Activity activity) {
+        public void onActivityResumed(Activity activity) {
 
         }
 
         @Override
-        public void onActivityResumed(Activity activity) {
+        public void onActivityStarted(Activity activity) {
             if (activity instanceof TabActivity) {
                 return;
             }
@@ -284,7 +284,7 @@ public class ActivityHandler extends BaseHandler {
         }
 
         @Override
-        public void onActivityPaused(Activity activity) {
+        public void onActivityStopped(Activity activity) {
             if (activity instanceof TabActivity) {
                 return;
             }
@@ -300,7 +300,7 @@ public class ActivityHandler extends BaseHandler {
         }
 
         @Override
-        public void onActivityStopped(Activity activity) {
+        public void onActivityPaused(Activity activity) {
 
         }
 
