@@ -39,9 +39,17 @@ public class DialogHandler extends BaseHandler {
         return (FrameLayout)((Dialog)obj).getWindow().peekDecorView();
     }
 
-    private static class CustomizedHandler extends BaseHandler.FlyingHandler {
+    private static class CustomizedHandler extends FloatingWindowHandler {
         private Dialog mDialog;
+        private boolean mIsJustAttached = false;
 
+        public boolean getJustAttached(){
+            return mIsJustAttached;
+        }
+
+        public void setJustAttached(boolean attached){
+            mIsJustAttached = attached;
+        }
         @Override
         protected void actionOnFling() {
             dragDown();
@@ -107,14 +115,40 @@ public class DialogHandler extends BaseHandler {
                 logD("onAttachedToWindow");
                 try {
                     final Dialog dialog = (Dialog) param.thisObject;
+                    Log.e("Ben", "onAttachedToWindow: " + dialog);
                     if (isInputMethod(dialog)) {
                         return;
                     }
 
-                    IFlyingHandler handler = createFlyingHandler(dialog);
+//                    IFlyingHandler handler = createFlyingHandler(dialog);
+                    CustomizedHandler handler = (CustomizedHandler) createFlyingHandler(dialog);
+                    handler.setJustAttached(true);
                     handler.registerReceiver();
                     handler.dealWithPersistentIn();
-                    mActiveHandler = handler;
+//                    mActiveHandler = handler;
+                } catch (Throwable t) {
+                    logE(t);
+                }
+            }
+        });
+
+        /**
+         * onDetachedFromWindow: hit back button to destroy dialog
+         */
+        XposedHelpers.findAndHookMethod(Dialog.class, "onDetachedFromWindow", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                logD("onDetachedFromWindow");
+                try {
+                    final Dialog dialog = (Dialog) param.thisObject;
+                    Log.e("Ben", "onDetachedFromWindow: " + dialog);
+                    if (isInputMethod(dialog)) {
+                        return;
+                    }
+                    IFlyingHandler handler = createFlyingHandler(dialog);
+                    handler.dealWithPersistentOut();
+                    handler.unregisterReceiver();
+//                    mActiveHandler = null;
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -134,39 +168,25 @@ public class DialogHandler extends BaseHandler {
                         return;
                     }
                     final boolean hasFocus = (Boolean) param.args[0];
+                    Log.e("Ben", "onWindowFocusChanged(" + hasFocus + "): " + dialog);
                     logD(dialog + "#onWindowFocusChanged: hasFocus=" + hasFocus);
-                    IFlyingHandler handler = createFlyingHandler(dialog);
+//                    IFlyingHandler handler = createFlyingHandler(dialog);
+                    CustomizedHandler handler = (CustomizedHandler)createFlyingHandler(dialog);
                     if (hasFocus) {
-                        handler.registerReceiver();
-                        handler.dealWithPersistentIn();
-                        mActiveHandler = handler;
+                        if (!handler.getJustAttached()) {
+                            handler.registerReceiver();
+//                            handler.dealWithPersistentIn();
+//                            mActiveHandler = handler;
+                            handler.switchFromOutside();
+                        }
+                        else {
+                            handler.setJustAttached(false);
+                        }
                     } else {
                         handler.dealWithPersistentOut();
                         handler.unregisterReceiver();
-                        mActiveHandler = null;
+//                        mActiveHandler = null;
                     }
-                } catch (Throwable t) {
-                    logE(t);
-                }
-            }
-        });
-
-        /**
-         * onDetachedFromWindow: hit back button to destroy dialog
-         */
-        XposedHelpers.findAndHookMethod(Dialog.class, "onDetachedFromWindow", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                logD("onDetachedFromWindow");
-                try {
-                    final Dialog dialog = (Dialog) param.thisObject;
-                    if (isInputMethod(dialog)) {
-                        return;
-                    }
-                    IFlyingHandler handler = createFlyingHandler(dialog);
-                    handler.dealWithPersistentOut();
-                    handler.unregisterReceiver();
-                    mActiveHandler = null;
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -179,17 +199,26 @@ public class DialogHandler extends BaseHandler {
     }
 
     public static void onActivityResume(Activity activity) {
+//        Log.e("Ben", "onResume mActiveHandler: " + mActiveHandler);
         mCurrentActivity = activity;
-        if(mActiveHandler != null){
-            mActiveHandler.registerReceiver();
-            mActiveHandler.dealWithPersistentIn();
-        }
+//        IFlyingHandler handler = (IFlyingHandler)XposedHelpers.getAdditionalInstanceField(mCurrentActivity, "FLYING_HANDLER");
+//        if(handler != null){
+//            handler.registerReceiver();
+//            handler.dealWithPersistentIn();
+//        }
     }
 
     public static void onActivityPause(){
-        if (mActiveHandler != null) {
-            mActiveHandler.registerReceiver();
-            mActiveHandler.dealWithPersistentIn();
-        }
+//        Log.e("Ben", "onPause mActiveHandler: " + mActiveHandler);
+//        if (mActiveHandler != null) {
+//            mActiveHandler.unregisterReceiver();
+//            mActiveHandler.dealWithPersistentOut();
+//            XposedHelpers.setAdditionalInstanceField(mCurrentActivity, "FLYING_HANDLER", mActiveHandler);
+//        }
+//        else {
+//            if (mCurrentActivity != null) {
+//                XposedHelpers.setAdditionalInstanceField(mCurrentActivity, "FLYING_HANDLER", null);
+//            }
+//        }
     }
 }

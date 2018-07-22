@@ -41,7 +41,7 @@ public class PopupWindowHandler extends BaseHandler {
         return (FrameLayout) XposedHelpers.getObjectField(obj, "mDecorView");
     }
 
-    private static class CustomizedHandler extends FlyingHandler {
+    private static class CustomizedHandler extends FloatingWindowHandler {
         private PopupWindow mPopupWindow;
         private CustomizedHandler(PopupWindow pw) {
             this((FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView"));
@@ -158,7 +158,8 @@ public class PopupWindowHandler extends BaseHandler {
         mCurrentActivity = activity;
         if(mActiveHandler != null){
             mActiveHandler.registerReceiver();
-            mActiveHandler.dealWithPersistentIn();
+//            mActiveHandler.dealWithPersistentIn();
+            ((CustomizedHandler)mActiveHandler).switchFromOutside();
         }
     }
 }

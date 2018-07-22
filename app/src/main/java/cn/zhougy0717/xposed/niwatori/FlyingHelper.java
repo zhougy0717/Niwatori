@@ -454,7 +454,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
         int[] locationOnScreen = new int[2];
         getAttachedView().getLocationOnScreen(locationOnScreen);
         float calculatedX = event.getX() + locationOnScreen[0];
-        Log.e("Ben", "screen:" + dm.widthPixels + ", x:" + event.getX() + ", location:" + locationOnScreen[0] + "," +locationOnScreen[1]);
         return (calculatedX < 0.04*dm.widthPixels) || (calculatedX > 0.96*dm.widthPixels);
     }
 
