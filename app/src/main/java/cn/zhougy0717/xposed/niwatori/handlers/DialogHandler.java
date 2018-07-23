@@ -43,15 +43,7 @@ public class DialogHandler extends BaseHandler {
     }
     private static class CustomizedHandler extends FloatingWindowHandler {
         private Dialog mDialog;
-        private boolean mIsJustAttached = false;
 
-        private boolean getJustAttached(){
-            return mIsJustAttached;
-        }
-
-        private void setJustAttached(boolean attached){
-            mIsJustAttached = attached;
-        }
         @Override
         protected void actionOnFling() {
             dragDown();
@@ -64,6 +56,7 @@ public class DialogHandler extends BaseHandler {
         private CustomizedHandler(Dialog dialog) {
             this((FrameLayout)dialog.getWindow().peekDecorView());
             mDialog = dialog;
+            mHelper.setForeground(mDecorView);
         }
 
         private void dragDown() {

@@ -2,6 +2,7 @@ package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -75,6 +76,11 @@ public class PopupWindowHandler extends BaseHandler {
             }
             return mHelper.onTouchEvent(event);
         }
+
+        @Override
+        public void draw(Canvas canvas){
+            mHelper.setForeground(mDecorView);
+        }
     }
 
     public void install() {
@@ -96,7 +102,7 @@ public class PopupWindowHandler extends BaseHandler {
                         }
 
                         try {
-                            mActiveHandler = (IFloatingWindowHandler)createFloatingWindowHandler(pw);
+                            mActiveHandler = createFloatingWindowHandler(pw);
                             mActiveHandler.registerReceiver();
                             mActiveHandler.switchFromActivity();
                         } catch (Throwable t) {
@@ -110,6 +116,9 @@ public class PopupWindowHandler extends BaseHandler {
                         while(!mLayoutCallbacks.isEmpty()) {
                             Runnable r = mLayoutCallbacks.poll();
                             r.run();
+                        }
+                        if (mActiveHandler != null) {
+                            mActiveHandler.draw(null);
                         }
                     }
                 });
