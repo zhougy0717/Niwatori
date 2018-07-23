@@ -71,11 +71,11 @@ public class DialogHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event){
-            if (mHelper.getSettings().triggeringGesture) {
-                return mEdgeGesture.onTouchEvent(event);
+            if (mEdgeGesture.onTouchEvent(event)) {
+                return true;
             }
             else {
-                return false;
+                return mHelper.onTouchEvent(event);
             }
         }
     }
@@ -83,7 +83,7 @@ public class DialogHandler extends BaseHandler {
         //
         // register receiver
         //
-        XposedBridge.hookAllMethods(Dialog.class, "onTouchEvent", new XC_MethodReplacement() {
+        XposedBridge.hookAllMethods(Dialog.class, "dispatchTouchEvent", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 Dialog dialog = (Dialog) param.thisObject;
@@ -110,7 +110,6 @@ public class DialogHandler extends BaseHandler {
                 logD("onAttachedToWindow");
                 try {
                     final Dialog dialog = (Dialog) param.thisObject;
-                    Log.e("Ben", "onAttachedToWindow: " + dialog);
                     if (isInputMethod(dialog)) {
                         return;
                     }
@@ -132,7 +131,6 @@ public class DialogHandler extends BaseHandler {
                 logD("onDetachedFromWindow");
                 try {
                     final Dialog dialog = (Dialog) param.thisObject;
-                    Log.e("Ben", "onDetachedFromWindow: " + dialog);
                     if (isInputMethod(dialog)) {
                         return;
                     }
@@ -158,7 +156,6 @@ public class DialogHandler extends BaseHandler {
                         return;
                     }
                     final boolean hasFocus = (Boolean) param.args[0];
-                    Log.e("Ben", "onWindowFocusChanged(" + hasFocus + "): " + dialog);
                     logD(dialog + "#onWindowFocusChanged: hasFocus=" + hasFocus);
                     IFloatingWindowHandler handler = createFloatingWindowHandler(dialog);
                     if (hasFocus) {

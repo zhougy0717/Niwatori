@@ -69,8 +69,8 @@ public class ActivityHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            if (mHelper.getSettings().triggeringGesture) {
-                return mEdgeGesture.onTouchEvent(event);
+            if (mEdgeGesture.onTouchEvent(event)) {
+                return true;
             }
             else {
                 return false;
@@ -272,7 +272,6 @@ public class ActivityHandler extends BaseHandler {
             if (activity instanceof TabActivity) {
                 return;
             }
-            Log.e("Ben", "onResume: " +activity);
             try {
                 FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
                 mHandler = createFlyingHandler(decorView);

@@ -51,6 +51,7 @@ public class PopupWindowHandler extends BaseHandler {
         private CustomizedHandler(PopupWindow pw) {
             this((FrameLayout) XposedHelpers.getObjectField(pw, "mDecorView"));
             mPopupWindow = pw;
+            mHelper.setForeground(mDecorView);
         }
 
         @Override
@@ -75,11 +76,6 @@ public class PopupWindowHandler extends BaseHandler {
                 return true;
             }
             return mHelper.onTouchEvent(event);
-        }
-
-        @Override
-        public void draw(Canvas canvas){
-            mHelper.setForeground(mDecorView);
         }
     }
 
@@ -116,9 +112,6 @@ public class PopupWindowHandler extends BaseHandler {
                         while(!mLayoutCallbacks.isEmpty()) {
                             Runnable r = mLayoutCallbacks.poll();
                             r.run();
-                        }
-                        if (mActiveHandler != null) {
-                            mActiveHandler.draw(null);
                         }
                     }
                 });
