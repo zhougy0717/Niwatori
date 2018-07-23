@@ -23,7 +23,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 
 public class PopupWindowHandler extends BaseHandler {
-    private static IFlyingHandler mActiveHandler = null;
+    private static IFloatingWindowHandler mActiveHandler = null;
     public static Queue<Runnable> mLayoutCallbacks = new LinkedList<Runnable>();;
 
     @Override
@@ -39,6 +39,10 @@ public class PopupWindowHandler extends BaseHandler {
     @Override
     final protected FrameLayout getDecorView(Object obj){
         return (FrameLayout) XposedHelpers.getObjectField(obj, "mDecorView");
+    }
+
+    private final IFloatingWindowHandler createFloatingWindowHandler(PopupWindow pw) {
+        return (IFloatingWindowHandler)createFlyingHandler(pw);
     }
 
     private static class CustomizedHandler extends FloatingWindowHandler {
@@ -92,9 +96,9 @@ public class PopupWindowHandler extends BaseHandler {
                         }
 
                         try {
-                            mActiveHandler = createFlyingHandler(pw);
+                            mActiveHandler = (IFloatingWindowHandler)createFloatingWindowHandler(pw);
                             mActiveHandler.registerReceiver();
-                            mActiveHandler.dealWithPersistentIn();
+                            mActiveHandler.switchFromActivity();
                         } catch (Throwable t) {
                             logE(t);
                         }
@@ -146,7 +150,6 @@ public class PopupWindowHandler extends BaseHandler {
     }
 
     public static void onActivityPause(){
-        // TODO: save the handler under the activity's name
         if(mActiveHandler != null){
             mActiveHandler.unregisterReceiver();
             mActiveHandler.dealWithPersistentOut();
@@ -154,12 +157,10 @@ public class PopupWindowHandler extends BaseHandler {
     }
 
     public static void onActivityResume(Activity activity){
-        // TODO: check the existing handler using the activity's class name
         mCurrentActivity = activity;
         if(mActiveHandler != null){
             mActiveHandler.registerReceiver();
-//            mActiveHandler.dealWithPersistentIn();
-            ((CustomizedHandler)mActiveHandler).switchFromOutside();
+            mActiveHandler.switchFromOutside();
         }
     }
 }

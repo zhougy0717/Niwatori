@@ -22,7 +22,6 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class DialogHandler extends BaseHandler {
     private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
-    private static IFlyingHandler mActiveHandler = null;
 
     @Override
     final protected IFlyingHandler allocateHandler(FrameLayout decorView) {
@@ -39,15 +38,18 @@ public class DialogHandler extends BaseHandler {
         return (FrameLayout)((Dialog)obj).getWindow().peekDecorView();
     }
 
+    final private IFloatingWindowHandler createFloatingWindowHandler(Dialog dialog) {
+        return (IFloatingWindowHandler) createFlyingHandler(dialog);
+    }
     private static class CustomizedHandler extends FloatingWindowHandler {
         private Dialog mDialog;
         private boolean mIsJustAttached = false;
 
-        public boolean getJustAttached(){
+        private boolean getJustAttached(){
             return mIsJustAttached;
         }
 
-        public void setJustAttached(boolean attached){
+        private void setJustAttached(boolean attached){
             mIsJustAttached = attached;
         }
         @Override
@@ -120,12 +122,8 @@ public class DialogHandler extends BaseHandler {
                         return;
                     }
 
-//                    IFlyingHandler handler = createFlyingHandler(dialog);
-                    CustomizedHandler handler = (CustomizedHandler) createFlyingHandler(dialog);
-                    handler.setJustAttached(true);
-                    handler.registerReceiver();
-                    handler.dealWithPersistentIn();
-//                    mActiveHandler = handler;
+                    IFloatingWindowHandler handler = createFloatingWindowHandler(dialog);
+                    handler.setSwitchFromOutside(false);
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -148,7 +146,6 @@ public class DialogHandler extends BaseHandler {
                     IFlyingHandler handler = createFlyingHandler(dialog);
                     handler.dealWithPersistentOut();
                     handler.unregisterReceiver();
-//                    mActiveHandler = null;
                 } catch (Throwable t) {
                     logE(t);
                 }
@@ -170,22 +167,19 @@ public class DialogHandler extends BaseHandler {
                     final boolean hasFocus = (Boolean) param.args[0];
                     Log.e("Ben", "onWindowFocusChanged(" + hasFocus + "): " + dialog);
                     logD(dialog + "#onWindowFocusChanged: hasFocus=" + hasFocus);
-//                    IFlyingHandler handler = createFlyingHandler(dialog);
-                    CustomizedHandler handler = (CustomizedHandler)createFlyingHandler(dialog);
+                    IFloatingWindowHandler handler = createFloatingWindowHandler(dialog);
                     if (hasFocus) {
-                        if (!handler.getJustAttached()) {
-                            handler.registerReceiver();
-//                            handler.dealWithPersistentIn();
-//                            mActiveHandler = handler;
+                        handler.registerReceiver();
+                        if (handler.isSwitchFromOutside()) {
                             handler.switchFromOutside();
                         }
                         else {
-                            handler.setJustAttached(false);
+                            handler.switchFromActivity();
+                            handler.setSwitchFromOutside(true);
                         }
                     } else {
                         handler.dealWithPersistentOut();
                         handler.unregisterReceiver();
-//                        mActiveHandler = null;
                     }
                 } catch (Throwable t) {
                     logE(t);
@@ -194,31 +188,11 @@ public class DialogHandler extends BaseHandler {
         });
     }
 
+    public static void setActivity(Activity activity) {
+        mCurrentActivity = activity;
+    }
+
     private static boolean isInputMethod(Dialog dialog) {
         return dialog.getClass().getName().equals(CLASS_SOFT_INPUT_WINDOW);
-    }
-
-    public static void onActivityResume(Activity activity) {
-//        Log.e("Ben", "onResume mActiveHandler: " + mActiveHandler);
-        mCurrentActivity = activity;
-//        IFlyingHandler handler = (IFlyingHandler)XposedHelpers.getAdditionalInstanceField(mCurrentActivity, "FLYING_HANDLER");
-//        if(handler != null){
-//            handler.registerReceiver();
-//            handler.dealWithPersistentIn();
-//        }
-    }
-
-    public static void onActivityPause(){
-//        Log.e("Ben", "onPause mActiveHandler: " + mActiveHandler);
-//        if (mActiveHandler != null) {
-//            mActiveHandler.unregisterReceiver();
-//            mActiveHandler.dealWithPersistentOut();
-//            XposedHelpers.setAdditionalInstanceField(mCurrentActivity, "FLYING_HANDLER", mActiveHandler);
-//        }
-//        else {
-//            if (mCurrentActivity != null) {
-//                XposedHelpers.setAdditionalInstanceField(mCurrentActivity, "FLYING_HANDLER", null);
-//            }
-//        }
     }
 }

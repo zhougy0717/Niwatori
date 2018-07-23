@@ -457,4 +457,18 @@ public class FlyingHelper extends FlyingLayout.Helper {
         return (calculatedX < 0.04*dm.widthPixels) || (calculatedX > 0.96*dm.widthPixels);
     }
 
+    public void syncResize(boolean resized){
+        if (getSettings().smallScreenPersistent) {
+            // In persistent small screen mode, sync up with parent activity and the popup window.
+            if (resized && !isResized()) {
+                performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+            }
+            else if (resized && isResized()) {
+                performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
+            }
+            else if (!resized && isResized()) {
+                performAction(NFW.ACTION_RESET);
+            }
+        }
+    }
 }

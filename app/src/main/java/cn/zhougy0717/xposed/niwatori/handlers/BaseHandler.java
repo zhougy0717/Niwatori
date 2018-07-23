@@ -39,8 +39,9 @@ public abstract class BaseHandler extends XposedModule {
         public boolean onInterceptTouchEvent(MotionEvent event);
         public void draw(Canvas canvas);
         public void rotate();
-        }
+    }
 
+    // TODO: Use STRATEGY model to have dependency inject.
     abstract protected IFlyingHandler allocateHandler(FrameLayout decorView);
     abstract protected IFlyingHandler allocateHandler(Object obj);
     abstract protected FrameLayout getDecorView(Object obj);
@@ -125,43 +126,6 @@ public abstract class BaseHandler extends XposedModule {
             mSettingsLoadedReceiver.unregister();
         }
 
-//        public void dealWithPersistentIn(){
-//            if (mCurrentActivity == null) {
-//                return;
-//            }
-//            FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
-//            if (mHelper.getSettings().smallScreenPersistent) {
-//                // In persistent small screen mode, sync up with parent activity and the popup window.
-//                if (helper.isResized() && !mHelper.isResized()) {
-//                    mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-//                } else if (!helper.isResized() && mHelper.isResized()) {
-//                    mHelper.performAction(NFW.ACTION_RESET);
-//                }
-//            }
-//        }
-//
-//        public void dealWithPersistentOut() {
-//            if (mHelper!=null && !mHelper.getSettings().smallScreenPersistent) {
-//                // NOTE: When fire actions from shortcut (ActionActivity), it causes onPause and onActivityResume events
-//                // because through an Activity. So shouldn't reset automatically.
-//                mHelper.resetState(true);
-//            }
-//            if (mCurrentActivity == null) {
-//                return;
-//            }
-//            FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
-//            if (helper.getSettings().smallScreenPersistent) {
-//                // In persistent small screen mode, sync up with parent activity and the popup window.
-//                if (mHelper.isResized() && !helper.isResized()) {
-//                    helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-//                } else if (mHelper.isResized() && helper.isResized()) {
-//                    helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-//                } else if (!mHelper.isResized() && helper.isResized()) {
-//                    helper.performAction(NFW.ACTION_RESET);
-//                }
-//            }
-//        }
-
         public boolean edgeDetected(MotionEvent event){
             return mHelper.edgeDetected(event);
         }
@@ -177,49 +141,50 @@ public abstract class BaseHandler extends XposedModule {
         }
     }
 
-    protected static abstract class FloatingWindowHandler extends FlyingHandler {
-
+    public interface IFloatingWindowHandler extends IFlyingHandler{
+        public void setSwitchFromOutside(boolean fromOutside);
+        public boolean isSwitchFromOutside();
+        public void switchFromOutside();
+        public void switchFromActivity();
+    }
+    protected static abstract class FloatingWindowHandler extends FlyingHandler implements IFlyingHandler, IFloatingWindowHandler{
+        private boolean mFromOutside = false;
         protected FloatingWindowHandler(FrameLayout decorView) {
             super(decorView);
         }
 
         private void syncWithActivity(Activity activity) {
             FlyingHelper helper = ModActivity.getHelper((FrameLayout) activity.getWindow().peekDecorView());
-            if (mHelper.getSettings().smallScreenPersistent) {
-                // In persistent small screen mode, sync up with parent activity and the popup window.
-                if (helper.isResized() && !mHelper.isResized()) {
-                    mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                }
-                else if (helper.isResized() && mHelper.isResized()) {
-                    mHelper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-                }
-                else if (!helper.isResized() && mHelper.isResized()) {
-                    mHelper.performAction(NFW.ACTION_RESET);
-                }
-            }
+            mHelper.syncResize(helper.isResized());
         }
 
         private void syncWithNiwatori(){
-            if (mHelper.getSettings().smallScreenPersistent) {
-                if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
-                    mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                } else if (mHelper.getSettings().screenResized && mHelper.isResized()) {
-                    mHelper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-                } else if (!mHelper.getSettings().screenResized && mHelper.isResized()) {
-                    mHelper.performAction(NFW.ACTION_RESET);
-                }
-            }
+            mHelper.syncResize(mHelper.getSettings().screenResized);
         }
 
+        @Override
+        public void setSwitchFromOutside(boolean fromOutside){
+            mFromOutside = fromOutside;
+        }
+
+        @Override
+        public boolean isSwitchFromOutside(){
+            return mFromOutside;
+        }
+        @Override
         public void switchFromOutside(){
             syncWithNiwatori();
         }
+
+        @Override
+        public void switchFromActivity(){
+            if (mCurrentActivity != null) {
+                syncWithActivity(mCurrentActivity);
+            }
+        }
         @Override
         public void dealWithPersistentIn(){
-            if (mCurrentActivity == null) {
-                return;
-            }
-            syncWithActivity(mCurrentActivity);
+            switchFromActivity();
         }
 
         @Override
@@ -229,19 +194,9 @@ public abstract class BaseHandler extends XposedModule {
                 // because through an Activity. So shouldn't reset automatically.
                 mHelper.resetState(true);
             }
-            if (mCurrentActivity == null) {
-                return;
-            }
-            FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
-            if (helper.getSettings().smallScreenPersistent) {
-                // In persistent small screen mode, sync up with parent activity and the popup window.
-                if (mHelper.isResized() && !helper.isResized()) {
-                    helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                } else if (mHelper.isResized() && helper.isResized()) {
-                    helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-                } else if (!mHelper.isResized() && helper.isResized()) {
-                    helper.performAction(NFW.ACTION_RESET);
-                }
+            if (mCurrentActivity != null) {
+                FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
+                helper.syncResize(mHelper.isResized());
             }
         }
     }

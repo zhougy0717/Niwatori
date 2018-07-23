@@ -2,6 +2,7 @@ package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.graphics.Canvas;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
@@ -86,10 +88,10 @@ public class ActivityHandler extends BaseHandler {
              * Because of the latency between write and read consistently, the Runnable should be executed by 50ms delayed.
              * Refer to comment in SettingsLoadReceiver for another case.
              */
-//            Handler handler = new Handler();
-//            handler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
                     if (mHelper.getSettings().smallScreenPersistent) {
                         if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
                             mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
@@ -99,8 +101,8 @@ public class ActivityHandler extends BaseHandler {
                             mHelper.performAction(NFW.ACTION_RESET);
                         }
                     }
-//                }
-//            }, 50);
+                }
+            }, 50);
 
             if (mDecorView.getBackground() == null) {
                 XposedHelpers.callMethod(mDecorView, "setWindowBackground", ModActivity.censorDrawable(mDecorView, null));
@@ -270,22 +272,18 @@ public class ActivityHandler extends BaseHandler {
             if (activity instanceof TabActivity) {
                 return;
             }
+            Log.e("Ben", "onResume: " +activity);
+            try {
+                FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
+                mHandler = createFlyingHandler(decorView);
+                mHandler.registerReceiver();
+                mHandler.dealWithPersistentIn();
+                PopupWindowHandler.onActivityResume(activity);
+                DialogHandler.setActivity(activity);
+            } catch (Throwable t) {
+                logE(t);
+            }
 
-            (new Handler()).postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        FrameLayout decorView = (FrameLayout) activity.getWindow().peekDecorView();
-                        mHandler = createFlyingHandler(decorView);
-                        mHandler.registerReceiver();
-                        mHandler.dealWithPersistentIn();
-                        PopupWindowHandler.onActivityResume(activity);
-                        DialogHandler.onActivityResume(activity);
-                    } catch (Throwable t) {
-                        logE(t);
-                    }
-                }
-            }, 500);
 
         }
 
@@ -297,7 +295,6 @@ public class ActivityHandler extends BaseHandler {
             try {
                 logD(activity + "#onPause");
                 PopupWindowHandler.onActivityPause();
-                DialogHandler.onActivityPause();
                 mHandler.unregisterReceiver();
                 mHandler.dealWithPersistentOut();
             } catch (Throwable t) {
