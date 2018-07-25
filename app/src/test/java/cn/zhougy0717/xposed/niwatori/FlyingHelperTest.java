@@ -7,27 +7,17 @@ import android.preference.PreferenceManager;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.thoughtworks.xstream.security.InterfaceTypePermission;
-
-import org.codehaus.plexus.util.cli.Arg;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatcher;
-import org.mockito.InOrder;
-import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.powermock.modules.junit4.rule.PowerMockRule;
-import org.powermock.reflect.Whitebox;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -37,16 +27,12 @@ import java.util.List;
 import static org.powermock.api.mockito.PowerMockito.doReturn;
 import static org.robolectric.Shadows.shadowOf;
 
-import cn.zhougy0717.xposed.niwatori.app.ChangeSettingsActionReceiver;
 import de.robv.android.xposed.XposedBridge;
-import jp.tkgktyk.flyinglayout.FlyingLayout;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
@@ -222,7 +208,7 @@ public class FlyingHelperTest {
         Settings globalSettings = new Settings(globalPrefs);
         doReturn(globalSettings).when(spyHelper).getRemoteSettings();
 
-        spyHelper.onExit();
+        spyHelper.sendLocalScreenData();
 
         List<Intent> broadcastIntents = shadowOf(RuntimeEnvironment.application).getBroadcastIntents();
         assertEquals(1, broadcastIntents.size());

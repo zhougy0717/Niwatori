@@ -2,7 +2,6 @@ package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Dialog;
 import android.app.TabActivity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -15,6 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import com.google.common.base.Strings;
@@ -69,7 +69,7 @@ public class ActivityHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            if (mEdgeGesture.onTouchEvent(event)) {
+            if (!DialogHandler.isInputMethodView(mDecorView) && mEdgeGesture.onTouchEvent(event)) {
                 return true;
             }
             else {
@@ -92,15 +92,16 @@ public class ActivityHandler extends BaseHandler {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (mHelper.getSettings().smallScreenPersistent) {
-                        if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
-                            mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                        } else if (mHelper.getSettings().screenResized && mHelper.isResized()) {
-                            mHelper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-                        } else if (!mHelper.getSettings().screenResized && mHelper.isResized()) {
-                            mHelper.performAction(NFW.ACTION_RESET);
-                        }
-                    }
+                    syncWithNiwatori();
+//                    if (mHelper.getSettings().smallScreenPersistent) {
+//                        if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
+//                            mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+//                        } else if (mHelper.getSettings().screenResized && mHelper.isResized()) {
+//                            mHelper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
+//                        } else if (!mHelper.getSettings().screenResized && mHelper.isResized()) {
+//                            mHelper.performAction(NFW.ACTION_RESET);
+//                        }
+//                    }
                 }
             }, 50);
 
@@ -117,7 +118,7 @@ public class ActivityHandler extends BaseHandler {
                 mHelper.resetState(true);
             }
 
-            mHelper.onExit();
+            mHelper.sendLocalScreenData();
         }
 
         public boolean onInterceptTouchEvent(MotionEvent event){

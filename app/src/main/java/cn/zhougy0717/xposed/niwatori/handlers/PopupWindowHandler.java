@@ -72,7 +72,7 @@ public class PopupWindowHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event){
-            if(mHelper.getSettings().triggeringGesture && mEdgeGesture.onTouchEvent(event)) {
+            if(mEdgeGesture.onTouchEvent(event)) {
                 return true;
             }
             return mHelper.onTouchEvent(event);

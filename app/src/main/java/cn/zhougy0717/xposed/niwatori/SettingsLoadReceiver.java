@@ -78,15 +78,16 @@ public class SettingsLoadReceiver extends Receiver{
                      * Delay 50ms to read from global preference consistently.
                      */
                     helper.onSettingsLoaded();
-                    if (settings.screenResized && !helper.isResized()) {
-                        helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-                    }
-                    else if (settings.screenResized && helper.isResized()) {
-                        helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-                    }
-                    else if (!settings.screenResized && helper.isResized()){
-                        helper.performAction(NFW.ACTION_RESET);
-                    }
+                    helper.syncResize(settings.screenResized);
+//                    if (settings.screenResized && !helper.isResized()) {
+//                        helper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
+//                    }
+//                    else if (settings.screenResized && helper.isResized()) {
+//                        helper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
+//                    }
+//                    else if (!settings.screenResized && helper.isResized()){
+//                        helper.performAction(NFW.ACTION_RESET);
+//                    }
                 }
             }, 50);
         }

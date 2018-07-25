@@ -1,11 +1,9 @@
 package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.app.KeyguardManager;
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.os.Build;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -110,7 +108,7 @@ public class StatusBarHandler extends BaseHandler {
         @Override
         public void dealWithPersistentOut() {
             mHelper.resetState(true);
-            mHelper.onExit();
+            mHelper.sendLocalScreenData();
         }
 
         public void draw(Canvas canvas) {
@@ -199,7 +197,7 @@ public class StatusBarHandler extends BaseHandler {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
 //                mHelper.resetState(true);
-//                mHelper.onExit();
+//                mHelper.sendLocalScreenData();
                 mHandler.unregisterReceiver();
                 mHandler.dealWithPersistentOut();
             }

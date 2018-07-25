@@ -2,12 +2,15 @@ package cn.zhougy0717.xposed.niwatori.handlers;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 
 import cn.zhougy0717.xposed.niwatori.NFW;
@@ -22,6 +25,7 @@ import de.robv.android.xposed.XposedHelpers;
 
 public class DialogHandler extends BaseHandler {
     private static final String CLASS_SOFT_INPUT_WINDOW = "android.inputmethodservice.SoftInputWindow";
+    private static FrameLayout mInputMethodDecorView = null;
 
     @Override
     final protected IFlyingHandler allocateHandler(FrameLayout decorView) {
@@ -87,16 +91,17 @@ public class DialogHandler extends BaseHandler {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
                 Dialog dialog = (Dialog) param.thisObject;
-                MotionEvent event = (MotionEvent) param.args[0];
-                IFlyingHandler handler = createFlyingHandler(dialog);
-                if (handler.onTouchEvent(event)) {
-                    return true;
+                if (!isInputMethod(dialog)) {
+                    MotionEvent event = (MotionEvent) param.args[0];
+                    IFlyingHandler handler = createFlyingHandler(dialog);
+                    if (handler.onTouchEvent(event)) {
+                        return true;
+                    }
+                    if ((event.getAction() == MotionEvent.ACTION_DOWN) && handler.edgeDetected(event)) {
+                        // We want to hijack ACTION_DOWN on edge. Beucase ACTION_DOWN will dismiss the dialog.
+                        return false;
+                    }
                 }
-                if ((event.getAction() == MotionEvent.ACTION_DOWN) && handler.edgeDetected(event)) {
-                    // We want to hijack ACTION_DOWN on edge. Beucase ACTION_DOWN will dismiss the dialog.
-                    return false;
-                }
-
                 return invokeOriginalMethod(param);
             }
         });
@@ -111,6 +116,7 @@ public class DialogHandler extends BaseHandler {
                 try {
                     final Dialog dialog = (Dialog) param.thisObject;
                     if (isInputMethod(dialog)) {
+                        mInputMethodDecorView = (FrameLayout) dialog.getWindow().peekDecorView();
                         return;
                     }
 
@@ -184,5 +190,9 @@ public class DialogHandler extends BaseHandler {
 
     private static boolean isInputMethod(Dialog dialog) {
         return dialog.getClass().getName().equals(CLASS_SOFT_INPUT_WINDOW);
+    }
+
+    public static boolean isInputMethodView(FrameLayout decorView) {
+        return decorView == mInputMethodDecorView;
     }
 }

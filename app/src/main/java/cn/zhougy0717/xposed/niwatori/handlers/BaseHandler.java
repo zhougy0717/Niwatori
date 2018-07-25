@@ -139,6 +139,10 @@ public abstract class BaseHandler extends XposedModule {
         public void rotate() {
             // Do nothing
         }
+
+        protected void syncWithNiwatori(){
+            mHelper.syncResize(mHelper.getSettings().screenResized);
+        }
     }
 
     public interface IFloatingWindowHandler extends IFlyingHandler{
@@ -156,10 +160,6 @@ public abstract class BaseHandler extends XposedModule {
         private void syncWithActivity(Activity activity) {
             FlyingHelper helper = ModActivity.getHelper((FrameLayout) activity.getWindow().peekDecorView());
             mHelper.syncResize(helper.isResized());
-        }
-
-        private void syncWithNiwatori(){
-            mHelper.syncResize(mHelper.getSettings().screenResized);
         }
 
         @Override
