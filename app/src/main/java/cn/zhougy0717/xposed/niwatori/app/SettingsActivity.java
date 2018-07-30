@@ -17,6 +17,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
@@ -454,6 +455,10 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
                 }
             });
             about.setSummary(getString(R.string.app_name) + " " + BuildConfig.VERSION_NAME);
+
+            Preference log = findPreference(R.string.key_log_actions);
+            String consumer = NFW.getSharedPreferences(mSettingsActivity).getString("key_action_intent_consumer", "None");
+            log.setSummary(getString(R.string.about_summary) + "\n" + consumer);
         }
 
 //        private void updatePremiumSettings(boolean purchased) {

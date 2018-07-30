@@ -33,5 +33,9 @@ public class ChangeSettingsActionReceiver extends BroadcastReceiver {
             prefs.edit().putInt("key_small_screen_size", intent.getIntExtra("key_small_screen_size", 0))
                     .apply();
         }
+        if (intent.hasExtra("key_action_intent_consumer")) {
+            prefs.edit().putString("key_action_intent_consumer", intent.getStringExtra("key_action_intent_consumer"))
+                    .apply();
+        }
     }
 }

@@ -59,7 +59,6 @@ public class ActivityHandler extends BaseHandler {
         protected CustomizedHandler(FrameLayout decorView) {
             super(decorView);
             mActionReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
-//            mSettingsLoadedReceiver.setFilter(NFW.FOCUSED_ACTIVITY_FILTER);
         }
 
         @Override
@@ -69,12 +68,10 @@ public class ActivityHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event) {
-            if (!DialogHandler.isInputMethodView(mDecorView) && mEdgeGesture.onTouchEvent(event)) {
-                return true;
-            }
-            else {
+            if (DialogHandler.isInputMethodView(mDecorView) || !mHelper.getSettings().triggeringGesture){
                 return false;
             }
+            return mEdgeGesture.onTouchEvent(event);
         }
 
         @Override
@@ -93,15 +90,6 @@ public class ActivityHandler extends BaseHandler {
                 @Override
                 public void run() {
                     syncWithNiwatori();
-//                    if (mHelper.getSettings().smallScreenPersistent) {
-//                        if (mHelper.getSettings().screenResized && !mHelper.isResized()) {
-//                            mHelper.performAction(NFW.ACTION_FORCE_SMALL_SCREEN);
-//                        } else if (mHelper.getSettings().screenResized && mHelper.isResized()) {
-//                            mHelper.performAction(NFW.ACTION_REFRESH_SMALL_SCREEN);
-//                        } else if (!mHelper.getSettings().screenResized && mHelper.isResized()) {
-//                            mHelper.performAction(NFW.ACTION_RESET);
-//                        }
-//                    }
                 }
             }, 50);
 

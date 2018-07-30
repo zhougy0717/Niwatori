@@ -188,6 +188,9 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (getSettings().logActions) {
             XposedBridge.log(getAttachedView().getContext().getPackageName() + " do action: " + action);
             Log.e(TAG, getAttachedView().getContext().getPackageName() + " do action: " + action);
+            Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
+            intent.putExtra("key_action_intent_consumer", getAttachedView().getContext().getPackageName());
+            getAttachedView().getContext().sendBroadcast(intent);
         }
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);

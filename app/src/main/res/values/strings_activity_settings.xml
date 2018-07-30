@@ -125,4 +125,4 @@
     <string name="title_help">Show Tutorial Guide</string>
     <!-- About -->
     <string name="title_about">@string/about_activity_name</string>
-</resources>
+    </resources>

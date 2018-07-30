@@ -33,6 +33,7 @@
 
     <!-- About -->
     <string name="about_activity_name">关于Niwatori</string>
+    <string name="about_summary">最后一个被激活的应用</string>
     <string name="about_content_text">Niwatori由tkgktyk创立,并由zhougy0717继续维护。\n这是一个Xposed框架下的模块，它必须基于Xposed框架才能工作。</string>
     <string name="about_translation_label">翻译</string>
     <string name="japanese_translater">- 日语翻译: tkgktyk</string>

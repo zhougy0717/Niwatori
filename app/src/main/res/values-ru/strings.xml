@@ -6,6 +6,7 @@
 
     <!-- Shortcut name -->
     <string name="shortcut_activity_name">Режим работы одной рукой</string>
+    <string name="about_summary">Action Intent Consumer</string>
     <string name="action_none">Нет</string>
     <string name="action_movable_screen">Передвигаемый экран</string>
     <string name="action_pin">Закрепить / Открепить положение</string>

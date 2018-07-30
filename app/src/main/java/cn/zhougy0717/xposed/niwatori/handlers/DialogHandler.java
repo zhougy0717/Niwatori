@@ -75,7 +75,7 @@ public class DialogHandler extends BaseHandler {
 
         @Override
         public boolean onTouchEvent(MotionEvent event){
-            if (mEdgeGesture.onTouchEvent(event)) {
+            if (mHelper.getSettings().triggeringGesture && mEdgeGesture.onTouchEvent(event)) {
                 return true;
             }
             else {
