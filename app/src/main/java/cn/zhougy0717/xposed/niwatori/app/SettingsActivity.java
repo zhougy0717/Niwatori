@@ -21,6 +21,7 @@ import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.common.base.Objects;
@@ -149,13 +150,23 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
             }
             @Override
             public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                NFW.sendSettingsChanged(getActivity(), sharedPreferences);
-
+                if (key.equals("key_action_intent_consumer")) {
+                    updatePreferences();
+                }
+                else if (key.equals("screen_resized") || key.equals("key_small_screen_pivot_x") || key.equals("key_small_screen_size")) {
+                    NFW.sendSettingsChanged(getActivity(), sharedPreferences);
+                }
+                else {
+                    NFW.sendSettingsChanged(getActivity(), sharedPreferences);
+                    updatePreferences();
+                }
 //                showHeadsUp();
             }
         };
 
-        @SuppressWarnings("deprecation")
+        protected /*private*/ void updatePreferences() {
+        }
+            @SuppressWarnings("deprecation")
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -173,8 +184,26 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
                     .unregisterOnSharedPreferenceChangeListener(mChangeListener);
         }
 
+//        private static class NullPreference extends Preference{
+//            private static Preference mNullPref = null;
+//            private NullPreference(Context context) {
+//                super(context);
+//            }
+//
+//            public static Preference instance(Context context) {
+//                if (mNullPref == null){
+//                    mNullPref = new NullPreference(context);
+//                }
+//                return mNullPref;
+//            }
+//        }
+
         protected Preference findPreference(@StringRes int id) {
-            return findPreference(getString(id));
+            Preference preference = findPreference(getString(id));
+//            if (preference == null){
+//                preference = NullPreference.instance(getActivity());
+//            }
+            return preference;
         }
 
         protected void showListSummary(@StringRes int id) {
@@ -280,13 +309,14 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
         private static final String ARG_HAS_PREMIUM_SETTINGS = NFW.PACKAGE_NAME + ".HAS_PREMIUM_SETTINGS";
 
         private SettingsActivity mSettingsActivity;
+        private boolean mPrefAdded = false;
 
-        private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                updatePreferences();
-            }
-        };
+//        private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                updatePreferences();
+//            }
+//        };
 
         public static SettingsFragment newInstance(boolean hasPremiumSettings) {
             Bundle args = new Bundle();
@@ -301,14 +331,14 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
             super.onAttach(activity);
             mSettingsActivity = (SettingsActivity) activity;
 
-            mSettingsActivity.registerReceiver(mReceiver, NFW.SETTINGS_CHANGED_FILTER);
+//            mSettingsActivity.registerReceiver(mReceiver, NFW.SETTINGS_CHANGED_FILTER);
         }
 
         @Override
         public void onDetach() {
             super.onDetach();
 
-            mSettingsActivity.unregisterReceiver(mReceiver);
+//            mSettingsActivity.unregisterReceiver(mReceiver);
 
             mSettingsActivity = null;
         }
@@ -317,9 +347,8 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_settings);
-
 //            updatePremiumSettings(getArguments().getBoolean(ARG_HAS_PREMIUM_SETTINGS, false));
-
+            mPrefAdded = true;
             updatePreferences();
 
             Preference myPref = (Preference) findPreference("show_guide");
@@ -333,7 +362,8 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
             });
         }
 
-        private void updatePreferences() {
+        @Override
+        protected void updatePreferences() {
 //            if (mSettingsActivity != null && !mSettingsActivity.isBillingSupported()) {
 //                disablePremiumSettings();
 //            }
@@ -348,7 +378,9 @@ public class SettingsActivity extends Activity/*extends InAppBillingActivity*/ {
 //                            return true;
 //                        }
 //                    });
-
+            if(!mPrefAdded) {
+                return;
+            }
             // Settings
             openActivity(R.string.key_blacklist, AppSelectActivity.class, new ExtendsPutter() {
                 @Override
