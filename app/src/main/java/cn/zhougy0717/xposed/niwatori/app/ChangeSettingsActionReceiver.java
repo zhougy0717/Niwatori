@@ -28,10 +28,10 @@ public class ChangeSettingsActionReceiver extends BroadcastReceiver {
             settings.screenResized = intent.getBooleanExtra("screen_resized", false);
         }
         if (intent.hasExtra("key_small_screen_pivot_x")) {
-            settings.smallScreenPivotX = intent.getIntExtra("key_small_screen_pivot_x", 0)/100;
+            settings.smallScreenPivotX = ((float)intent.getIntExtra("key_small_screen_pivot_x", 0))/100;
         }
         if (intent.hasExtra("key_small_screen_size")) {
-            settings.smallScreenSize = intent.getIntExtra("key_small_screen_size", 0)/100;
+            settings.smallScreenSize = ((float)intent.getIntExtra("key_small_screen_size", 0))/100;
         }
         if (intent.hasExtra("key_action_intent_consumer")) {
             actionIntentConsume = intent.getStringExtra("key_action_intent_consumer");
