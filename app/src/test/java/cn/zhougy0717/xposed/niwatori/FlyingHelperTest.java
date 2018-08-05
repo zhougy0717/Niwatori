@@ -87,18 +87,17 @@ public class FlyingHelperTest {
     public void it_should_save_pivotX_in_local_SharedPreference() throws Exception {
         doNothing().when(spyHelper).onSettingsLoaded();
         spyHelper.performAction(NFW.ACTION_CS_SWAP_LEFT_RIGHT);
-
-        localPrefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-        assertEquals(100, localPrefs.getInt("key_small_screen_pivot_x", 0));
+        assertEquals(100, (int)(spyHelper.getScreenData().smallScreenPivotX*100));
     }
 
     @Test
     public void it_should_load_pivotX_firstly_from_local_SharedPreference() throws Exception {
         doNothing().when(spyHelper).setScale(anyFloat());
         doNothing().when(spyHelper, "updateBoundary");
-        localPrefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-        localPrefs.edit().putInt("key_small_screen_pivot_x", 12).apply();
-        localPrefs.edit().putInt("key_small_screen_pivot_y", 56).apply();
+        Settings.ScreenData data = new Settings.ScreenData(spyHelper.getSettings());
+        data.smallScreenPivotX = 0.12f;
+        data.smallScreenPivotY = 0.56f;
+        spyHelper.setScreenData(data);
         globalPrefs.edit()
                 .putInt("key_small_screen_pivot_x", 34)
                 .apply();
@@ -120,6 +119,7 @@ public class FlyingHelperTest {
                 .putInt("key_small_screen_pivot_x", 34)
                 .apply();
         when(WorldReadablePreference.class, "getSettings").thenReturn(new Settings(globalPrefs));
+        spyHelper.setScreenData(null);
         spyHelper.onSettingsLoaded();
 
         verify(spyHelper).setPivot(0.34f,1.0f);
@@ -137,21 +137,21 @@ public class FlyingHelperTest {
         PowerMockito.mockStatic(NFW.class);
         when(NFW.class, "getNiwatoriContext", any(Context.class)).thenReturn(mockContext);
 
-        globalPrefs.edit()
-                .putInt("key_small_screen_pivot_x", 12)
-                .apply();
+        Settings.ScreenData data = new Settings.ScreenData(spyHelper.getSettings());
+        data.smallScreenPivotX = 0.12f;
+        spyHelper.setScreenData(data);
         spyHelper.performAction(NFW.ACTION_CS_SWAP_LEFT_RIGHT);
-        assertEquals(88, globalPrefs.getInt("key_small_screen_pivot_x", 0));
+        assertEquals(88, (int)(100*spyHelper.getScreenData().smallScreenPivotX));
     }
 
     @Test
     public void it_should_get_global_pivotX_if_no_local_one() throws Exception {
         doNothing().when(spyHelper).onSettingsLoaded();
         globalPrefs.edit().putInt("key_small_screen_pivot_x", 34).apply();
+        spyHelper.setScreenData(null);
         when(WorldReadablePreference.class, "getSettings").thenReturn(new Settings(globalPrefs));
         spyHelper.performAction(NFW.ACTION_CS_SWAP_LEFT_RIGHT);
-        assertEquals(66, spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0)
-                .getInt("key_small_screen_pivot_x", 0));
+        assertEquals(66, (int)(100*spyHelper.getScreenData().smallScreenPivotX));
     }
 
     @Test
@@ -162,7 +162,7 @@ public class FlyingHelperTest {
 
     private int captureSmallScreenSize(Context context){
         ArgumentCaptor<Intent> argumentCaptor = ArgumentCaptor.forClass(Intent.class);
-        verify(context).sendBroadcast(argumentCaptor.capture());
+        verify(context).sendBroadcast(argumentCaptor.capture( ));
         Intent intent = argumentCaptor.getValue();
         return intent.getIntExtra("key_small_screen_size", 0);
     }
@@ -172,8 +172,9 @@ public class FlyingHelperTest {
         doNothing().when(spyHelper).setScale(anyFloat());
         doNothing().when(spyHelper, "updateBoundary");
         when(spyHelper.isResized()).thenReturn(true);
-        localPrefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-        localPrefs.edit().putInt("key_small_screen_size", 12).apply();
+        Settings.ScreenData data = new Settings.ScreenData(spyHelper.getSettings());
+        data.smallScreenSize = 0.12f;
+        spyHelper.setScreenData(data);
         globalPrefs.edit()
                 .putInt("key_small_screen_size", 34)
                 .apply();
@@ -193,6 +194,7 @@ public class FlyingHelperTest {
                 .putInt("key_small_screen_size", 34)
                 .apply();
         when(WorldReadablePreference.class, "getSettings").thenReturn(new Settings(globalPrefs));
+        spyHelper.setScreenData(null);
         spyHelper.onSettingsLoaded();
 
         verify(spyHelper).setScale(0.34f);
@@ -200,11 +202,10 @@ public class FlyingHelperTest {
 
     @Test
     public void it_should_clear_localPrefs_and_sendBroadcast_to_update_globalPrefs() throws Exception {
-        localPrefs = spyHelper.getAttachedView().getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-        localPrefs.edit()
-                .putInt("key_small_screen_pivot_x", 12)
-                .putInt("key_small_screen_size", 34)
-                .apply();
+        Settings.ScreenData data = new Settings.ScreenData(spyHelper.getSettings());
+        data.smallScreenPivotX = 0.12f;
+        data.smallScreenSize = 0.34f;
+        spyHelper.setScreenData(data);
         Settings globalSettings = new Settings(globalPrefs);
         doReturn(globalSettings).when(spyHelper).getRemoteSettings();
 
@@ -215,8 +216,7 @@ public class FlyingHelperTest {
         Intent intent = broadcastIntents.get(0);
         assertEquals(12, intent.getIntExtra("key_small_screen_pivot_x", 0));
         assertEquals(34, intent.getIntExtra("key_small_screen_size", 0));
-
-        assertEquals(0, localPrefs.getAll().keySet().size());
+        verify(spyHelper).clearScreenData();
     }
 
 //    @Test

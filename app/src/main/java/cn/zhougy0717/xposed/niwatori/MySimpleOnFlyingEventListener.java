@@ -51,8 +51,6 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
     }
 
     private void changeSize(ViewGroup v, float delta){
-        SharedPreferences prefs = v.getContext().getSharedPreferences(FlyingHelper.TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
-        mHelper.getSettings().update(prefs);
         float smallScreenSize = mHelper.getSettings().getSmallScreenSize();
 
         smallScreenSize += delta;
@@ -62,7 +60,12 @@ class MySimpleOnFlyingEventListener extends FlyingLayout.SimpleOnFlyingEventList
         else if(smallScreenSize > FlyingHelper.BIGGEST_SMALL_SCREEN_SIZE){
             smallScreenSize = FlyingHelper.BIGGEST_SMALL_SCREEN_SIZE;
         }
-        prefs.edit().putInt("key_small_screen_size",Math.round(100*smallScreenSize)).apply();
+        Settings.ScreenData data = mHelper.getScreenData();
+        if (data == null) {
+            data = new Settings.ScreenData(mHelper.getSettings());
+        }
+        data.smallScreenSize = smallScreenSize;
+        mHelper.setScreenData(data);
         mHelper.onSettingsLoaded();
     }
 

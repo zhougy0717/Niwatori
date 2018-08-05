@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
 
 import cn.zhougy0717.xposed.niwatori.app.ChangeSettingsActionReceiver;
 import de.robv.android.xposed.XposedBridge;
@@ -34,7 +35,6 @@ import jp.tkgktyk.flyinglayout.FlyingLayout;
  */
 public class FlyingHelper extends FlyingLayout.Helper {
     private static final String TAG = FlyingHelper.class.getSimpleName();
-    public static final String TEMP_SCREEN_INFO_PREF_FILENAME = "temp_screen_info";
     public static final float SMALLEST_SMALL_SCREEN_SIZE = 0.4f;
     public static final float BIGGEST_SMALL_SCREEN_SIZE = 0.9f;
     public static final float SMALL_SCREEN_SIZE_DELTA = 0.04f;
@@ -59,6 +59,18 @@ public class FlyingHelper extends FlyingLayout.Helper {
         initialize(useContainer, settings);
 
         mLayoutCallbacks = new LinkedList<Runnable>();
+    }
+
+    private Settings.ScreenData mLocalScreenData = new Settings.ScreenData(getSettings());
+    public void clearScreenData(){
+        mLocalScreenData = null;
+    }
+    public Settings.ScreenData getScreenData(/*SharedPreferences prefs*/) {
+        return mLocalScreenData;
+    }
+
+    public void setScreenData(Settings.ScreenData data) {
+        mLocalScreenData = data;
     }
 
     private void initialize(boolean useContainer, Settings settings) {
@@ -115,8 +127,14 @@ public class FlyingHelper extends FlyingLayout.Helper {
     }
     public Settings getSettings() {
         try {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            return WorldReadablePreference.getSettings().update(prefs);
+            Settings.ScreenData data = getScreenData();
+            Settings settings = WorldReadablePreference.getSettings();
+            if (data != null) {
+                return settings.update(data);
+            }
+            else {
+                return settings;
+            }
         }
         catch (Throwable t) {
             return WorldReadablePreference.getSettings();
@@ -187,10 +205,10 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void performAction(String action) {
         if (getSettings().logActions) {
             XposedBridge.log(getAttachedView().getContext().getPackageName() + " do action: " + action);
-            Log.e(TAG, getAttachedView().getContext().getPackageName() + " do action: " + action);
             Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
             intent.putExtra("key_action_intent_consumer", getAttachedView().getContext().getPackageName());
             getAttachedView().getContext().sendBroadcast(intent);
+            Log.e(TAG, getAttachedView().getContext().getPackageName() + " do action: " + action);
         }
         if (action.equals(NFW.ACTION_RESET)) {
             resetState(true);
@@ -214,11 +232,13 @@ public class FlyingHelper extends FlyingLayout.Helper {
         } else if (action.equals(NFW.ACTION_EXTRA_ACTION)) {
             performAction(getSettings().extraAction);
         } else if (action.equals(NFW.ACTION_CS_SWAP_LEFT_RIGHT)) {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
             int pivotX = 100 - (int)(100*getSettings().getSmallScreenPivotX());
-            prefs.edit()
-                    .putInt("key_small_screen_pivot_x", pivotX)
-                    .apply();
+            Settings.ScreenData data = getScreenData();
+            if (data == null) {
+                data = new Settings.ScreenData(getSettings());
+            }
+            data.smallScreenPivotX = ((float) pivotX) / 100;
+            setScreenData(data);
             goHomeWithMargin();
             onSettingsLoaded();
         }
@@ -289,8 +309,12 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void resize(boolean force) {
         setPivot(getSettings().smallScreenPivotX, getSettings().smallScreenPivotY);
         if (WorldReadablePreference.getSettings().smallScreenPersistent) {
-            SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, 0);
-            prefs.edit().putBoolean("screen_resized", force).apply();
+            Settings.ScreenData data = getScreenData();
+            if (data == null) {
+                data = new Settings.ScreenData(getSettings());
+            }
+            data.screenResized = force;
+            setScreenData(data);
         }
         if (force) {
             goHomeWithMargin();
@@ -398,7 +422,6 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void sendLocalScreenData() {
         Intent intent = new Intent(NFW.getNiwatoriContext(getAttachedView().getContext()), ChangeSettingsActionReceiver.class);
 
-        SharedPreferences prefs = getAttachedView().getContext().getSharedPreferences(TEMP_SCREEN_INFO_PREF_FILENAME, Context.MODE_PRIVATE);
         int size = Math.round(100*getSettings().getSmallScreenSize());
         int pivotX = Math.round(100*getSettings().getSmallScreenPivotX());
         int pivotY = Math.round(100*getSettings().getSmallScreenPivotY());
@@ -423,7 +446,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
         if (save) {
             getAttachedView().getContext().sendBroadcast(intent);
         }
-        prefs.edit().clear().apply();
+        clearScreenData();
     }
 
     private void hideSoftInputMethod() {

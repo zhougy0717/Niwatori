@@ -13,6 +13,7 @@ import cn.zhougy0717.xposed.niwatori.FlyingHelper;
 import cn.zhougy0717.xposed.niwatori.IReceiver;
 import cn.zhougy0717.xposed.niwatori.ModActivity;
 import cn.zhougy0717.xposed.niwatori.NFW;
+import cn.zhougy0717.xposed.niwatori.Settings;
 import cn.zhougy0717.xposed.niwatori.SettingsLoadReceiver;
 import cn.zhougy0717.xposed.niwatori.XposedModule;
 
@@ -141,6 +142,7 @@ public abstract class BaseHandler extends XposedModule {
         }
 
         protected void syncWithNiwatori(){
+//            mHelper.setScreenData(new Settings.ScreenData(mHelper.getSettings()));
             mHelper.syncResize(mHelper.getSettings().screenResized);
         }
     }
@@ -159,6 +161,7 @@ public abstract class BaseHandler extends XposedModule {
 
         private void syncWithActivity(Activity activity) {
             FlyingHelper helper = ModActivity.getHelper((FrameLayout) activity.getWindow().peekDecorView());
+            mHelper.setScreenData(helper.getScreenData());
             mHelper.syncResize(helper.isResized());
         }
 
@@ -196,8 +199,11 @@ public abstract class BaseHandler extends XposedModule {
             }
             if (mCurrentActivity != null) {
                 FlyingHelper helper = ModActivity.getHelper((FrameLayout) mCurrentActivity.getWindow().peekDecorView());
+                helper.setScreenData(mHelper.getScreenData());
                 helper.syncResize(mHelper.isResized());
             }
+            mHelper.sendLocalScreenData();
+            mHelper.clearScreenData();
         }
     }
 }

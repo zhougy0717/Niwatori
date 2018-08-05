@@ -2,7 +2,6 @@ package cn.zhougy0717.xposed.niwatori;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.util.Log;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -56,28 +55,28 @@ public class Settings implements Serializable {
         return smallScreenPivotY;
     }
 
-    public Settings update(SharedPreferences prefs){
-        Set<String> keySet = prefs.getAll().keySet();
-        if (keySet.contains("key_small_screen_pivot_x")) {
-            smallScreenPivotX = prefs.getInt("key_small_screen_pivot_x", 0)/100f;
+    public static class ScreenData{
+        float smallScreenPivotX;
+        float smallScreenPivotY;
+        float smallScreenSize;
+        boolean screenResized;
+
+        public ScreenData(Settings settings){
+            smallScreenPivotX = settings.smallScreenPivotX;
+            smallScreenPivotY = settings.smallScreenPivotY;
+            smallScreenSize = settings.smallScreenSize;
+            screenResized = settings.screenResized;
         }
-        if (keySet.contains("key_small_screen_pivot_y")) {
-            smallScreenPivotY = prefs.getInt("key_small_screen_pivot_y", 100)/100f;
-        }
-        if (keySet.contains("key_small_screen_size")) {
-            smallScreenSize = prefs.getInt("key_small_screen_size", 70)/100f;
-        }
-        if (keySet.contains("screen_resized")) {
-            screenResized = prefs.getBoolean("screen_resized", false);
-        }
-//        if (keySet.contains("key_initial_x_percent")) {
-//            initialXp = prefs.getInt("key_initial_x_percent", 0);
-//        }
-//        if (keySet.contains("key_initial_y_percent")) {
-//            initialYp = prefs.getInt("key_initial_y_percent", 0);
-//        }
+    }
+
+    public Settings update(ScreenData data) {
+        smallScreenPivotX = data.smallScreenPivotX;
+        smallScreenPivotY = data.smallScreenPivotY;
+        smallScreenSize = data.smallScreenSize;
+        screenResized = data.screenResized;
         return this;
     }
+
     public void load(SharedPreferences prefs) {
         blackList = prefs.getStringSet("key_blacklist", Collections.<String>emptySet());
         animation = prefs.getBoolean("key_animation", true);
