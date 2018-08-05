@@ -65,7 +65,7 @@ public class FlyingHelper extends FlyingLayout.Helper {
     public void clearScreenData(){
         mLocalScreenData = null;
     }
-    public Settings.ScreenData getScreenData(/*SharedPreferences prefs*/) {
+    public Settings.ScreenData getScreenData() {
         return mLocalScreenData;
     }
 

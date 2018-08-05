@@ -40,8 +40,15 @@ To enable each mode, you have several choices:
 1. Because some ROM's, for example Oxygen OS, have their own auto boot control. Niwatori need to be in the white list to provide swap left/right function with auto boot permission. 
 2. Shared preference .xml is not created at the very first time after installation. You need to open Niwatori to have it create it.
 3. In Oneplus Oxygen 5 (Oreo), you need to put Niwatori in Battery optimization "Not optimized" list. Otherwise, the persistent small screen mode won't work. Other functionalities work well. I don't see this happen on Pixel stock image.
+4. Android Settings app doesn't work in Persistent Small Screen mode.
 
 # Release Note
+
+## v0.6.5
+
+1. Show current intent consumer on log switch.
+2. Improve battery drain.
+3. Bug fixes.
 
 ## v0.6.4
 
